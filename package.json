@@ -8,7 +8,7 @@
   "dependencies": {
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",
-    "debug": "~2.6.3",
+    "debug": "^2.6.8",
     "elasticsearch": "^13.3.1",
     "express": "~4.15.2",
     "express-logger": "0.0.3",
@@ -16,6 +16,8 @@
     "jade": "~1.11.0",
     "jade-bootstrap": "^1.0.14",
     "morgan": "^1.8.2",
-    "serve-favicon": "~2.4.2"
+    "pug": "^2.0.0-rc.4",
+    "pug-bootstrap": "0.0.15",
+    "serve-favicon": "^2.4.4"
   }
 }
