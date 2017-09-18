@@ -6,12 +6,17 @@ append body
 		h4 Welcome to #{title}
 		.container
 			form.navbar-form.navbar-left
-				input.form-control(name='query', type='text', placeholder='Поиск...')
+				+icon-primary('search')
+				|&nbsp;&nbsp;
+				input.form-control(name='query', type='text', placeholder='STOUT')
+				|&nbsp;&nbsp;
+				//+submit('Найти пиво')
+				button.btn.btn-primary(type='submit')= 'Найти пиво'
 		.container
-			if results != null
-				p This are beers:
-				ul
-					for result in results
-						li= result._source.result
+			if results[0] != null
+				+alert-i-success('Успешный результат поиска по запросу: '+query)
+				for result in results
+					.jumbotron
+						p= result._source.result
 			else
-				p There are no results!
+				+alert-i-danger('Ничего не найдено по запросу: '+query)

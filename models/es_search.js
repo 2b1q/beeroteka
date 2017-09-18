@@ -48,7 +48,7 @@ module.exports.search = function(searchData, callback) {
       }
     }
   }).then(function (resp) {
-    console.log('ES data: \n'+resp.hits.hits[0]._source.result);
+    // console.log('ES data: \n'+resp.hits.hits[0]._source.result);
     callback(resp.hits.hits);
   }, function (err) {
       callback(err.message)
