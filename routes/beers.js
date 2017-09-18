@@ -4,12 +4,26 @@ var elastic = require('../models/es_search');
 var apivo_es = require('../models/apivo_es'); // add apivo_es model
 
 /* GET hobeers page. */
-router.get('/', function(req, res, next) {
-  //elastic.search_txt();
-  //.then(function (result) {  res.json(result) });
-  res.render('beers', { title: 'Beers', beers: ['all_beers', '123', 'asd123'] });
-  // next();
+// router.get('/', function(req, res, next) {
+//   //elastic.search_txt();
+//   //.then(function (result) {  res.json(result) });
+//   elastic.searchByParams(apivo_es.indexName, 1, 10, 'IPA');
+//   res.render('beers', {
+//      title: 'Beers',
+//     //  beers: elastic.es_data.hits.hits[0]._source.result
+//     beers: {'title':'Beer'}
+//    });
+//   // next();
+// });
+
+router.get('/', function(req, res, next){
+  console.log('Req.body: '+req.body);
+  if ( Object.keys(req.body).length === 0 ) var searchTerm = 'STOUT';
+  elastic.search(searchTerm, function(data) {
+    res.render('beers', { title: 'Express', results: data });
+  });
 });
+
 
 // get params
 router.get('/:query', function (req, res, next) {

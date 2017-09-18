@@ -28,3 +28,30 @@ function searchByParams(indexName, pageNum, perPage, userQuery){
   });
 }
 exports.searchByParams = searchByParams;
+
+// ES bool search with callback
+module.exports.search = function(searchData, callback) {
+  console.log('searchData params: '+JSON.stringify(searchData, null, 2));
+  es_client.client.search({
+    index: 'resultdb',
+    type: 'beeradvocate',
+    body: {
+      query: {
+        bool: {
+          must: {
+            match: {
+              // 'result': searchData.searchTerm
+              'result': searchData
+            }
+          }
+        }
+      }
+    }
+  }).then(function (resp) {
+    console.log('ES data: \n'+resp.hits.hits[0]._source.result);
+    callback(resp.hits.hits);
+  }, function (err) {
+      callback(err.message)
+      console.log(err.message);
+  });
+}

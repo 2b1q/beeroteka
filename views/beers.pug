@@ -1,0 +1,17 @@
+extends ../node_modules/pug-bootstrap/layouts/starter
+
+append body
+	.container
+		h1= title
+		h4 Welcome to #{title}
+		.container
+			form.navbar-form.navbar-left
+				input.form-control(name='query', type='text', placeholder='Поиск...')
+		.container
+			if results != null
+				p This are beers:
+				ul
+					for result in results
+						li= result._source.result
+			else
+				p There are no results!
