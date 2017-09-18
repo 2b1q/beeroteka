@@ -35,6 +35,7 @@ module.exports.search = function(searchData, callback) {
   es_client.client.search({
     index: 'resultdb',
     type: 'beeradvocate',
+    // type: 'apivo',
     body: {
       query: {
         bool: {

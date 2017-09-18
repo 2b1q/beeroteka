@@ -17,6 +17,20 @@ append body
 				+alert-i-success('Успешный результат поиска по запросу: '+query)
 				for result in results
 					.jumbotron
-						p= result._source.result
+						- var json_obj = JSON.parse(result._source.result);
+						//- for(var prop in json_obj)
+						//	p #{prop}: #{json_obj[prop]}
+						// h4 #{json_obj.title}
+						+panel-primary(json_obj.beer+' [ '+json_obj.brewary+' ]')
+							.container
+								h4 Score: #{json_obj.score}
+								+progress-bar-striped(json_obj.score)
+							p= result._source.result
+							- var items = JSON.parse(JSON.stringify(json_obj.items_dict));
+							- for(var prop in items)
+								|&nbsp;
+								strong #{prop}:
+								|&nbsp;
+								+label-primary(items[prop])
 			else
 				+alert-i-danger('Ничего не найдено по запросу: '+query)
