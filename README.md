@@ -2,28 +2,6 @@
 
 FrantEnd for beer aggregator (Express + Bootstrap + Pug)
 
-### What is this repository for? ###
+### Pull repo ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+git clone https://b-b-q@bitbucket.org/b-b-q/beeroteka.git
