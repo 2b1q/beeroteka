@@ -3,7 +3,7 @@ extends ../node_modules/pug-bootstrap/layouts/starter
 append body
 	.container
 		h1= title
-		h4 Welcome to #{title}
+		h4 Быстрый поиск в ES
 		.container
 			form.navbar-form.navbar-left
 				+icon-primary('search')
@@ -22,10 +22,13 @@ append body
 						//	p #{prop}: #{json_obj[prop]}
 						// h4 #{json_obj.title}
 						+panel-primary(json_obj.beer+' [ '+json_obj.brewary+' ]')
+							+img-circle("../images/beer_bottle.png","Circle image")
+							|&nbsp;&nbsp;&nbsp;Text Text Text
+							|&nbsp;&nbsp;&nbsp;Text Text Text
 							.container
 								h4 Score: #{json_obj.score}
 								+progress-bar-striped(json_obj.score)
-							p= result._source.result
+							//p= result._source.result
 							- var items = JSON.parse(JSON.stringify(json_obj.items_dict));
 							- for(var prop in items)
 								|&nbsp;

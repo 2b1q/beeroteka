@@ -22,7 +22,7 @@ router.get('/', function(req, res, next){
   if ( !req.query.query && req.query.query==null ) searchTerm = 'STOUT';
   else searchTerm = req.query.query;
   elastic.search(searchTerm, function(data) {
-    res.render('beers', { title: 'Express', results: data, query: searchTerm });
+    res.render('beers', { title: 'Express +  Bootstrap + Pug + ElasticSearch', results: data, query: searchTerm });
   });
 });
 
