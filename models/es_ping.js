@@ -6,14 +6,14 @@ var es_client = require('../lib/elasticsearch'); // require ES module
 var model = '[ES ping model] ';
 
 // Ping elasticsearch on module init
-function es_ping(project, indexName) {
+function es_ping(indexName) {
   return es_client.client.ping({
     requestTimeout: 30000,
   }, function (error) {
     if (error) {
-      console.log(model+'is FAIL!\n|> Project: \''+project+'\'\n|> ES_Index: \''+indexName+'\'');
+      console.log(model+'is FAIL!\n|> ES_Index: \''+indexName+'\'');
     } else {
-      console.log(model+'is OK\n|> Project: \''+project+'\'\n|> ES_Index: \''+indexName+'\'');
+      console.log(model+'is OK\n|> ES_Index: \''+indexName+'\'');
     }
   });
 }

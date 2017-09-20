@@ -1,21 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var elastic = require('../models/es_search');
+var elastic = require('../models/es_search'); // add es_search API
 var apivo_es = require('../models/apivo_es'); // add apivo_es model
 
-/* GET hobeers page. */
-// router.get('/', function(req, res, next) {
-//   //elastic.search_txt();
-//   //.then(function (result) {  res.json(result) });
-//   elastic.searchByParams(apivo_es.indexName, 1, 10, 'IPA');
-//   res.render('beers', {
-//      title: 'Beers',
-//     //  beers: elastic.es_data.hits.hits[0]._source.result
-//     beers: {'title':'Beer'}
-//    });
-//   // next();
-// });
-
+/** default /beers route */
 router.get('/', function(req, res, next){
   console.log('Req.query: '+req.query.query);
   var searchTerm = null;
