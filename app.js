@@ -1,26 +1,25 @@
-// Attach common modules
+// Attach common modules/libs
 var express = require('express'),
     path = require('path'),
     favicon = require('serve-favicon'),
     logger = require('morgan'),
     cookieParser = require('cookie-parser'),
-    bodyParser = require('body-parser');
+    sessions = require('express-session'),
+    bodyParser = require('body-parser'),
+    apivo_es = require('./models/apivo_es'), // add apivo_es model
+    credentials = require('./credentials.js'); // add credentials
 
-
-// define routes
+// import routes
 var index = require('./routes/index'),
     users = require('./routes/users'),
     beers = require('./routes/beers');
 
-// attach ES API
-//var elastic = require('./lib/elasticsearch');
-var apivo_es = require('./models/apivo_es'); // add apivo_es model
+// init ES connect first
 apivo_es.ping(); // es_ping APIVO index
-
 // init express object
 var app = express();
 
-// view engine setup
+// Setup view engine
 app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
 app.set('view engine', 'pug');
@@ -30,7 +29,12 @@ app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(credentials.cookieToken));
+app.use(sessions({
+  resave: false,
+  saveUninitialized: false,
+  secret: credentials.cookieToken,
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // attach routes
@@ -38,7 +42,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/beers', beers);
 
-// catch 404 and forward to error handler
+// Last ROUTE catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
@@ -50,7 +54,6 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
   // render the error page
   res.status(err.status || 500);
   res.render('error');

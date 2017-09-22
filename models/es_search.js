@@ -35,15 +35,22 @@ function setupQuery(searchData, queryType) {
         body: {
           query: {
             bool: {
-              must: {
-                match: {
-                  // 'result': searchData.searchTerm
-                  // 'result': searchData
-                  'title': searchData
-                }
-              }
+              must:     { match: { 'title': searchData }},
+              // must_not: { match: { '_type': '_type'  }},
+              should:
+                [
+                  {
+                    'script':
+                      { "script": "doc['beer'].value ==  doc['Название'].value" }
+                  }
+                ]
             }
           }
+          // "filter": {
+          //   "script": {
+          //     "script": "doc['originRegion'].value ==  doc['destinationRegion'].value"
+          //   }
+          // }
         }
       };
     default:

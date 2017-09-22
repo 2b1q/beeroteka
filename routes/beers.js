@@ -10,6 +10,8 @@ router.get('/', function(req, res, next){
   if ( !req.query.query && req.query.query==null ) searchTerm = 'STOUT';
   else searchTerm = req.query.query;
   elastic.search(searchTerm, function(data) {
+    req.session.userName = 'Anonimous';
+    res.cookie('signed_token', 'omnomnom', { signed: true });
     res.render('beers', { title: 'Express +  Bootstrap + Pug + ElasticSearch', results: data, query: searchTerm });
   });
 });
