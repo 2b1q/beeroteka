@@ -12,18 +12,39 @@ function setupQuery(searchData, queryType) {
   console.log('searchData params: '+JSON.stringify(searchData, null, 2));
   switch (queryType) {
     //The multi_match query builds on the match query to allow multi-field queries
-    case 'multi_match':
+    case 'multi_match_analyzer':
       return {
         index: indexName,
-        // type: 'apivo',
         body: {
             'query': {
               'multi_match' : {
                 'query':    searchData,
-                // 'fields': [ 'result' ]
+                'analyzer': 'custom_lowercase_stemmed',
                 'fields': [ 'beer', 'title', 'Бренд', 'Название' ]
               }
             }
+          }
+        };
+      break;
+      case 'nasted':
+        return {
+              index: indexName,
+              body: {
+                "query": {
+                  "nested" : {
+                      "path" : "apivo",
+                      // "score_mode" : "avg",
+                      "query" : {
+                          "bool" : {
+                              "must" : [
+
+                                  { "match" : {"apivo.Название" : searchData} },
+                                  // { "range" : {"obj1.count" : {"gt" : 5}} }
+                              ]
+                          }
+                      }
+                  }
+              }
           }
         };
       break;
@@ -41,7 +62,7 @@ function setupQuery(searchData, queryType) {
                 [
                   {
                     'script':
-                      { "script": "doc['beer'].value ==  doc['Название'].value" }
+                      { "script": "doc['beer'].value ==~  /doc['Название'].value/" }
                   }
                 ]
             }
@@ -72,7 +93,7 @@ function setupQuery(searchData, queryType) {
 
 // ES bool search with callback
 module.exports.search = function(searchData, callback) {
-  es_client.client.search(setupQuery(searchData, 'multi_match')).then(function (resp) {
+  es_client.client.search(setupQuery(searchData, 'multi_match_analyzer')).then(function (resp) {
     // console.log('ES data: \n'+resp.hits.hits[0]._source.result);
     console.log('ES data: \n'+JSON.stringify(resp.hits.hits, null, 2));
     callback(resp.hits.hits);
