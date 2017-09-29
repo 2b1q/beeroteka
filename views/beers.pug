@@ -20,10 +20,13 @@ append body
 					if json_obj.beer
 						.jumbotron
 							+panel-primary(json_obj.beer+' [ '+json_obj.brewary+' ]')
-								+img-circle("../images/beer_bottle.png","Circle image")
-								|&nbsp;&nbsp;&nbsp;
-								strong BEERADVOCATE.COM
-								|&nbsp;Text Text
+								.row
+									.col-md-3
+										+img-circle("../images/beer_bottle.png","Circle image")
+									.col
+										- for(var prop in json_obj)
+											strong #{prop}:
+											|&nbsp;&nbsp;#{json_obj[prop]}</br>
 								.container
 									h4 Score: #{json_obj.score}
 									+progress-bar-striped(json_obj.score)
@@ -37,9 +40,8 @@ append body
 					else
 						.jumbotron
 							+panel-info(json_obj.Название+' [ '+json_obj.Бренд+' ]')
-								+img-circle("../images/beer_bottle.png","Circle image")
-								|&nbsp;&nbsp;&nbsp;
-								strong APIVO.RU
-								|&nbsp;Text Text
+								-	for(var prop in json_obj)
+									strong #{prop}:
+									|&nbsp;&nbsp;#{json_obj[prop]}</br>
 			else
 				+alert-i-danger('Ничего не найдено по запросу: '+query)
