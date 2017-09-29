@@ -39,7 +39,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // attach routes
 app.use('/', index);
-app.use('/users', users);
 app.use('/beers', beers);
 
 // Last ROUTE catch 404 and forward to error handler
