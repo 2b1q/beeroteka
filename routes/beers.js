@@ -10,7 +10,7 @@ router.get('/', function(req, res, next){
   elastic.search(searchTerm, function(data) {
     // req.session.userName = 'Anonimous';
     // res.cookie('signed_token', 'omnomnom', { signed: true });
-    res.render('beers', { title: 'Express +  Bootstrap + Pug + ElasticSearch',user: req.session.username, results: data, query: searchTerm });
+    res.render('beers', { title: 'Express +  Bootstrap + Pug + ElasticSearch', user: req.session.username, results: data, query: searchTerm });
   });
 });
 
