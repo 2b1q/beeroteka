@@ -6,6 +6,7 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     sessions = require('express-session'),
     bodyParser = require('body-parser'),
+    flash = require('express-flash-messages')
     apivo_es = require('./models/apivo_es'), // add apivo_es model
     credentials = require('./credentials.js'); // add credentials
 
@@ -34,6 +35,7 @@ app.use(sessions({
   saveUninitialized: false,
   secret: credentials.cookieToken,
 }));
+// app.use(flash())
 app.use(express.static(path.join(__dirname, 'public')));
 
 // attach routes
