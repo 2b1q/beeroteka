@@ -3,10 +3,9 @@ extends ../node_modules/pug-bootstrap/layouts/starter
 append body
 	.container
 		h1= title
-		h4 Быстрый поиск в ES
 		.container
 			if user != null
-				+alert-i-success('Привет: '+user)
+				+label-default('Привет: '+user)
 			form.navbar-form.navbar-left
 				+icon-primary('search')
 				|&nbsp;&nbsp;
