@@ -70,7 +70,7 @@ var index = require('./routes/index'),
      */
 
     var port = normalizePort(process.env.PORT || '3000');
-    app.set('port', port);
+    app.set('port', config.ip+':'+config.port);
 
     /**
      * Create HTTP server.
