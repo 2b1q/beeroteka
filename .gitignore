@@ -2,3 +2,4 @@ node_modules
 jadebootstrap-seed
 credentials.js
 *.log
+bin/
