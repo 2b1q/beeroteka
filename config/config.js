@@ -1,7 +1,9 @@
 var config = {};
 
-config.port = 3000; // nodeJS port
-config.ip = 'localhost';
+config.server = {
+  port: '3000',
+  ip: 'localhost'
+}
 
 config.store = {
   redis: {

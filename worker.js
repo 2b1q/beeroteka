@@ -69,8 +69,8 @@ var index = require('./routes/index'),
      * Get port from environment and store in Express.
      */
 
-    var port = normalizePort(process.env.PORT || '3000');
-    app.set('port', config.ip+':'+config.port);
+    var port = normalizePort(process.env.PORT || config.server.port);
+    app.set('port', config.server.ip+':'+port);
 
     /**
      * Create HTTP server.
