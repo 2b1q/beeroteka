@@ -1,7 +1,7 @@
 /**
 ES ping model
 */
-var es_client = require('../lib/elasticsearch'); // require ES module
+var es_client = require('../libs/elasticsearch'); // require ES module
 
 var model = '[ES ping model] ';
 
@@ -18,4 +18,4 @@ function es_ping(indexName) {
   });
 }
 
-exports.es_ping = es_ping; // export es_ping()
+exports.es_ping = es_ping;

@@ -1,7 +1,7 @@
 /**
 ES Search model
 */
-var es_client = require('../lib/elasticsearch'); // require ES module
+var es_client = require('../libs/elasticsearch'); // require ES module
 var indexName = require('./apivo_es').indexName; // add index
 
 // Search behavior
