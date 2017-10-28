@@ -1,8 +1,11 @@
 /**
 ES Search model
 */
-var es_client = require('../libs/elasticsearch'); // require ES module
-var indexName = require('./apivo_es').indexName; // add index
+var es_client = require('../libs/elasticsearch'), // require ES module
+    log = require('../libs/log')(module),
+    config = require('../config/config');
+
+var indexName = config.es.indexName;
 
 // Search behavior
 var pageNum = 1, perPage = 10; // default
@@ -95,7 +98,8 @@ function setupQuery(searchData, queryType) {
 module.exports.search = function(searchData, callback) {
   es_client.client.search(setupQuery(searchData, 'multi_match_analyzer')).then(function (resp) {
     // console.log('ES data: \n'+resp.hits.hits[0]._source.result);
-    console.log('ES data: \n'+JSON.stringify(resp.hits.hits, null, 2));
+    // console.log('ES data: \n'+JSON.stringify(resp.hits.hits, null, 2));
+    log.info('Hits count %d', resp.hits.hits.length)
     callback(resp.hits.hits);
   }, function (err) {
       callback(err.message)

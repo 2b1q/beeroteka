@@ -8,7 +8,7 @@ var express = require('express'),
     sessions = require('express-session'),
     bodyParser = require('body-parser'),
     flash = require('express-flash-messages')
-    apivo_es = require('./models/apivo_es'), // add apivo_es model
+    // apivo_es = require('./models/apivo_es'), // add apivo_es model
     credentials = require('./credentials.js'); // add credentials
 
 
@@ -17,7 +17,7 @@ var index = require('./routes/index'),
     beers = require('./routes/beers');
 
     // init ES connect first
-    apivo_es.ping(); // es_ping APIVO index
+    // apivo_es.ping(); // es_ping APIVO index
     // init express object
     var app = express();
 

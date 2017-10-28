@@ -1,8 +1,8 @@
 var cluster = require('cluster'),
+    config = require('./config/config'),
     log = require('./libs/log')(module);
 
-var CPUCount = require("os").cpus().length;
-// Получим количество ядер процессора
+// var CPUCount = require("os").cpus().length;
 // Создание дочернего процесса требует много ресурсов. Поэтому в связке с 8 ядерным сервером и Nodemon-ом дает адские лаги при сохранении.
 // Рекомендую при активной разработке ставить CPUCount в 1 иначе вы будете страдать как я....
 
@@ -17,6 +17,6 @@ cluster.on('online', (worker) => {
 });
 
 // fork workers process
-for(var i = 0; i < CPUCount; ++i) {
+for(var i = 0; i < config.workers; ++i) {
   cluster.fork();
 }

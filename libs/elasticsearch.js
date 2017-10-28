@@ -1,11 +1,12 @@
 /**
 ES client vendor lib
 */
-var elasticsearch = require('elasticsearch'); // require ES module
+var elasticsearch = require('elasticsearch'), // require ES module
+    config = require('../config/config');
 // init es client
 var client = new elasticsearch.Client({
-  host: 'localhost:9200',
-  log: 'error' // trace => dev mode
+  host: config.es.host,
+  log: config.es.log
 });
 
 exports.client = client; // Export ES client

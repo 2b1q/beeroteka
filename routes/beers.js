@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var elastic = require('../models/es_search'); // add es_search API
-var apivo_es = require('../models/apivo_es'); // add apivo_es model
+// var apivo_es = require('../models/apivo_es'); // add apivo_es model
 
 /** default /beers route */
 router.get('/', function(req, res, next){
@@ -14,4 +14,4 @@ router.get('/', function(req, res, next){
   });
 });
 
-module.exports = router ;
+module.exports = router;

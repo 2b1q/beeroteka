@@ -119,3 +119,145 @@
 {"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-27T20:12:26.614Z"}
 {"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-27T20:12:26.615Z"}
 {"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-27T20:12:26.626Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-27T20:25:54.579Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-27T20:25:54.595Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-27T20:25:54.595Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-27T20:25:54.595Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T18:15:41.500Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T18:15:41.505Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T18:15:41.512Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T18:15:41.515Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T18:18:32.624Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T18:18:32.634Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T18:18:32.645Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T18:18:32.649Z"}
+{"level":"error","message":"Worker 2 died","label":"es/master.js","timestamp":"2017-10-28T18:18:33.459Z"}
+{"level":"error","message":"Worker 1 died","label":"es/master.js","timestamp":"2017-10-28T18:18:33.487Z"}
+{"level":"error","message":"Worker 3 died","label":"es/master.js","timestamp":"2017-10-28T18:18:33.540Z"}
+{"level":"error","message":"Worker 4 died","label":"es/master.js","timestamp":"2017-10-28T18:18:33.570Z"}
+{"level":"info","message":"Worker 5 online","label":"es/master.js","timestamp":"2017-10-28T18:18:33.727Z"}
+{"level":"info","message":"Worker 6 online","label":"es/master.js","timestamp":"2017-10-28T18:18:33.731Z"}
+{"level":"info","message":"Worker 7 online","label":"es/master.js","timestamp":"2017-10-28T18:18:33.753Z"}
+{"level":"info","message":"Worker 8 online","label":"es/master.js","timestamp":"2017-10-28T18:18:33.777Z"}
+{"level":"error","message":"Worker 5 died","label":"es/master.js","timestamp":"2017-10-28T18:18:34.451Z"}
+{"level":"error","message":"Worker 6 died","label":"es/master.js","timestamp":"2017-10-28T18:18:34.471Z"}
+{"level":"error","message":"Worker 8 died","label":"es/master.js","timestamp":"2017-10-28T18:18:34.515Z"}
+{"level":"error","message":"Worker 7 died","label":"es/master.js","timestamp":"2017-10-28T18:18:34.552Z"}
+{"level":"info","message":"Worker 9 online","label":"es/master.js","timestamp":"2017-10-28T18:18:34.701Z"}
+{"level":"info","message":"Worker 10 online","label":"es/master.js","timestamp":"2017-10-28T18:18:34.711Z"}
+{"level":"info","message":"Worker 11 online","label":"es/master.js","timestamp":"2017-10-28T18:18:34.721Z"}
+{"level":"info","message":"Worker 12 online","label":"es/master.js","timestamp":"2017-10-28T18:18:34.764Z"}
+{"level":"error","message":"Worker 10 died","label":"es/master.js","timestamp":"2017-10-28T18:18:35.449Z"}
+{"level":"error","message":"Worker 9 died","label":"es/master.js","timestamp":"2017-10-28T18:18:35.456Z"}
+{"level":"error","message":"Worker 11 died","label":"es/master.js","timestamp":"2017-10-28T18:18:35.460Z"}
+{"level":"error","message":"Worker 12 died","label":"es/master.js","timestamp":"2017-10-28T18:18:35.663Z"}
+{"level":"info","message":"Worker 15 online","label":"es/master.js","timestamp":"2017-10-28T18:18:35.681Z"}
+{"level":"info","message":"Worker 14 online","label":"es/master.js","timestamp":"2017-10-28T18:18:35.688Z"}
+{"level":"info","message":"Worker 13 online","label":"es/master.js","timestamp":"2017-10-28T18:18:35.695Z"}
+{"level":"info","message":"Worker 16 online","label":"es/master.js","timestamp":"2017-10-28T18:18:35.984Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T18:58:47.555Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T18:58:47.657Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T18:58:47.658Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T18:58:47.674Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T18:58:47.685Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T18:58:48.671Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T18:58:48.757Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T18:58:48.758Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T18:58:48.848Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T18:59:00.814Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T18:59:00.933Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T18:59:00.938Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T18:59:00.942Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T18:59:00.964Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T18:59:01.863Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T18:59:01.890Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T18:59:01.945Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T18:59:02.135Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:00:42.350Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T19:00:42.457Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T19:00:42.466Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T19:00:42.476Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T19:00:42.501Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:00:43.374Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:00:43.389Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:00:43.405Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:00:43.510Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:00:54.964Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T19:00:55.183Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T19:00:55.184Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T19:00:55.194Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T19:00:55.212Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:00:55.995Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:00:56.011Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:00:56.046Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:00:56.047Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:01:10.004Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T19:01:10.177Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T19:01:10.201Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T19:01:10.209Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T19:01:10.212Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:01:11.023Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:01:11.092Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:01:11.100Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:01:11.100Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:01:24.881Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T19:01:25.075Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T19:01:25.075Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T19:01:25.085Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T19:01:25.112Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:01:25.997Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:01:26.103Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:01:26.127Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:01:26.161Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:02:41.929Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T19:02:42.096Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T19:02:42.109Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T19:02:42.124Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T19:02:42.127Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:02:42.890Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:02:42.892Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:02:42.907Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:02:42.974Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:03:45.072Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T19:03:45.246Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T19:03:45.290Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T19:03:45.296Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T19:03:45.322Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:03:46.092Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:03:46.111Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:03:46.143Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:03:46.140Z"}
+{"level":"info","message":"hits [object Object]","label":"models/es_search.js","timestamp":"2017-10-28T19:03:48.232Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:04:01.818Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T19:04:01.999Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T19:04:02.012Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T19:04:02.024Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T19:04:02.034Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:04:02.803Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:04:02.800Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:04:02.815Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:04:02.838Z"}
+{"level":"info","message":"hits undefined","label":"models/es_search.js","timestamp":"2017-10-28T19:04:09.966Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:04:56.487Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T19:04:56.557Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T19:04:56.564Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T19:04:56.570Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T19:04:56.632Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:04:57.554Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:04:57.599Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:04:57.623Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:04:57.712Z"}
+{"level":"info","message":"hits 10","label":"models/es_search.js","timestamp":"2017-10-28T19:04:59.225Z"}
+{"level":"info","message":"hits 8","label":"models/es_search.js","timestamp":"2017-10-28T19:05:06.374Z"}
+{"level":"info","message":"hits 1","label":"models/es_search.js","timestamp":"2017-10-28T19:05:17.187Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:05:37.051Z"}
+{"level":"info","message":"Worker 1 online","label":"es/master.js","timestamp":"2017-10-28T19:05:37.207Z"}
+{"level":"info","message":"Worker 2 online","label":"es/master.js","timestamp":"2017-10-28T19:05:37.208Z"}
+{"level":"info","message":"Worker 3 online","label":"es/master.js","timestamp":"2017-10-28T19:05:37.229Z"}
+{"level":"info","message":"Worker 4 online","label":"es/master.js","timestamp":"2017-10-28T19:05:37.288Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:05:38.010Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:05:38.031Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:05:38.079Z"}
+{"level":"info","message":"ES ping OK\n|> ES_Index: 'resultdb3'","label":"models/init.js","timestamp":"2017-10-28T19:05:38.102Z"}
+{"level":"info","message":"Hits count 1","label":"models/es_search.js","timestamp":"2017-10-28T19:05:40.160Z"}
+{"level":"info","message":"Hits count 1","label":"models/es_search.js","timestamp":"2017-10-28T19:05:43.306Z"}
