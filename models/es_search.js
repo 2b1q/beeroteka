@@ -3,8 +3,10 @@ ES Search model
 */
 var es_client = require('../libs/elasticsearch'), // require ES module
     log = require('../libs/log')(module),
-    config = require('../config/config');
+    config = require('../config/config'),
+    query = require('./dsl');
 
+/*
 var indexName = config.es.indexName;
 
 // Search behavior
@@ -92,17 +94,17 @@ function setupQuery(searchData, queryType) {
       }
     };
   }
-};
+}; */
 
 // ES bool search with callback
 module.exports.search = function(searchData, callback) {
-  es_client.client.search(setupQuery(searchData, 'multi_match_analyzer')).then(function (resp) {
+  es_client.client.search(query.search(searchData, 'multi_match')).then(function (resp) {
     // console.log('ES data: \n'+resp.hits.hits[0]._source.result);
     // console.log('ES data: \n'+JSON.stringify(resp.hits.hits, null, 2));
     log.info('Hits count %d', resp.hits.hits.length)
     callback(resp.hits.hits);
   }, function (err) {
-      callback(err.message)
-      console.log(err.message);
+    callback(err.message) // return err.stack 
+    log.error(err.message);
   });
 }

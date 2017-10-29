@@ -1,11 +1,11 @@
-var express = require('express');
-var router = express.Router();
-var elastic = require('../models/es_search'); // add es_search API
-// var apivo_es = require('../models/apivo_es'); // add apivo_es model
+var express = require('express'),
+    router = express.Router(),
+    elastic = require('../models/es_search'); // add es_search API
 
 /** default /beers route */
 router.get('/', function(req, res, next){
   console.log('Req.query: '+req.query.query);
+  // set search query terms
   var searchTerm = req.query.query || 'STOUT';
   elastic.search(searchTerm, function(data) {
     // req.session.userName = 'Anonimous';
