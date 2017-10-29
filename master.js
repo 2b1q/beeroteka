@@ -9,7 +9,7 @@ cluster.on('disconnect', (worker, code, signal) => {
 });
 
 cluster.on('online', (worker) => {
-    log.info('Worker %d online', worker.id)
+    log.info(config.color.magenta+'Worker %d '+config.color.white+'online', worker.id)
 });
 
 // fork workers process (not by CPU cores)

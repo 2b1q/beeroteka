@@ -7,6 +7,7 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     sessions = require('express-session'),
     bodyParser = require('body-parser'),
+    cluster = require('cluster'), // access to cluster.worker.id
     flash = require('express-flash-messages');
 
 // init express object
@@ -67,17 +68,16 @@ var debug = require('debug')('pugbootstrap-seed:server');
 
 // Get port from environment and store in Express.
 // Normalize a port into a number, string, or false
-var portobj = () => {
-  var val = process.env.PORT || config.server.port;
+// var value = function(args) { /* ... */ }(args); // IIFE
+var port = function (val) {
   var port = parseInt(val, 10);
   // named pipe
   if (isNaN(port)) { return val; }
   // port number
   if (port >= 0) { return port; }
   return false;
-};
+}(process.env.PORT || config.server.port);
 
-var port = portobj();
 // console.log('port %s', port);
 
 app.set('port', config.server.ip+':'+port);
@@ -111,7 +111,8 @@ function onError(error) {
 
 //  Event listener for HTTP server "listening" event.
 function onListening() {
+  var workerid = cluster.worker.id;
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr: 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  log.info(config.color.cyan+'Worker %d '+config.color.yellow+'Listening on '+config.color.white+'%s',workerid, bind)
 }
