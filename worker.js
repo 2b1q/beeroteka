@@ -67,7 +67,7 @@ var debug = require('debug')('pugbootstrap-seed:server');
 
 // Get port from environment and store in Express.
 // Normalize a port into a number, string, or false
-var port = () => {
+var portobj = () => {
   var val = process.env.PORT || config.server.port;
   var port = parseInt(val, 10);
   // named pipe
@@ -75,7 +75,10 @@ var port = () => {
   // port number
   if (port >= 0) { return port; }
   return false;
-}
+};
+
+var port = portobj();
+// console.log('port %s', port);
 
 app.set('port', config.server.ip+':'+port);
 // create HTTP server
