@@ -1,3 +1,4 @@
+var credentials = require('../credentials.js'); // add credentials
 var config = {};
 
 config.server = {
@@ -7,6 +8,16 @@ config.server = {
 
 // cluster config
 config.workers = 4;
+
+// cookie token
+config.cookieToken = credentials.cookieToken;
+
+// sessions
+config.sessions = {
+  resave: false,
+  saveUninitialized: false,
+  secret: credentials.cookieToken
+}
 
 // redis config
 config.store = {
@@ -23,11 +34,16 @@ config.es = {
   log: 'error' // trace => dev mode
 }
 
+// colorize console
 config.color = {
   yellow: "\x1b[33m",
   blue: "\x1b[34m",
   cyan: "\x1b[36m",
-  green: "\x1b[32m"
+  green: "\x1b[32m",
+  black: "\x1b[30m",
+  red: "\x1b[31m",
+  magenta: "\x1b[35m",
+  white: "\x1b[37m"
 }
 
 module.exports = config;

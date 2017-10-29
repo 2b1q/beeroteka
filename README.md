@@ -1,7 +1,5 @@
 # README #
-
 FrantEnd for beer aggregator (Express + Bootstrap + Pug)
 
-### Pull repo ###
-
+# Pull repo
 git clone https://b-b-q@bitbucket.org/b-b-q/beeroteka.git
