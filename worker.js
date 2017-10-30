@@ -114,5 +114,5 @@ function onListening() {
   var workerid = cluster.worker.id;
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr: 'port ' + addr.port;
-  log.info(config.color.cyan+'Worker %d '+config.color.yellow+'Listening on '+config.color.white+'%s',workerid, bind)
+  log.info(config.color.cyan+'Worker %d '+config.color.yellow+'Listening on '+config.color.cyan+config.server.ip+' '+config.color.white+'%s',workerid, bind)
 }
