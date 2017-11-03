@@ -29,7 +29,7 @@ config.store = {
 
 // elasticsearch config
 config.es = {
-  indexName: 'resultdb3',
+  indexName: 'ba',
   host: 'localhost:9200',
   log: 'error' // trace => dev mode
 }
