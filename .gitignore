@@ -5,3 +5,4 @@ credentials.js
 nohup.out
 node.log
 bin/
+.DS_Store
