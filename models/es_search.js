@@ -98,13 +98,11 @@ function setupQuery(searchData, queryType) {
 
 // ES bool search with callback
 module.exports.search = function(searchData, callback) {
-  es_client.client.search(query.search(searchData, 'multi_match')).then(function (resp) {
-    // console.log('ES data: \n'+resp.hits.hits[0]._source.result);
-    // console.log('ES data: \n'+JSON.stringify(resp.hits.hits, null, 2));
+  es_client.client.search(query.search(searchData, 'ba_multi_match')).then(function (resp) {
     log.info('Hits count %d', resp.hits.hits.length)
     callback(resp.hits.hits);
   }, function (err) {
-    callback(err.message) // return err.stack 
+    callback(err.message) // return err.stack
     log.error(err.message);
   });
 }

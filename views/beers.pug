@@ -25,20 +25,24 @@ append body
 								.row
 									.col-md-3
 										+img-circle("../images/beer_bottle.png","Circle image")
-									.col
-										- for(var prop in json_obj)
-											strong #{prop}:
-											|&nbsp;&nbsp;#{json_obj[prop]}</br>
-								.container
-									h4 Score: #{json_obj.score}
-									+progress-bar-striped(json_obj.score)
-									//p= result._source.result
-								- var items = JSON.parse(JSON.stringify(json_obj.items_dict));
-								- for(var prop in items)
-									|&nbsp;
-									strong #{prop}:
-									|&nbsp;
-									+label-primary(items[prop])
+									.col-md-4
+										//- for(var prop in json_obj)
+										//	strong #{prop}:
+										//	|&nbsp;&nbsp;#{json_obj[prop]}</br>
+										h4 Score: #{json_obj.score} / 5
+										+progress-bar-striped(json_obj.score_percent)
+										strong Brewary:
+										|&nbsp; #{json_obj.brewary}
+										|<br>
+										strong Beer:
+										|&nbsp; #{json_obj.beer}
+										- var items = JSON.parse(JSON.stringify(json_obj.items_dict));
+										- for(var prop in items)
+											|<br>
+											strong #{prop}
+											|&nbsp;&nbsp;#{items[prop]}
+											//+label-primary(items[prop])
+									.col-md-4
 					else
 						.jumbotron
 							+panel-info(json_obj.Название+' [ '+json_obj.Бренд+' ]')

@@ -1,13 +1,17 @@
 var config = require('../config/config'),
-    indexName = config.es.indexName; // ES Index name
+    indexBa = config.es.index.ba, // ES Index name
+    indexAll = config.es.index.all; // ES Index name
 
 // common ES query function
 var query = function(searchData, queryType){
   console.log('Query type: '+queryType);
   console.log('searchData params: '+JSON.stringify(searchData, null, 2));
   switch (queryType) {
-    case 'multi_match':
-      return multi_match(searchData);
+    case 'multi_match_analyzer':
+      return multi_match_analyzer(searchData);
+    break;
+    case 'ba_multi_match':
+      return ba_multi_match(searchData);
     break;
     case 'nasted':
       return nasted(searchData);
@@ -16,9 +20,9 @@ var query = function(searchData, queryType){
 }
 
 // multi_match query
-var multi_match = (searchData) => {
+var multi_match_analyzer = (searchData) => {
   return {
-    index: indexName,
+    index: indexAll,
     body: {
         'query': {
           'multi_match' : {
@@ -31,10 +35,25 @@ var multi_match = (searchData) => {
     }
 }
 
+// BA multi_match query
+var ba_multi_match = (searchData) => {
+  return {
+    index: indexBa,
+    body: {
+        'query': {
+          'multi_match' : {
+            'query':  searchData,
+            'fields': [ 'beer', 'brewary' ]
+          }
+        }
+      }
+    }
+}
+
 // nasted query
 var nasted = (searchData) => {
   return {
-    index: indexName,
+    index: indexAll,
     body: {
           "query": {
             "nested" : {
