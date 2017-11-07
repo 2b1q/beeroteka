@@ -16,6 +16,12 @@ var query = function(searchData, queryType){
     case 'nasted':
       return nasted(searchData);
     break;
+    case 'ap_simple_query_string':
+      return ap_simple_query_string(searchData);
+    break;
+    case 'match':
+      return match(searchData);
+    break;
   }
 }
 
@@ -43,7 +49,40 @@ var ba_multi_match = (searchData) => {
         'query': {
           'multi_match' : {
             'query':  searchData,
-            'fields': [ 'beer', 'brewary' ]
+            // 'fields': [ 'beer', 'brewary' ]
+            'fields': [ 'beer' ]
+          }
+        }
+      }
+    }
+}
+
+// ap_simple_query_string
+var match = (searchData) => {
+  return {
+    index: indexAll,
+    body: {
+        'query': {
+          'match' : {
+            'Название': {
+              'query':  searchData,
+              'cutoff_frequency' : 1
+            }
+          }
+        }
+      }
+    }
+}
+
+var ap_simple_query_string = (searchData) => {
+  return {
+    index: indexAll,
+    body: {
+        'query': {
+          'simple_query_string' : {
+            'query':  searchData,
+            // 'default_operator' : 'and',
+            'fields': [ 'Название' ]
           }
         }
       }

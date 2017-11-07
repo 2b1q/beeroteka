@@ -96,13 +96,56 @@ function setupQuery(searchData, queryType) {
   }
 }; */
 
-// ES bool search with callback
-module.exports.search = function(searchData, callback) {
-  es_client.client.search(query.search(searchData, 'ba_multi_match')).then(function (resp) {
-    log.info('Hits count %d', resp.hits.hits.length)
-    callback(resp.hits.hits);
-  }, function (err) {
-    callback(err.message) // return err.stack
-    log.error(err.message);
-  });
+function query2(result1data){
+  return new Promise(function(resolve, reject){
+    result1data.forEach(function(item, i, result1data){
+      let beer = result1data[i]._source.beer;
+      log.info('Search query 2. Beer %s', beer)
+      es_client.client.search(query.search(beer, 'match'))
+        .then(function (resp) {
+            log.info('Query 2 Hits count %d', resp.hits.hits.length)
+            resolve(resp.hits.hits);
+        }, function (err) {
+            reject(err.message) // return err.stack
+        });
+      })
+  })
 }
+
+var query1 = function(searchTxt1, callback){
+  new Promise(function(resolve, reject){
+    es_client.client.search(query.search(searchTxt1, 'ba_multi_match'))
+      .then(function(resp) {
+          var result1 = resp.hits.hits;
+          log.info('Hits count %d', result1.length)
+          if( result1.length === 0 ) callback(result1)
+          else {
+            log.info('query 1 result: \n'+JSON.stringify(result1, null, 2));;
+            resolve(result1)
+          }
+      }, function (err) {
+          reject(err.message) // return err.stack
+      });
+  })
+  .then(query2)
+  .then(callback)
+  .catch(error => {
+    log.error(error)
+    callback(err.message)
+  })
+}
+
+
+
+// ES bool search with callback
+// module.exports.search = function(searchData, callback) {
+//   es_client.client.search(query.search(searchData, 'ba_multi_match')).then(function (resp) {
+//     log.info('Hits count %d', resp.hits.hits.length)
+//     callback(resp.hits.hits);
+//   }, function (err) {
+//     callback(err.message) // return err.stack
+//     log.error(err.message);
+//   });
+// }
+
+ module.exports.search = query1;
