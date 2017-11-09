@@ -4,8 +4,8 @@ var config = require('../config/config'),
 
 // common ES query function
 var query = function(searchData, queryType){
-  console.log('Query type: '+queryType);
-  console.log('searchData params: '+JSON.stringify(searchData, null, 2));
+  // console.log(config.color.yellow+'Query type: '+config.color.white+queryType);
+  // console.log(config.color.yellow+'searchData params: '+config.color.white+JSON.stringify(searchData, null, 2));
   switch (queryType) {
     case 'multi_match_analyzer':
       return multi_match_analyzer(searchData);
@@ -16,8 +16,11 @@ var query = function(searchData, queryType){
     case 'nasted':
       return nasted(searchData);
     break;
-    case 'ap_simple_query_string':
-      return ap_simple_query_string(searchData);
+    case 'ap_bool':
+      return ap_bool(searchData);
+    break;
+    case 'ba_simple_query_string':
+      return ba_simple_query_string(searchData);
     break;
     case 'match':
       return match(searchData);
@@ -25,7 +28,8 @@ var query = function(searchData, queryType){
   }
 }
 
-// multi_match query
+
+// indexAll multi_match_analyzer
 var multi_match_analyzer = (searchData) => {
   return {
     index: indexAll,
@@ -57,7 +61,7 @@ var ba_multi_match = (searchData) => {
     }
 }
 
-// ap_simple_query_string
+// ap match
 var match = (searchData) => {
   return {
     index: indexAll,
@@ -74,15 +78,42 @@ var match = (searchData) => {
     }
 }
 
-var ap_simple_query_string = (searchData) => {
+// AP term query
+var ap_bool = (searchData) => {
   return {
     index: indexAll,
     body: {
+        'from' : 0,
+        'size' : 100,
+        'query': {
+            "bool" : {
+              "must" : [
+                {"match" : { "Название" : searchData.beer }}
+              ],
+              "filter": [
+                {"term" : { "Бренд" : searchData.brewary }}
+              ],
+              "minimum_should_match" : 1,
+              "boost" : 1.0
+          }
+      }
+    }
+  }
+}
+
+// BA simple_query_string
+var ba_simple_query_string = (searchData) => {
+  return {
+    index: indexBa,
+    body: {
+        'from' : 0,
+        'size' : 1000,
         'query': {
           'simple_query_string' : {
             'query':  searchData,
-            // 'default_operator' : 'and',
-            'fields': [ 'Название' ]
+            // 'analyzer': 'snowball',
+            'fields': [ 'beer^5', 'brewary' ],
+            'default_operator' : 'and'
           }
         }
       }
@@ -101,7 +132,7 @@ var nasted = (searchData) => {
                 "query" : {
                     "bool" : {
                         "must" : [
-                            { "match" : {"apivo.Название" : searchData} },
+                            { "match" : {"apivo.Название" : searchData.beer} },
                             // { "range" : {"obj1.count" : {"gt" : 5}} }
                         ]
                     }

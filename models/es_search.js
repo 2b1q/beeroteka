@@ -6,105 +6,25 @@ var es_client = require('../libs/elasticsearch'), // require ES module
     config = require('../config/config'),
     query = require('./dsl');
 
-/*
-var indexName = config.es.indexName;
-
-// Search behavior
-var pageNum = 1, perPage = 10; // default
-
-function setupQuery(searchData, queryType) {
-  console.log('Query type: '+queryType);
-  console.log('searchData params: '+JSON.stringify(searchData, null, 2));
-  switch (queryType) {
-    //The multi_match query builds on the match query to allow multi-field queries
-    case 'multi_match_analyzer':
-      return {
-        index: indexName,
-        body: {
-            'query': {
-              'multi_match' : {
-                'query':    searchData,
-                'analyzer': 'custom_lowercase_stemmed',
-                'fields': [ 'beer', 'title', 'Бренд', 'Название' ]
-              }
-            }
-          }
-        };
-      break;
-      case 'nasted':
-        return {
-              index: indexName,
-              body: {
-                "query": {
-                  "nested" : {
-                      "path" : "apivo",
-                      // "score_mode" : "avg",
-                      "query" : {
-                          "bool" : {
-                              "must" : [
-
-                                  { "match" : {"apivo.Название" : searchData} },
-                                  // { "range" : {"obj1.count" : {"gt" : 5}} }
-                              ]
-                          }
-                      }
-                  }
-              }
-          }
-        };
-      break;
-    case 'bool':
-      return {
-        index: indexName,
-        type: 'beeradvocate',
-        // type: 'apivo',
-        body: {
-          query: {
-            bool: {
-              must:     { match: { 'title': searchData }},
-              // must_not: { match: { '_type': '_type'  }},
-              should:
-                [
-                  {
-                    'script':
-                      { "script": "doc['beer'].value ==~  /doc['Название'].value/" }
-                  }
-                ]
-            }
-          }
-          // "filter": {
-          //   "script": {
-          //     "script": "doc['originRegion'].value ==  doc['destinationRegion'].value"
-          //   }
-          // }
-        }
-      };
-    default:
-    // TODO Set default query type
-    return {
-      index: indexName,
-      from: (pageNum - 1) * perPage, // 10 - perPage
-      size: perPage, // 10 - perPage
-      body: {
-        query: {
-          match: {
-            result: searchData
-          }
-        }
-      }
-    };
-  }
-}; */
-
 function query2(result1data){
   return new Promise(function(resolve, reject){
     result1data.forEach(function(item, i, result1data){
       let beer = result1data[i]._source.beer;
-      log.info('Search query 2. Beer %s', beer)
-      es_client.client.search(query.search(beer, 'match'))
+      let brewary = result1data[i]._source.brewary;
+      // log.info('Search query 2. Beer %s. Brewary %s', beer, brewary)
+      let query_object = {
+        beer: beer,
+        brewary: brewary
+      }
+      es_client.client.search(query.search(query_object, 'ap_bool'))
         .then(function (resp) {
-            log.info('Query 2 Hits count %d', resp.hits.hits.length)
-            resolve(resp.hits.hits);
+          if( resp.hits.hits.length > 0 ){
+            log.info(config.color.yellow+'QUERY 2 Hits count: '+config.color.white+resp.hits.hits.length)
+            log.info('query 2 result: \n'+JSON.stringify(resp.hits.hits, null, 2));
+            resolve(resp.hits.hits); // resolve OCCURED Only ONCE
+          } else {
+            resolve(result1data)
+          }
         }, function (err) {
             reject(err.message) // return err.stack
         });
@@ -114,13 +34,13 @@ function query2(result1data){
 
 var query1 = function(searchTxt1, callback){
   new Promise(function(resolve, reject){
-    es_client.client.search(query.search(searchTxt1, 'ba_multi_match'))
+    es_client.client.search(query.search(searchTxt1, 'ba_simple_query_string'))
       .then(function(resp) {
           var result1 = resp.hits.hits;
-          log.info('Hits count %d', result1.length)
+          log.info(config.color.yellow+'QUERY 1 Hits count: '+config.color.white+result1.length)
           if( result1.length === 0 ) callback(result1)
           else {
-            log.info('query 1 result: \n'+JSON.stringify(result1, null, 2));;
+            // log.info('query 1 result: \n'+JSON.stringify(result1, null, 2));;
             resolve(result1)
           }
       }, function (err) {

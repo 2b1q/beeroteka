@@ -22,7 +22,7 @@ router.get('/', function(req, res, next){
       data[i]._source.score_percent = score_percent
     })
 
-    console.log('ES data: \n'+JSON.stringify(data, null, 2));;
+    // console.log('ES data: \n'+JSON.stringify(data, null, 2));
     res.render('beers', { title: 'Express +  Bootstrap + Pug + ElasticSearch', user: req.session.username, results: data, query: searchTerm });
     // res.render('beers', { title: 'Express +  Bootstrap + Pug + ElasticSearch', user: req.session.username, results: {}, query: searchTerm });
   });
