@@ -6,18 +6,26 @@ var es_client = require('../libs/elasticsearch'), // require ES module
     config = require('../config/config'),
     query = require('./dsl');
 
+var res1, res2; // result data1 and data2
+
 function query2(result1data){
+  var res1 = result1data;
   return new Promise(function(resolve, reject){
-    result1data.forEach(function(item, i, result1data){
+    result1data.forEach(function(item){
       let query_object = {
         beer: item._source.beer,
         brewary: item._source.brewary
       }
-      es_client.client.search(query.search(query_object, 'ap_bool'))
+      es_client.client.search(query.search(query_object, 'bool_query_string'))
         .then(function(resp){
           // IF Query2 clauses have HITS then render this OBJ
-          if( resp.hits.hits.length > 0 ) resolve(resp.hits.hits); // resolve Event OCCURED Only ONCE (means other ForEach resolve`s will be ignored )
-          else resolve(result1data)
+          if( resp.hits.hits.length > 0 ) {
+            log.info(config.color.yellow+'QUERY 2 Hits count: '+config.color.white+resp.hits.hits.length)
+            // console.log(JSON.stringify(resp.hits.hits, null, 2));
+            res2 = resp.hits.hits;
+            resolve(resp.hits.hits); // resolve Event OCCURED Only ONCE (means other ForEach resolve`s will be ignored )
+          }
+           else resolve([]) // resolve empty list
         }, function(err){
             reject(err.message) // return err.stack
         });

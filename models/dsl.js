@@ -19,6 +19,9 @@ var query = function(searchData, queryType){
     case 'ap_bool':
       return ap_bool(searchData);
     break;
+    case 'bool_query_string':
+      return bool_query_string(searchData);
+    break;
     case 'ba_simple_query_string':
       return ba_simple_query_string(searchData);
     break;
@@ -84,17 +87,20 @@ var ap_bool = (searchData) => {
     index: indexAll,
     body: {
         'from' : 0,
-        'size' : 100,
+        'size' : 20,
         'query': {
-            "bool" : {
-              "must" : [
-                {"match" : { "Название" : searchData.beer }}
+            'bool' : {
+              'should' : [
+                {'match' : { 'Название' : searchData.beer }},
               ],
-              "filter": [
-                {"term" : { "Бренд" : searchData.brewary }}
+              "should": [
+                {"match" : { 'Бренд' : searchData.brewary }}
               ],
-              "minimum_should_match" : 1,
-              "boost" : 1.0
+              // 'should' : [
+              //   { 'match' : { 'Бренд' : searchData.brewary } },
+              // ],
+              'minimum_should_match' : 2,
+              'boost' : 1.0
           }
       }
     }
@@ -107,7 +113,7 @@ var ba_simple_query_string = (searchData) => {
     index: indexBa,
     body: {
         'from' : 0,
-        'size' : 1000,
+        'size' : 20,
         'query': {
           'simple_query_string' : {
             'query':  searchData,
@@ -118,6 +124,30 @@ var ba_simple_query_string = (searchData) => {
         }
       }
     }
+}
+
+var bool_query_string = (searchData) => {
+  return {
+    index: indexAll,
+    body: {
+      'from': 0,
+      'size' : 10,
+        "query": {
+          "bool": {
+            "should": {
+              "query_string": {
+                "query": searchData.beer,
+                "fields": [
+                  "Название^3",
+                  "Бренд^2",
+                ],
+                "default_operator": "AND"
+              }
+            }
+          }
+        }
+    }
+  }
 }
 
 // nasted query

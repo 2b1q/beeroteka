@@ -30,7 +30,7 @@ config.store = {
 // elasticsearch config
 config.es = {
   index: {
-    ba: 'ba2',
+    ba: 'ba',
     apivo: 'apivo',
     all: 'resultdb3'
   },
