@@ -29,6 +29,7 @@ config.store = {
 
 // elasticsearch config
 config.es = {
+  promiseDelay: 150,
   index: {
     ba: 'ba',
     apivo: 'apivo',

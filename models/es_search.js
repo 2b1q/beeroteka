@@ -11,7 +11,7 @@ function resolveAfterDelay(data) {
     setTimeout(() => {
       console.log(config.color.yellow+'\n>>> RETURN RESULT 1 <<<\n');
       resolve(data);
-    }, 500);
+    }, config.es.promiseDelay);
   });
 }
 
