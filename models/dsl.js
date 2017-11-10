@@ -28,7 +28,7 @@ var ba_simple_query_string = (searchData) => {
     index: indexBa,
     body: {
         'from' : 0,
-        'size' : 1,
+        'size' : 5,
         'query': {
           'simple_query_string' : {
             'query':  searchData,
@@ -47,7 +47,7 @@ var ap_bool_query_string = (searchData) => {
     index: indexAll,
     body: {
       'from': 0,
-      'size' : 10,
+      'size' : 5,
         "query": {
           "bool": {
             "should": {

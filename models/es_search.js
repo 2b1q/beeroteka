@@ -20,11 +20,12 @@ async function asyncDelay(data) {
 }
 
 function query2(result1data){
+  let result1 = result1data.slice(0,1); // creaty new array with first result
   return new Promise(function(resolve, reject){
-    result1data.forEach(function(item, i, result1data){
+    result1.forEach(function(item){
       let query_object = {
-        beer: item._source.beer,
-        brewary: item._source.brewary
+        beer: item._source.beer.replace(/[^a-zA-Z0-9 ]/g, ''), // drop specific symbols '@!$@^%..' caz ! -> crash the query 2
+        brewary: item._source.brewary.replace(/[^a-zA-Z0-9 ]/g, '')
       }
       es_client.client.search(query.search(query_object, 'ap_bool_query_string'))
         .then(function(resp){
@@ -34,8 +35,8 @@ function query2(result1data){
             console.log(config.color.yellow+'\n>>> RETURN RESULT 2 <<<\n');
             resolve(resp.hits.hits); // resolve Event OCCURED Only ONCE (means other ForEach resolve`s will be ignored )
           }
-          else resolve(asyncDelay(result1data));
-        }, function(err){
+          else resolve(asyncDelay(result1data)); // async resolve wait 150 ms then resolve with first response 
+        }, function(err) {
             reject(err.message) // return err.stack
         });
       })
@@ -45,12 +46,12 @@ function query2(result1data){
 var query1 = function(searchTxt1, callback){
   new Promise(function(resolve, reject){
     es_client.client.search(query.search(searchTxt1, 'ba_simple_query_string'))
-      .then(function(resp) {
+      .then(function(resp){
           var result1 = resp.hits.hits;
           log.info(config.color.yellow+'QUERY 1 Hits count: '+config.color.white+result1.length)
           if( result1.length === 0 ) callback(result1) // IF first Query (BA) has no HITS return callback
           else resolve(result1)
-      }, function (err) {
+      }, function(err) {
           reject(err.message) // return err.stack
       });
   })
@@ -58,7 +59,7 @@ var query1 = function(searchTxt1, callback){
   .then(callback)
   .catch(error => {
     log.error(error)
-    callback(err.message)
+    callback(error.message)
   })
 }
 
