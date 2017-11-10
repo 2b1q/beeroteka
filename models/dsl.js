@@ -59,7 +59,12 @@ var ap_bool_query_string = (searchData) => {
                 ],
                 "default_operator": "AND"
               }
-            }
+            },
+            "filter": [
+              {"match" : { "Бренд" : searchData.brewary }}
+            ],
+            "minimum_should_match" : 1,
+            "boost" : 1.0
           }
         }
     }
