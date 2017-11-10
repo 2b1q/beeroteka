@@ -5,105 +5,20 @@ var config = require('../config/config'),
 // common ES query function
 var query = function(searchData, queryType){
   // console.log(config.color.yellow+'Query type: '+config.color.white+queryType);
-  // console.log(config.color.yellow+'searchData params: '+config.color.white+JSON.stringify(searchData, null, 2));
+  console.log(config.color.yellow+'searchData params: '+config.color.white+JSON.stringify(searchData, null, 2));
   switch (queryType) {
-    case 'multi_match_analyzer':
-      return multi_match_analyzer(searchData);
-    break;
-    case 'ba_multi_match':
-      return ba_multi_match(searchData);
-    break;
-    case 'nasted':
-      return nasted(searchData);
-    break;
-    case 'ap_bool':
-      return ap_bool(searchData);
-    break;
-    case 'bool_query_string':
-      return bool_query_string(searchData);
+    case 'ap_bool_query_string':
+      return ap_bool_query_string(searchData);
     break;
     case 'ba_simple_query_string':
       return ba_simple_query_string(searchData);
     break;
-    case 'match':
-      return match(searchData);
+    case 'multi_match_analyzer':
+      return multi_match_analyzer(searchData);
     break;
-  }
-}
-
-
-// indexAll multi_match_analyzer
-var multi_match_analyzer = (searchData) => {
-  return {
-    index: indexAll,
-    body: {
-        'query': {
-          'multi_match' : {
-            'query':  searchData,
-            'analyzer': 'custom_lowercase_stemmed',
-            'fields': [ 'beer', 'title', 'Бренд', 'Название' ]
-          }
-        }
-      }
-    }
-}
-
-// BA multi_match query
-var ba_multi_match = (searchData) => {
-  return {
-    index: indexBa,
-    body: {
-        'query': {
-          'multi_match' : {
-            'query':  searchData,
-            // 'fields': [ 'beer', 'brewary' ]
-            'fields': [ 'beer' ]
-          }
-        }
-      }
-    }
-}
-
-// ap match
-var match = (searchData) => {
-  return {
-    index: indexAll,
-    body: {
-        'query': {
-          'match' : {
-            'Название': {
-              'query':  searchData,
-              'cutoff_frequency' : 1
-            }
-          }
-        }
-      }
-    }
-}
-
-// AP term query
-var ap_bool = (searchData) => {
-  return {
-    index: indexAll,
-    body: {
-        'from' : 0,
-        'size' : 20,
-        'query': {
-            'bool' : {
-              'should' : [
-                {'match' : { 'Название' : searchData.beer }},
-              ],
-              "should": [
-                {"match" : { 'Бренд' : searchData.brewary }}
-              ],
-              // 'should' : [
-              //   { 'match' : { 'Бренд' : searchData.brewary } },
-              // ],
-              'minimum_should_match' : 2,
-              'boost' : 1.0
-          }
-      }
-    }
+    case 'ap_bool':
+      return ap_bool(searchData);
+    break;
   }
 }
 
@@ -113,7 +28,7 @@ var ba_simple_query_string = (searchData) => {
     index: indexBa,
     body: {
         'from' : 0,
-        'size' : 20,
+        'size' : 1,
         'query': {
           'simple_query_string' : {
             'query':  searchData,
@@ -126,7 +41,8 @@ var ba_simple_query_string = (searchData) => {
     }
 }
 
-var bool_query_string = (searchData) => {
+// ap bool_query_string
+var ap_bool_query_string = (searchData) => {
   return {
     index: indexAll,
     body: {
@@ -150,25 +66,42 @@ var bool_query_string = (searchData) => {
   }
 }
 
-// nasted query
-var nasted = (searchData) => {
+
+// indexAll multi_match_analyzer
+var multi_match_analyzer = (searchData) => {
   return {
     index: indexAll,
     body: {
-          "query": {
-            "nested" : {
-                "path" : "apivo",
-                // "score_mode" : "avg",
-                "query" : {
-                    "bool" : {
-                        "must" : [
-                            { "match" : {"apivo.Название" : searchData.beer} },
-                            // { "range" : {"obj1.count" : {"gt" : 5}} }
-                        ]
-                    }
-                }
-            }
+        'query': {
+          'multi_match' : {
+            'query':  searchData,
+            'analyzer': 'custom_lowercase_stemmed',
+            'fields': [ 'beer', 'title', 'Бренд', 'Название' ]
+          }
         }
+      }
+    }
+}
+
+// AP term query
+var ap_bool = (searchData) => {
+  return {
+    index: indexAll,
+    body: {
+        'from' : 0,
+        'size' : 100,
+        'query': {
+            "bool" : {
+              "must" : [
+                {"match" : { "Название" : searchData.beer }}
+              ],
+              "filter": [
+                {"term" : { "Бренд" : searchData.brewary }}
+              ],
+              "minimum_should_match" : 1,
+              "boost" : 1.0
+          }
+      }
     }
   }
 }

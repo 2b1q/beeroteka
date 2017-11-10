@@ -6,26 +6,35 @@ var es_client = require('../libs/elasticsearch'), // require ES module
     config = require('../config/config'),
     query = require('./dsl');
 
-var res1, res2; // result data1 and data2
+function resolveAfterDelay(data) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      console.log(config.color.yellow+'\n>>> RETURN RESULT 1 <<<\n');
+      resolve(data);
+    }, 500);
+  });
+}
+
+async function asyncDelay(data) {
+  return await resolveAfterDelay(data);
+}
 
 function query2(result1data){
-  var res1 = result1data;
   return new Promise(function(resolve, reject){
-    result1data.forEach(function(item){
+    result1data.forEach(function(item, i, result1data){
       let query_object = {
         beer: item._source.beer,
         brewary: item._source.brewary
       }
-      es_client.client.search(query.search(query_object, 'bool_query_string'))
+      es_client.client.search(query.search(query_object, 'ap_bool_query_string'))
         .then(function(resp){
           // IF Query2 clauses have HITS then render this OBJ
           if( resp.hits.hits.length > 0 ) {
             log.info(config.color.yellow+'QUERY 2 Hits count: '+config.color.white+resp.hits.hits.length)
-            // console.log(JSON.stringify(resp.hits.hits, null, 2));
-            res2 = resp.hits.hits;
+            console.log(config.color.yellow+'\n>>> RETURN RESULT 2 <<<\n');
             resolve(resp.hits.hits); // resolve Event OCCURED Only ONCE (means other ForEach resolve`s will be ignored )
           }
-           else resolve([]) // resolve empty list
+          else resolve(asyncDelay(result1data));
         }, function(err){
             reject(err.message) // return err.stack
         });
