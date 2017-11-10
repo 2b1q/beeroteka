@@ -47,7 +47,7 @@ var ap_bool_query_string = (searchData) => {
     index: indexAll,
     body: {
       'from': 0,
-      'size' : 5,
+      'size' : 1, // return ONLY ONE matched response 
         "query": {
           "bool": {
             "should": {

@@ -33,9 +33,14 @@ function query2(result1data){
           if( resp.hits.hits.length > 0 ) {
             log.info(config.color.yellow+'QUERY 2 Hits count: '+config.color.white+resp.hits.hits.length)
             console.log(config.color.yellow+'\n>>> RETURN RESULT 2 <<<\n');
+            resp.hits.hits[0]._source.BA_score = item._source.score;
+            resp.hits.hits[0]._source.BA_beer = item._source.beer;
+            resp.hits.hits[0]._source.BA_brewary = item._source.brewary;
+            resp.hits.hits[0]._source.BA_img = item._source.img || 'no IMG';
+            resp.hits.hits[0]._source.BA_url = item._source.url;
             resolve(resp.hits.hits); // resolve Event OCCURED Only ONCE (means other ForEach resolve`s will be ignored )
           }
-          else resolve(asyncDelay(result1data)); // async resolve wait 150 ms then resolve with first response 
+          else resolve(asyncDelay(result1data)); // async resolve wait 150 ms then resolve with first response
         }, function(err) {
             reject(err.message) // return err.stack
         });
