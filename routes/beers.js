@@ -5,6 +5,7 @@ var express = require('express'),
 /** default /beers route */
 router.get('/', function(req, res, next){
   console.log('Req.query: '+req.query.query);
+  //TODO добавить проверку пустого запроса. + минимум 2 токена 
   // set search query terms
   var searchTerm = req.query.query || 'STOUT';
   elastic.search(searchTerm, function(data) {

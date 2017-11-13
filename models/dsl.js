@@ -5,7 +5,7 @@ var config = require('../config/config'),
 
 // common ES query function
 var query = function(searchData, queryType){
-  // console.log(config.color.yellow+'Query type: '+config.color.white+queryType);
+  console.log(config.color.yellow+'Query type: '+config.color.white+queryType);
   console.log(config.color.yellow+'searchData params: '+config.color.white+JSON.stringify(searchData, null, 2));
   switch (queryType) {
     case 'ap_bool_query_string':
@@ -51,13 +51,14 @@ var ap_bool_query_string = (searchData) => {
       'size' : 1, // return first matched result
         "query": {
           "bool": {
-            "should": {
+            "must": {
               "query_string": {
                 "query": searchData.beer,
+                "boost": 3,
                 "fields": [
-                  "beer^4",
+                  "beer^4"
                 ],
-                "default_operator": "AND"
+                "default_operator": "AND" // ALL tokens should be equal
               }
             },
             "should": {
@@ -66,14 +67,13 @@ var ap_bool_query_string = (searchData) => {
                 "fields": [
                   "brewary^3",
                 ],
-                "default_operator": "AND"
+                "default_operator": "OR" // one of tokens..
               }
             },
             // "filter": [
-            //   {"match" : { "Бренд" : searchData.brewary }}
+            //   {"match" : { "brewary" : searchData.brewary }}
             // ],
-            "minimum_should_match" : 1,
-            "boost" : 1.0
+            "minimum_should_match" : 2,
           }
         }
     }

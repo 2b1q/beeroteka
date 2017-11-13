@@ -38,8 +38,8 @@ function query2(result1data){
             resp.hits.hits[i]._source.BA_brewary = item._source.brewary;
             resp.hits.hits[i]._source.BA_img = item._source.img || 'no IMG';
             resp.hits.hits[i]._source.BA_url = item._source.url;
-            console.log(config.color.white+'Result 2: '+JSON.stringify(resp.hits.hits[i]._source, null, 2));
-            console.log(config.color.yellow+'Result 2: '+JSON.stringify(item._source, null, 2));
+            console.log(config.color.white+'Result 2 AP: '+JSON.stringify(resp.hits.hits[i]._source, null, 2));
+            // console.log(config.color.yellow+'Result 2 BA: '+JSON.stringify(item._source, null, 2));
             resolve(resp.hits.hits); // resolve Event OCCURED Only ONCE (means other ForEach resolve`s will be ignored )
           }
           else resolve(asyncDelay(result1data)); // async resolve wait 150 ms then resolve with first response
