@@ -1,4 +1,5 @@
 var config = require('../config/config'),
+    apivo = config.es.index.apivo, // apivo index
     indexBa = config.es.index.ba, // ES Index name
     indexAll = config.es.index.all; // ES Index name
 
@@ -28,7 +29,7 @@ var ba_simple_query_string = (searchData) => {
     index: indexBa,
     body: {
         'from' : 0,
-        'size' : 5,
+        'size' : 10,
         'query': {
           'simple_query_string' : {
             'query':  searchData,
@@ -44,25 +45,33 @@ var ba_simple_query_string = (searchData) => {
 // ap bool_query_string
 var ap_bool_query_string = (searchData) => {
   return {
-    index: indexAll,
+    index: apivo,
     body: {
       'from': 0,
-      'size' : 1, // return ONLY ONE matched response 
+      'size' : 1, // return first matched result
         "query": {
           "bool": {
             "should": {
               "query_string": {
                 "query": searchData.beer,
                 "fields": [
-                  "Название^3",
-                  "Бренд^2",
+                  "beer^4",
                 ],
                 "default_operator": "AND"
               }
             },
-            "filter": [
-              {"match" : { "Бренд" : searchData.brewary }}
-            ],
+            "should": {
+              "query_string": {
+                "query": searchData.brewary,
+                "fields": [
+                  "brewary^3",
+                ],
+                "default_operator": "AND"
+              }
+            },
+            // "filter": [
+            //   {"match" : { "Бренд" : searchData.brewary }}
+            // ],
             "minimum_should_match" : 1,
             "boost" : 1.0
           }

@@ -20,9 +20,9 @@ async function asyncDelay(data) {
 }
 
 function query2(result1data){
-  let result1 = result1data.slice(0,1); // creaty new array with first result
+  let result1 = result1data.slice(0,1); // slice first elem for only one query matching
   return new Promise(function(resolve, reject){
-    result1.forEach(function(item){
+    result1.forEach(function(item, i){
       let query_object = {
         beer: item._source.beer.replace(/[^a-zA-Z0-9 ]/g, ''), // drop specific symbols '@!$@^%..' caz ! -> crash the query 2
         brewary: item._source.brewary.replace(/[^a-zA-Z0-9 ]/g, '')
@@ -33,11 +33,13 @@ function query2(result1data){
           if( resp.hits.hits.length > 0 ) {
             log.info(config.color.yellow+'QUERY 2 Hits count: '+config.color.white+resp.hits.hits.length)
             console.log(config.color.yellow+'\n>>> RETURN RESULT 2 <<<\n');
-            resp.hits.hits[0]._source.BA_score = item._source.score;
-            resp.hits.hits[0]._source.BA_beer = item._source.beer;
-            resp.hits.hits[0]._source.BA_brewary = item._source.brewary;
-            resp.hits.hits[0]._source.BA_img = item._source.img || 'no IMG';
-            resp.hits.hits[0]._source.BA_url = item._source.url;
+            resp.hits.hits[i]._source.BA_score = item._source.score;
+            resp.hits.hits[i]._source.BA_beer = item._source.beer;
+            resp.hits.hits[i]._source.BA_brewary = item._source.brewary;
+            resp.hits.hits[i]._source.BA_img = item._source.img || 'no IMG';
+            resp.hits.hits[i]._source.BA_url = item._source.url;
+            console.log(config.color.white+'Result 2: '+JSON.stringify(resp.hits.hits[i]._source, null, 2));
+            console.log(config.color.yellow+'Result 2: '+JSON.stringify(item._source, null, 2));
             resolve(resp.hits.hits); // resolve Event OCCURED Only ONCE (means other ForEach resolve`s will be ignored )
           }
           else resolve(asyncDelay(result1data)); // async resolve wait 150 ms then resolve with first response
