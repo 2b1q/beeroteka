@@ -31,7 +31,7 @@ config.store = {
 config.es = {
   promiseDelay: 200,
   index: {
-    ba: 'ba',
+    ba: 'ba1',
     apivo: 'apivo',
     all: 'resultdb3'
   },

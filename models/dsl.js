@@ -34,7 +34,7 @@ var ba_simple_query_string = (searchData) => {
           'simple_query_string' : {
             'query':  searchData,
             // 'analyzer': 'snowball',
-            'fields': [ 'beer^5', 'brewary' ],
+            'fields': [ 'beer^5', 'brewary^4' ],
             'default_operator' : 'and'
           }
         }
@@ -70,10 +70,19 @@ var ap_bool_query_string = (searchData) => {
                 "default_operator": "OR" // one of tokens..
               }
             },
-            // "filter": [
-            //   {"match" : { "brewary" : searchData.brewary }}
-            // ],
-            "minimum_should_match" : 2,
+            "should": {
+              "query_string": {
+                "query": searchData.style,
+                "fields": [
+                  "Вид пива^3",
+                ],
+                "default_operator": "OR" // one of tokens..
+              }
+            },
+            "filter": [
+              {"match" : { "abv" : searchData.abv }}
+            ],
+            "minimum_should_match" : 1,
           }
         }
     }

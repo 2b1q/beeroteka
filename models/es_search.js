@@ -25,7 +25,10 @@ function query2(result1data){
     result1.forEach(function(item, i){
       let query_object = {
         beer: item._source.beer.replace(/[^a-zA-Z0-9 ]/g, ''), // drop specific symbols '@!$@^%..' caz ! -> crash the query 2
-        brewary: item._source.brewary.replace(/[^a-zA-Z0-9 ]/g, '')
+        brewary: item._source.brewary.replace(/[^a-zA-Z0-9 ]/g, ''),
+        style: item._source.style.replace(/[^a-zA-Z0-9 ]/g, ''),
+        category: item._source.category.replace(/[^a-zA-Z0-9 ]/g, ''),
+        abv: item._source.abv
       }
       es_client.client.search(query.search(query_object, 'ap_bool_query_string'))
         .then(function(resp){
@@ -38,6 +41,12 @@ function query2(result1data){
             resp.hits.hits[i]._source.BA_brewary = item._source.brewary;
             resp.hits.hits[i]._source.BA_img = item._source.img || 'no IMG';
             resp.hits.hits[i]._source.BA_url = item._source.url;
+            resp.hits.hits[i]._source.BA_style = item._source.style;
+            resp.hits.hits[i]._source.BA_Beers = item._source.Beers;
+            resp.hits.hits[i]._source.BA_Ratings = item._source.Ratings;
+            resp.hits.hits[i]._source.BA_category = item._source.category;
+            resp.hits.hits[i]._source.BA_Reviews = item._source.Reviews;
+            resp.hits.hits[i]._source.BA_abv = item._source.abv;
             console.log(config.color.white+'Result 2 AP: '+JSON.stringify(resp.hits.hits[i]._source, null, 2));
             // console.log(config.color.yellow+'Result 2 BA: '+JSON.stringify(item._source, null, 2));
             resolve(resp.hits.hits); // resolve Event OCCURED Only ONCE (means other ForEach resolve`s will be ignored )

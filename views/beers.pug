@@ -24,25 +24,44 @@ append body
 							+panel-primary(json_obj.beer+' [ '+json_obj.brewary+' ]')
 								.row
 									.col-md-3
-										+img-circle("../images/beer_bottle.png","Circle image")
+										if json_obj.img
+											+img-rounded(json_obj.img,"Circle image")
+										else
+											+img-circle("../images/beer_bottle.png","Circle image")
 									.col-md-4
-										//- for(var prop in json_obj)
-										//	strong #{prop}:
-										//	|&nbsp;&nbsp;#{json_obj[prop]}</br>
 										h4 Score: #{json_obj.score} / 5
 										+progress-bar-striped(json_obj.score_percent)
 										strong Brewary:
-										|&nbsp; #{json_obj.brewary}
-										|<br>
+										|&nbsp; #{json_obj.brewary}<br>
 										strong Beer:
-										|&nbsp; #{json_obj.beer}
-										- var items = JSON.parse(JSON.stringify(json_obj.items_dict));
-										- for(var prop in items)
-											|<br>
-											strong #{prop}
-											|&nbsp;&nbsp;#{items[prop]}
-											//+label-primary(items[prop])
+										|&nbsp; #{json_obj.beer}<br>
+										strong Style:
+										|&nbsp; #{json_obj.style}<br>
+										strong Category:
+										|&nbsp; #{json_obj.category}<br>
+										strong ABV:
+										|&nbsp; #{json_obj.abv}
 									.col-md-4
+										if json_obj.Название
+											// Объем, Тара, Тип брожения, Цена, Крепость, Страна
+											strong Название:
+											|&nbsp; #{json_obj.Название}<br>
+											strong Бренд:
+											|&nbsp; #{json_obj.Бренд}<br>
+											strong Вид пива:
+											|&nbsp; #{json_obj["Вид пива"]}<br>
+											strong Страна:
+											|&nbsp; #{json_obj.Страна}<br>
+											strong Крепость:
+											|&nbsp; #{json_obj.Крепость}<br>
+											strong Тип брожения:
+											|&nbsp; #{json_obj["Тип брожения"]}<br>
+											strong Цена:
+											|&nbsp; #{json_obj.Цена}<br>
+											strong Объем:
+											|&nbsp; #{json_obj.Объем}<br>
+											strong Тара:
+											|&nbsp; #{json_obj.Тара}<br>
 					else
 						.jumbotron
 							+panel-info(json_obj.Название+' [ '+json_obj.Бренд+' ]')
