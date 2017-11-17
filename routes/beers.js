@@ -4,23 +4,16 @@ var express = require('express'),
 
 /** default /beers route */
 router.get('/', function(req, res, next){
+  elastic.count(function(styles){
+    console.log('count result: %s', JSON.stringify(styles, null, 2));
+  });
+    
   console.log('Req.query: '+req.query.query);
-  //TODO добавить проверку пустого запроса. + минимум 2 токена 
-  // set search query terms
   var searchTerm = req.query.query || 'STOUT';
   elastic.search(searchTerm, function(data) {
-    //  «arr.forEach(callback[, thisArg])»
-    // callback(item, i, arr):
-    // item – очередной элемент массива.
-    // i – его номер.
-    // arr – массив, который перебирается.
-    data.forEach(function(item, i, data){
-      let score_percent = Math.round(data[i]._source.score/0.05)
-      // console.log('Beer: "%s",\n OrigScore: "%d",\n Score: "%d \%"',
-      // data[i]._source.beer,
-      // data[i]._source.score,
-      // score_percent);
-      data[i]._source.score_percent = score_percent
+    data.forEach(function(item){
+      let score_percent = Math.round(item._source.score/0.05)
+      item._source.score_percent = score_percent
     })
 
     // console.log('ES data: \n'+JSON.stringify(data, null, 2));

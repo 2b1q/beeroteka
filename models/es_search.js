@@ -4,7 +4,8 @@ ES Search model
 var es_client = require('../libs/elasticsearch'), // require ES module
     log = require('../libs/log')(module),
     config = require('../config/config'),
-    query = require('./dsl');
+    query = require('./dsl'),
+    aggs = require('./aggs');
 
 function resolveAfterDelay(data) {
   return new Promise(resolve => {
@@ -79,4 +80,18 @@ var query1 = function(searchTxt1, callback){
   })
 }
 
- module.exports.search = query1;
+// count styles
+var countStyle = (callback) => {
+  es_client.client.search(aggs.countStyle('American IPA'))
+    .then(function(resp){
+      // console.log('RESP CNT: %s', resp.hits.total);
+      callback(resp.hits.total)
+    }, function(err){
+      log.error(err.message);
+    })
+}
+
+ module.exports = {
+     search: query1,
+     count:  countStyle,
+ };
