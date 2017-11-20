@@ -91,7 +91,18 @@ var countStyle = (callback) => {
     })
 }
 
+// get all styles
+var getAllStyles = (callback) => {
+  es_client.client.search(aggs.countAllStyles())
+    .then(function(resp){
+      callback(resp)
+    }, function(err){
+      log.error(err.message);
+    })
+}
+
  module.exports = {
      search: query1,
      count:  countStyle,
+     getAllStyles: getAllStyles
  };

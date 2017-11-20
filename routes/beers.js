@@ -7,7 +7,7 @@ router.get('/', function(req, res, next){
   elastic.count(function(styles){
     console.log('count result: %s', JSON.stringify(styles, null, 2));
   });
-    
+
   console.log('Req.query: '+req.query.query);
   var searchTerm = req.query.query || 'STOUT';
   elastic.search(searchTerm, function(data) {
@@ -21,5 +21,13 @@ router.get('/', function(req, res, next){
     // res.render('beers', { title: 'Express +  Bootstrap + Pug + ElasticSearch', user: req.session.username, results: {}, query: searchTerm });
   });
 });
+
+// styles JSON
+router.get('/styles', function(req, res, next){
+  elastic.getAllStyles(function(styles){
+    // console.log(JSON.stringify(styles));
+    res.json(styles);
+  });
+})
 
 module.exports = router;
