@@ -36,6 +36,16 @@ var allStyles = () => {
                     "category.keyword": "*Ales"
                   }
                 },
+                "Lagers": {
+                  "wildcard": {
+                    "category.keyword": "*Lagers"
+                  }
+                },
+                "Hybrid": {
+                  "wildcard": {
+                    "category.keyword": "*Hybrid"
+                  }
+                },
                 "American APA": {
                   "term": {
                     "style.keyword": "American APA"
@@ -399,6 +409,156 @@ var allStyles = () => {
                 "Scottish Gruit / Ancient Herbed Ale": {
                   "term": {
                     "style.keyword": "Scottish Gruit / Ancient Herbed Ale"
+                  }
+                },
+                "American Adjunct Lager": {
+                  "term": {
+                    "style.keyword": "American Adjunct Lager"
+                  }
+                },
+                "American Amber / Red Lager": {
+                  "term": {
+                    "style.keyword": "American Amber / Red Lager"
+                  }
+                },
+                "American Double / Imperial Pilsner": {
+                  "term": {
+                    "style.keyword": "American Double / Imperial Pilsner"
+                  }
+                },
+                "American Malt Liquor": {
+                  "term": {
+                    "style.keyword": "American Malt Liquor"
+                  }
+                },
+                "American Pale Lager": {
+                  "term": {
+                    "style.keyword": "American Pale Lager"
+                  }
+                },
+                "California Common / Steam Beer": {
+                  "term": {
+                    "style.keyword": "GuCalifornia Common / Steam Beereuze"
+                  }
+                },
+                "Light Lager": {
+                  "term": {
+                    "style.keyword": "Light Lager"
+                  }
+                },
+                "Low Alcohol Beer": {
+                  "term": {
+                    "style.keyword": "Low Alcohol Beer"
+                  }
+                },
+                "Czech Pilsener": {
+                  "term": {
+                    "style.keyword": "Czech Pilsener"
+                  }
+                },
+                "Euro Dark Lager": {
+                  "term": {
+                    "style.keyword": "Euro Dark Lager"
+                  }
+                },
+                "Euro Pale Lager": {
+                  "term": {
+                    "style.keyword": "Euro Pale Lager"
+                  }
+                },
+                "Euro Strong Lager": {
+                  "term": {
+                    "style.keyword": "Euro Strong Lager"
+                  }
+                },
+                "Bock": {
+                  "term": {
+                    "style.keyword": "Bock"
+                  }
+                },
+                "Doppelbock": {
+                  "term": {
+                    "style.keyword": "Doppelbock"
+                  }
+                },
+                "Dortmunder / Export Lager": {
+                  "term": {
+                    "style.keyword": "Dortmunder / Export Lager"
+                  }
+                },
+                "Eisbock": {
+                  "term": {
+                    "style.keyword": "Eisbock"
+                  }
+                },
+                "German Pilsener": {
+                  "term": {
+                    "style.keyword": "German Pilsener"
+                  }
+                },
+                "Kellerbier / Zwickelbier": {
+                  "term": {
+                    "style.keyword": "Kellerbier / Zwickelbier"
+                  }
+                },
+                "Maibock / Helles Bock": {
+                  "term": {
+                    "style.keyword": "GuMaibock / Helles Bockeuze"
+                  }
+                },
+                "Märzen / Oktoberfest": {
+                  "term": {
+                    "style.keyword": "Märzen / Oktoberfest"
+                  }
+                },
+                "Munich Dunkel Lager": {
+                  "term": {
+                    "style.keyword": "Munich Dunkel Lager"
+                  }
+                },
+                "Munich Helles Lager": {
+                  "term": {
+                    "style.keyword": "Munich Helles Lager"
+                  }
+                },
+                "Rauchbier": {
+                  "term": {
+                    "style.keyword": "Rauchbier"
+                  }
+                },
+                "Schwarzbier": {
+                  "term": {
+                    "style.keyword": "Schwarzbier"
+                  }
+                },
+                "Vienna Lager": {
+                  "term": {
+                    "style.keyword": "Vienna Lager"
+                  }
+                },
+                "Happoshu": {
+                  "term": {
+                    "style.keyword": "Happoshu"
+                  }
+                },
+                "Japanese Rice Lager": {
+                  "term": {
+                    "style.keyword": "Japanese Rice Lager"
+                  }
+                },
+                "Fruit / Vegetable Beer": {
+                  "term": {
+                    "style.keyword": "Fruit / Vegetable Beer"
+                  }
+                },
+                "Herbed / Spiced Beer": {
+                  "term": {
+                    "style.keyword": "Herbed / Spiced Beer"
+                  }
+                },
+                "Smoked Beer": {
+                  "term": {
+                    "style.keyword": "Smoked Beer"
                   }
                 }
               }
