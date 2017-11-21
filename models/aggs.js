@@ -438,7 +438,7 @@ var allStyles = () => {
                 },
                 "California Common / Steam Beer": {
                   "term": {
-                    "style.keyword": "GuCalifornia Common / Steam Beereuze"
+                    "style.keyword": "California Common / Steam Beereuze"
                   }
                 },
                 "Light Lager": {
@@ -503,7 +503,7 @@ var allStyles = () => {
                 },
                 "Maibock / Helles Bock": {
                   "term": {
-                    "style.keyword": "GuMaibock / Helles Bockeuze"
+                    "style.keyword": "Maibock / Helles Bockeuze"
                   }
                 },
                 "Märzen / Oktoberfest": {

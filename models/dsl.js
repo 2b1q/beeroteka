@@ -5,8 +5,8 @@ var config = require('../config/config'),
 
 // common ES query function
 var query = function(searchData, queryType){
-  console.log(config.color.yellow+'Query type: '+config.color.white+queryType);
-  console.log(config.color.yellow+'searchData params: '+config.color.white+JSON.stringify(searchData, null, 2));
+  console.log(`${config.color.yellow} Query type: ${config.color.white+queryType}`);
+  console.log(`${config.color.yellow} searchData params: ${config.color.white+JSON.stringify(searchData, null, 2)}`);
   switch (queryType) {
     case 'ap_bool_query_string':
       return ap_bool_query_string(searchData);
@@ -54,20 +54,25 @@ var ap_bool_query_string = (searchData) => {
             "must": {
               "query_string": {
                 "query": searchData.beer,
-                "boost": 3,
+                "boost": 5,
                 "fields": [
                   "beer^4"
                 ],
                 "default_operator": "AND" // ALL tokens should be equal
               }
-            },
+            }
+            // "should" : [
+            //      { "term" : {"beer" : searchData.beer}}, // WHERE (beer = searchData.beer OR Название = searchData.beer)
+            //      { "term" : {"Название" : searchData.beer}}
+            //   ]
+            ,
             "should": {
               "query_string": {
                 "query": searchData.brewary,
                 "fields": [
                   "brewary^3",
                 ],
-                "default_operator": "OR" // one of tokens..
+                "default_operator": "AND" // one of tokens..
               }
             },
             "should": {

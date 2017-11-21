@@ -12,7 +12,8 @@ router.get('/', function(req, res, next){
   var searchTerm = req.query.query || 'STOUT';
   elastic.search(searchTerm, function(data) {
     data.forEach(function(item){
-      let score_percent = Math.round(item._source.score/0.05)
+      let score = item._source.score || item._source.BA_score;
+      let score_percent = Math.round(score/0.05)
       item._source.score_percent = score_percent
     })
 

@@ -10,7 +10,8 @@ var es_client = require('../libs/elasticsearch'), // require ES module
 function resolveAfterDelay(data) {
   return new Promise(resolve => {
     setTimeout(() => {
-      console.log(config.color.yellow+'\n>>> RETURN RESULT 1 <<<\n');
+      console.log(`${config.color.yellow}
+      >>> RETURN RESULT 1 <<<\n`);
       resolve(data);
     }, config.es.promiseDelay);
   });
@@ -35,8 +36,9 @@ function query2(result1data){
         .then(function(resp){
           // IF Query2 clauses have HITS then render this OBJ
           if( resp.hits.hits.length > 0 ) {
-            log.info(config.color.yellow+'QUERY 2 Hits count: '+config.color.white+resp.hits.hits.length)
-            console.log(config.color.yellow+'\n>>> RETURN RESULT 2 <<<\n');
+            log.info(`${config.color.yellow} QUERY 2 Hits count: ${config.color.white+resp.hits.hits.length}`)
+            console.log(`${config.color.yellow}
+              >>> RETURN RESULT 2 <<<\n`);
             resp.hits.hits[i]._source.BA_score = item._source.score;
             resp.hits.hits[i]._source.BA_beer = item._source.beer;
             resp.hits.hits[i]._source.BA_brewary = item._source.brewary;
@@ -48,7 +50,7 @@ function query2(result1data){
             resp.hits.hits[i]._source.BA_category = item._source.category;
             resp.hits.hits[i]._source.BA_Reviews = item._source.Reviews;
             resp.hits.hits[i]._source.BA_abv = item._source.abv;
-            console.log(config.color.white+'Result 2 AP: '+JSON.stringify(resp.hits.hits[i]._source, null, 2));
+            console.log(`${config.color.white} Result 2 AP: ${JSON.stringify(resp.hits.hits[i]._source, null, 2)}`);
             // console.log(config.color.yellow+'Result 2 BA: '+JSON.stringify(item._source, null, 2));
             resolve(resp.hits.hits); // resolve Event OCCURED Only ONCE (means other ForEach resolve`s will be ignored )
           }
@@ -65,7 +67,7 @@ var query1 = function(searchTxt1, callback){
     es_client.client.search(query.search(searchTxt1, 'ba_simple_query_string'))
       .then(function(resp){
           var result1 = resp.hits.hits;
-          log.info(config.color.yellow+'QUERY 1 Hits count: '+config.color.white+result1.length)
+          log.info(`${config.color.yellow} QUERY 1 Hits count: ${config.color.white+result1.length}`)
           if( result1.length === 0 ) callback(result1) // IF first Query (BA) has no HITS return callback
           else resolve(result1)
       }, function(err) {

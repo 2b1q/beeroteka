@@ -29,18 +29,18 @@ append body
 										else
 											+img-circle("../images/beer_bottle.png","Circle image")
 									.col-md-4
-										h4 Score: #{json_obj.score} / 5
+										h4 Score: #{json_obj.BA_score} / 5
 										+progress-bar-striped(json_obj.score_percent)
 										strong Brewary:
-										|&nbsp; #{json_obj.brewary}<br>
+										|&nbsp; #{json_obj.BA_brewary}<br>
 										strong Beer:
-										|&nbsp; #{json_obj.beer}<br>
+										|&nbsp; #{json_obj.BA_beer}<br>
 										strong Style:
-										|&nbsp; #{json_obj.style}<br>
+										|&nbsp; #{json_obj.BA_style}<br>
 										strong Category:
-										|&nbsp; #{json_obj.category}<br>
+										|&nbsp; #{json_obj.BA_category}<br>
 										strong ABV:
-										|&nbsp; #{json_obj.abv}
+										|&nbsp; #{json_obj.BA_abv}
 									.col-md-4
 										if json_obj.Название
 											// Объем, Тара, Тип брожения, Цена, Крепость, Страна

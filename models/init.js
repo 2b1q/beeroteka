@@ -3,10 +3,8 @@ var es_client = require('../libs/elasticsearch'), // require ES module
     config = require('../config/config');
 
 var status = {
-  fail: ()=> {log.error(config.color.yellow+'ES ping '
-                        +config.color.white+' FAIL!')},
-  ok: ()=> {log.info(config.color.yellow+'ES ping '
-                      +config.color.white+' OK')}
+  fail: ()=> {log.error(`${config.color.yellow} ES ping ${config.color.white} FAIL!`)},
+  ok: ()=> {log.info(`${config.color.yellow} ES ping ${config.color.white} OK`)}
 }
 
 // Promise _ping ES (if 'err' => process.exit(0))
