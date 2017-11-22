@@ -51,28 +51,36 @@ var ap_bool_query_string = (searchData) => {
       'size' : 1, // return first matched result
         "query": {
           "bool": {
-            "must": {
-              "query_string": {
-                "query": searchData.beer,
-                "boost": 5,
-                "fields": [
-                  "beer^4"
-                ],
-                "default_operator": "AND" // ALL tokens should be equal
+            "must": [ // must => AND statement
+              { "match": { "beer": searchData.beer } }, // match => One of token OR more
+              { "match": { "Вид пива": searchData.style } },
+              { "term" : { "abv" : searchData.abv }}, // term => ABV=ABV
+              { "bool":
+                {
+                "should" : [ // should => OR statement
+                     { "term" : {"beer" : searchData.beer}}, // WHERE (beer = searchData.beer OR Название = searchData.beer)
+                     { "term" : {"Название" : searchData.beer}},
+                     { "term" : {"brewary" : searchData.brewary}},
+                     { "term" : {"Вид пива" : searchData.style}},
+                     { "match":
+                        {
+                          "beer": {
+                            "query": searchData.beer,
+                            "cutoff_frequency" : 0.001
+                          }
+                        }
+                     }
+                  ]
+                }
               }
-            }
-            // "should" : [
-            //      { "term" : {"beer" : searchData.beer}}, // WHERE (beer = searchData.beer OR Название = searchData.beer)
-            //      { "term" : {"Название" : searchData.beer}}
-            //   ]
-            ,
+            ],
             "should": {
               "query_string": {
                 "query": searchData.brewary,
                 "fields": [
                   "brewary^3",
                 ],
-                "default_operator": "AND" // one of tokens..
+                "default_operator": "OR" // one of tokens..
               }
             },
             "should": {
@@ -84,9 +92,9 @@ var ap_bool_query_string = (searchData) => {
                 "default_operator": "OR" // one of tokens..
               }
             },
-            "filter": [
-              {"match" : { "abv" : searchData.abv }}
-            ],
+            // "filter": [
+            //   {"match" : { "abv" : searchData.abv }}
+            // ],
             "minimum_should_match" : 1,
           }
         }
