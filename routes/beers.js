@@ -5,7 +5,7 @@ var express = require('express'),
 /** default /beers route */
 router.get('/', function(req, res, next){
   elastic.count(function(styles){
-    console.log('count result: %s', JSON.stringify(styles, null, 2));
+    console.log('Styles count result: %s', JSON.stringify(styles, null, 2));
   });
 
   console.log('Req.query: '+req.query.query);

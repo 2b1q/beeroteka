@@ -7,6 +7,9 @@ var es_client = require('../libs/elasticsearch'), // require ES module
     query = require('./dsl'),
     aggs = require('./aggs');
 
+var isFloat = n => n === +n && n !== (n|0),
+    isInteger = n => n === +n && n === (n|0)
+
 function resolveAfterDelay(data) {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -26,11 +29,11 @@ function query2(result1data){
   return new Promise(function(resolve, reject){
     result1.forEach(function(item, i){
       let query_object = {
-        beer: item._source.beer.replace(/[^a-zA-Z0-9 ']/g, ''), // drop specific symbols '@!$@^%..' caz ! -> crash the query 2
-        brewary: item._source.brewary.replace(/[^a-zA-Z0-9 ']/g, ''),
+        beer: item._source.beer.replace(/[^a-zA-Z0-9 '`]/g, ''), // drop specific symbols '@!$@^%..' caz ! -> crash the query 2
+        brewary: item._source.brewary.replace(/[^a-zA-Z0-9 '`]/g, ''),
         style: item._source.style.replace(/[^a-zA-Z0-9 ]/g, ''),
         category: item._source.category.replace(/[^a-zA-Z0-9 ]/g, ''),
-        abv: item._source.abv
+        abv: (isInteger(item._source.abv) || isFloat(item._source.abv)) ? item._source.abv : 0 // somtimes item._source.abv isNAN
       }
       es_client.client.search(query.search(query_object, 'ap_bool_query_string'))
         .then(function(resp){
