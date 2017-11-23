@@ -14,13 +14,33 @@ var query = function(searchData, queryType){
     case 'ba_simple_query_string':
       return ba_simple_query_string(searchData);
     break;
-    case 'multi_match_analyzer':
-      return multi_match_analyzer(searchData);
+    case 'apivo_simple_query_string':
+      return apivo_simple_query_string(searchData);
     break;
     case 'ap_bool':
       return ap_bool(searchData);
     break;
   }
+}
+
+// APIVO simple_query_string
+var apivo_simple_query_string = (searchData) => {
+  return {
+    index: apivo,
+    body: {
+        'from' : 0,
+        'size' : 10,
+        'query': {
+          'simple_query_string' : {
+            'query':  searchData,
+            // 'analyzer': 'custom_russian_analyzer',
+            'analyzer': 'snowball',
+            'fields': [ 'beer^5', 'brewary^4' ],
+            'default_operator' : 'and'
+          }
+        }
+      }
+    }
 }
 
 // BA simple_query_string

@@ -67,8 +67,17 @@ var query1 = function(searchTxt1, callback){
     es_client.client.search(query.search(searchTxt1, 'ba_simple_query_string'))
       .then(function(resp){
           var result1 = resp.hits.hits;
-          log.info(`${config.color.yellow} QUERY 1 Hits count: ${config.color.white+result1.length}`)
-          if( result1.length === 0 ) callback(result1) // IF first Query (BA) has no HITS return callback
+          log.info(`${config.color.yellow} QUERY 1 BA Hits count: ${config.color.white+result1.length}`)
+          if( result1.length === 0 ) {
+            es_client.client.search(query.search(searchTxt1, 'apivo_simple_query_string'))
+            .then(function(resp){
+              result1 = resp.hits.hits;
+              log.info(`${config.color.yellow} QUERY 1 APIVO Hits count: ${config.color.white+result1.length}`)
+              callback(result1) // return callback
+            }, function(err) {
+              reject(err.message) // return err.stack
+            })
+          } // end  result1.length === 0 )
           else resolve(result1)
       }, function(err) {
           reject(err.message) // return err.stack

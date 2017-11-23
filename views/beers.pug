@@ -19,9 +19,9 @@ append body
 				for result in results
 					- var json_obj = JSON.parse(JSON.stringify(result._source));
 					// render beeradvocate in .jumbotron
-					if json_obj.Название
+					if json_obj.Название && json_obj.BA_beer
 						.jumbotron
-							+panel-primary(json_obj.beer+' [ '+json_obj.brewary+' ]')
+							+panel-primary(json_obj.beer+' [ '+json_obj.brewary+' ] BA + APIVO template')
 								.row
 									.col-md-3
 										if json_obj.img
@@ -64,9 +64,9 @@ append body
 											|&nbsp; #{json_obj.Объем}<br>
 											strong Тара:
 											|&nbsp; #{json_obj.Тара}<br>
-					else
+					else if json_obj.score
 						.jumbotron
-							+panel-primary(json_obj.beer+' [ '+json_obj.brewary+' ]')
+							+panel-primary(json_obj.beer+' [ '+json_obj.brewary+' ] BA template')
 								.row
 									.col-md-3
 										if json_obj.img
@@ -86,5 +86,38 @@ append body
 										|&nbsp; #{json_obj.category}<br>
 										strong ABV:
 										|&nbsp; #{json_obj.abv}
+					else if json_obj.Название
+						.jumbotron
+							+panel-primary(json_obj.beer+' [ '+json_obj.brewary+' ] APIVO template')
+								.row
+									.col-md-3
+										if json_obj.img
+											+img-rounded(json_obj.img,"Circle image")
+										else
+											+img-circle("../images/beer_bottle.png","Circle image")
+									.col-md-2
+									.col-md-4
+										if json_obj.Название
+											h4 apivo.ru
+											strong Beer:
+											|&nbsp; #{json_obj.beer}<br>
+											strong Название:
+											|&nbsp; #{json_obj.Название}<br>
+											strong Brewary:
+											|&nbsp; #{json_obj.brewary}<br>
+											strong Вид пива:
+											|&nbsp; #{json_obj["Вид пива"]}<br>
+											strong Страна:
+											|&nbsp; #{json_obj.Страна}<br>
+											strong Крепость:
+											|&nbsp; #{json_obj.Крепость}<br>
+											strong Тип брожения:
+											|&nbsp; #{json_obj["Тип брожения"]}<br>
+											strong Цена:
+											|&nbsp; #{json_obj.Цена}<br>
+											strong Объем:
+											|&nbsp; #{json_obj.Объем}<br>
+											strong Тара:
+											|&nbsp; #{json_obj.Тара}<br>
 			else
 				+alert-i-danger('Ничего не найдено по запросу: '+query)
