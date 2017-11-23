@@ -26,8 +26,8 @@ function query2(result1data){
   return new Promise(function(resolve, reject){
     result1.forEach(function(item, i){
       let query_object = {
-        beer: item._source.beer.replace(/[^a-zA-Z0-9 ]/g, ''), // drop specific symbols '@!$@^%..' caz ! -> crash the query 2
-        brewary: item._source.brewary.replace(/[^a-zA-Z0-9 ]/g, ''),
+        beer: item._source.beer.replace(/[^a-zA-Z0-9 ']/g, ''), // drop specific symbols '@!$@^%..' caz ! -> crash the query 2
+        brewary: item._source.brewary.replace(/[^a-zA-Z0-9 ']/g, ''),
         style: item._source.style.replace(/[^a-zA-Z0-9 ]/g, ''),
         category: item._source.category.replace(/[^a-zA-Z0-9 ]/g, ''),
         abv: item._source.abv

@@ -54,6 +54,7 @@ var ap_bool_query_string = (searchData) => {
             "must": [ // must => AND statement
               { "match": { "beer": searchData.beer } }, // match => One of token OR more
               { "match": { "Вид пива": searchData.style } },
+              { "match": { "brewary": searchData.brewary } },
               { "term" : { "abv" : searchData.abv }}, // term => ABV=ABV
               { "bool":
                 {
@@ -71,18 +72,9 @@ var ap_bool_query_string = (searchData) => {
                         }
                      }
                   ]
-                }
+                },
               }
             ],
-            "should": {
-              "query_string": {
-                "query": searchData.brewary,
-                "fields": [
-                  "brewary^3",
-                ],
-                "default_operator": "OR" // one of tokens..
-              }
-            },
             "should": {
               "query_string": {
                 "query": searchData.style,
