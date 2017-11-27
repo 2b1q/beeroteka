@@ -20,7 +20,13 @@ function getApDocs(){
 // searh Matches in BA index
 function searchBaMatches(ApDocs){
   ApDocs.forEach(function(item, i){
-    console.log(`Beer ${i} name: ${item.beer}`);
+    console.log(`------------
+    Beer ${++i} name: "${item._source.beer}"
+    Original beer name: "${item._source.Название}"
+    Brewery: "${item._source.brewary}"
+    Style: "${item._source['Вид пива']}"
+    Страна: "${item._source.Страна}"
+    ABV: "${item._source.abv}"`);
   })
 }
 
