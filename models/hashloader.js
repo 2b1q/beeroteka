@@ -4,7 +4,16 @@ var es_client = require('../libs/elasticsearch'), // require ES module
     dict = require('./dict'), // rus > eng dict
     query = require('./dsl');
 
-var hashToLoad = {};
+/** TODO
+   - add mongoose API
+   - add search from BA in AP
+   - PUSH to mongo collction BA (BA_arr.forEach LOOKUP in AP index)
+   - PUSH to mongo collction AP (AP_arr.forEach LOOKUP in BA index)
+*/
+var hashToLoad = {}; // Common beer Hash to LOAD
+
+var isFloat = n => n === +n && n !== (n|0),
+    isInteger = n => n === +n && n === (n|0)
 
 // Get All Docs FROM AP index
 function getApDocs(){
@@ -21,6 +30,7 @@ function getApDocs(){
 // searh Matches in BA index
 function searchBaMatches(ApDocs){
   ApDocs.forEach(function(item, i){
+    // Create AP properties
     hashToLoad.ap_beer = item._source.beer || '';
     hashToLoad.ap_orig_beer_name = item._source['Название'];
     hashToLoad.ap_brewary = item._source.brewary || '';
@@ -38,7 +48,26 @@ function searchBaMatches(ApDocs){
     hashToLoad.ap_url = item._source['url'] || '';
     hashToLoad.ap_taste = item._source['Вкусовые оттенки'] || '';
     hashToLoad.ap_desc = item._source['desc'] || {};
-    console.log(`hashToLoad = ${JSON.stringify(hashToLoad)}`);
+    // console.log(`hashToLoad = ${JSON.stringify(hashToLoad)}`);
+
+    // create BA query object
+    let query_object = {
+      beer: hashToLoad.ap_beer,
+      beer_orig_name: hashToLoad.ap_orig_beer_name,
+      brewary: hashToLoad.ap_brewary,
+      style: hashToLoad.ap_style.replace(/[^a-zA-Z0-9 ]/g, ''),
+      country: hashToLoad.country_obj.name,
+      abv: (isInteger(hashToLoad.ap_abv) || isFloat(hashToLoad.ap_abv)) ? hashToLoad.ap_abv : 0
+    }
+
+    // LookUP beer in BA from AP properties
+    es_client.client.search(query.getBaFromAp(query_object))
+      .then(function(resp){
+        console.log(config.color.white+JSON.stringify(query_object));
+        console.log(config.color.cyan+JSON.stringify(resp.hits.hits));
+      }, function(err){
+        log.error(err.message)
+      })
 
   })
 }

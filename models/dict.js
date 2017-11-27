@@ -30,6 +30,7 @@ let rus_dict = {
   "япония": "Japan"
 }
 
+// Get country obj {} bu rus country name
 var getCountry = function(rus_name){
   var country_obj = {};
   let eng_name = rus_dict[rus_name.toLowerCase()];

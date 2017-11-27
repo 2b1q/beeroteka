@@ -134,13 +134,83 @@ var ap_getAllDocs = () => {
     index: apivo,
     body: {
         'from' : 0,
-        'size' : 2000,
+        'size' : 200,
         "query": { "match_all": {} }
+    }
+  }
+}
+
+// let query_object = {
+//   beer: hashToLoad.ap_beer,
+//   beer_orig_name: hashToLoad.ap_orig_beer_name,
+//   brewary: hashToLoad.ap_brewary,
+//   style: hashToLoad.ap_style,
+//   country: hashToLoad.country_obj.name,
+//   abv: (isInteger(hashToLoad.ap_abv) || isFloat(hashToLoad.ap_abv)) ? hashToLoad.ap_abv : 0
+// }
+// searchData params: {
+//  "beer": "Youngs Double Chocolate Stout",
+//  "brewary": "Wells  Youngs Ltd",
+//  "style": "Milk  Sweet Stout",
+//  "category": "English Ales",
+//  "abv": 5.2
+// }
+
+// ba bool_query_string
+var ba_bool_query_string = (searchData) => {
+  return {
+    index: indexBa,
+    body: {
+      'from': 0,
+      'size' : 1, // return first matched result
+        "query": {
+          "bool": { // {"beer":"Pale Ale","beer_orig_name":"Bastogne Pale Ale","brewary":"Bastogne","style":"Pale Ale  Belgian","country":"Belgium","abv":5}
+            "must": [ // must => AND statement
+              { "match": { "beer": searchData.beer } }, // match => One of token OR more
+              { "match": { "style": searchData.style } },
+              { "match": { "brewary": searchData.brewary } },
+              // { "match": { "category": searchData.country } },
+              { "term" : { "abv" : searchData.abv }}, // term => ABV=ABV
+              { "bool":
+                {
+                "should" : [ // should => OR statement
+                     { "term" : {"beer" : searchData.beer}}, // WHERE (beer = searchData.beer OR Название = searchData.beer)
+                     { "term" : {"beer" : searchData.beer_orig_name}},
+                     { "term" : {"brewary" : searchData.brewary}},
+                     { "term" : {"style" : searchData.style}},
+                     { "match":
+                        {
+                          "beer": {
+                            "query": searchData.beer,
+                            "cutoff_frequency" : 0.001
+                          }
+                        }
+                     }
+                  ]
+                },
+              }
+            ],
+            "should": {
+              "query_string": {
+                "query": searchData.style,
+                "fields": [
+                  "style^3",
+                ],
+                "default_operator": "OR" // one of tokens..
+              }
+            },
+            // "filter": [
+            //   {"match" : { "abv" : searchData.abv }}
+            // ],
+            "minimum_should_match" : 1,
+          }
+        }
     }
   }
 }
 
 module.exports = {
   search: query,
-  ap_getAllDocs: ap_getAllDocs
+  ap_getAllDocs: ap_getAllDocs,
+  getBaFromAp: ba_bool_query_string
 }
