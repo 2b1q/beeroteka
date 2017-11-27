@@ -1,5 +1,6 @@
 var express = require('express'),
     router = express.Router(),
+    hashload = require('../models/hashloader'),
     elastic = require('../models/es_search'); // add es_search API
 
 /** default /beers route */
@@ -29,6 +30,12 @@ router.get('/styles', function(req, res, next){
     // console.log(JSON.stringify(styles));
     res.json(styles);
   });
+})
+
+// LoadHashes
+router.get('/loadhashes', function(req, res, next){
+  hashload.LoadHashes();
+  res.redirect('/beers');
 })
 
 module.exports = router;

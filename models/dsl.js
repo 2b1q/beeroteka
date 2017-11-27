@@ -17,9 +17,6 @@ var query = function(searchData, queryType){
     case 'apivo_simple_query_string':
       return apivo_simple_query_string(searchData);
     break;
-    case 'ap_bool':
-      return ap_bool(searchData);
-    break;
   }
 }
 
@@ -131,27 +128,19 @@ var multi_match_analyzer = (searchData) => {
     }
 }
 
-// AP term query
-var ap_bool = (searchData) => {
+// AP getAll data
+var ap_getAllDocs = () => {
   return {
-    index: indexAll,
+    index: apivo,
     body: {
         'from' : 0,
-        'size' : 100,
-        'query': {
-            "bool" : {
-              "must" : [
-                {"match" : { "Название" : searchData.beer }}
-              ],
-              "filter": [
-                {"term" : { "Бренд" : searchData.brewary }}
-              ],
-              "minimum_should_match" : 1,
-              "boost" : 1.0
-          }
-      }
+        'size' : 500,
+        "query": { "match_all": {} }
     }
   }
 }
 
-module.exports.search = query;
+module.exports = {
+  search: query,
+  ap_getAllDocs: ap_getAllDocs
+}
