@@ -26,11 +26,12 @@ config.store = {
     host : '127.0.0.1'
   },
   mongo: {
-    port: 27017,
-    host: '127.0.0.1',
-    db: 'beeroteka',
-    user: 'beeroteka',
-    pwd: 'Dr1nkM0reBeeR'
+    uri: 'mongodb://beeroteka:Dr1nkM0reBeeR@127.0.0.1:27017/beeroteka',
+    options: {
+      useMongoClient: true,
+      autoIndex: process.env.NODE_ENV !== 'PROD', // Don't build indexes in PROD
+      poolSize: 2 // количество подключений в пуле
+    }
   }
 }
 

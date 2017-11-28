@@ -63,6 +63,7 @@ function searchBaMatches(ApDocs){
     // LookUP beer in BA from AP properties
     es_client.client.search(query.getBaFromAp(query_object))
       .then(function(resp){
+        console.log(config.color.yellow+JSON.stringify(hashToLoad));
         console.log(config.color.white+JSON.stringify(query_object));
         console.log(config.color.cyan+JSON.stringify(resp.hits.hits));
       }, function(err){

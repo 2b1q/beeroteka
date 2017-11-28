@@ -134,27 +134,11 @@ var ap_getAllDocs = () => {
     index: apivo,
     body: {
         'from' : 0,
-        'size' : 200,
+        'size' : 50, // default 1700
         "query": { "match_all": {} }
     }
   }
 }
-
-// let query_object = {
-//   beer: hashToLoad.ap_beer,
-//   beer_orig_name: hashToLoad.ap_orig_beer_name,
-//   brewary: hashToLoad.ap_brewary,
-//   style: hashToLoad.ap_style,
-//   country: hashToLoad.country_obj.name,
-//   abv: (isInteger(hashToLoad.ap_abv) || isFloat(hashToLoad.ap_abv)) ? hashToLoad.ap_abv : 0
-// }
-// searchData params: {
-//  "beer": "Youngs Double Chocolate Stout",
-//  "brewary": "Wells  Youngs Ltd",
-//  "style": "Milk  Sweet Stout",
-//  "category": "English Ales",
-//  "abv": 5.2
-// }
 
 // ba bool_query_string
 var ba_bool_query_string = (searchData) => {
