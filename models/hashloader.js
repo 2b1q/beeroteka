@@ -47,7 +47,7 @@ function baQuery(q, ap) {
 
 async function awaitBaResponse(query_obj, ap_js, i){
   result_arr.push(await baQuery(query_obj, ap_js))
-  console.log(`${config.color.yellow}APBA JSON\n ${JSON.stringify(result_arr[i])}`);
+  // console.log(`${config.color.yellow}APBA JSON\n ${JSON.stringify(result_arr[i])}`);
   return result_arr[i]
 }
 
@@ -116,6 +116,7 @@ function searchBaMatches(ApDocs){
 
     // console.log(config.color.white+JSON.stringify(query_object));
     // LookUP beer in BA from AP properties
+    console.log(`AP object \n${config.color.white}${JSON.stringify(ap_json)}`);
     awaitBaResponse(query_object, ap_json, i)
 
   }
