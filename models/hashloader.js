@@ -15,45 +15,41 @@ var ap_json = {}, // One matched AP JSON result from ES to LOAD
 var isFloat = n => n === +n && n !== (n|0),
     isInteger = n => n === +n && n === (n|0)
 
-const timeout = ms => new Promise(res => setTimeout(res, ms))
 
-function baQuery(query_object) {
-  es_client.client.search(query.getBaFromAp(query_object))
-  .then(function(resp){
-    if( resp.hits.hits.length > 0 ) {
-      // console.log(config.color.yellow+JSON.stringify(resp.hits.hits[0]));
-      ba_json.ba_score =       resp.hits.hits[0]._score; // Do not use iterator [i] => caz first object is most relevanted response
-      ba_json.ba_beer_score =  resp.hits.hits[0]._source.score;
-      ba_json.ba_img =         resp.hits.hits[0]._source.img;
-      ba_json.ba_title =       resp.hits.hits[0]._source.title;
-      ba_json.ba_url =         resp.hits.hits[0]._source.url;
-      ba_json.ba_ratings =     resp.hits.hits[0]._source.Ratings;
-      ba_json.ba_reviews =     resp.hits.hits[0]._source.Reviews;
-      ba_json.ba_abv =         resp.hits.hits[0]._source.abv;
-      ba_json.ba_brewary =     resp.hits.hits[0]._source.brewary;
-      ba_json.ba_beer =        resp.hits.hits[0]._source.beer;
-      ba_json.ba_style =       resp.hits.hits[0]._source.style;
-      ba_json.ba_category =    resp.hits.hits[0]._source.category;
-    } else {
-      ba_json = {}
-    }
-    let apjson = query_object.ap_obj;
-    // ba_arr.push(ba_json)
-    // (async function(apjson, ba_json){
-    //   await timeout(200)
-      result_arr.push({apjson, ba_json})
-    // })(apjson, ba_json);
-  }, function(err){
-    log.error(err.message);
+// baQuery return Promise
+function baQuery(q, ap) {
+  return new Promise(function(resolve, reject){
+    es_client.client.search(query.getBaFromAp(q))
+    .then(function(resp){
+      if( resp.hits.hits.length > 0 ) {
+        // console.log(config.color.yellow+JSON.stringify(resp.hits.hits[0]));
+        ba_json.ba_score =       resp.hits.hits[0]._score; // Do not use iterator [i] => caz first object is most relevanted response
+        ba_json.ba_beer_score =  resp.hits.hits[0]._source.score;
+        ba_json.ba_img =         resp.hits.hits[0]._source.img;
+        ba_json.ba_title =       resp.hits.hits[0]._source.title;
+        ba_json.ba_url =         resp.hits.hits[0]._source.url;
+        ba_json.ba_ratings =     resp.hits.hits[0]._source.Ratings;
+        ba_json.ba_reviews =     resp.hits.hits[0]._source.Reviews;
+        ba_json.ba_abv =         resp.hits.hits[0]._source.abv;
+        ba_json.ba_brewary =     resp.hits.hits[0]._source.brewary;
+        ba_json.ba_beer =        resp.hits.hits[0]._source.beer;
+        ba_json.ba_style =       resp.hits.hits[0]._source.style;
+        ba_json.ba_category =    resp.hits.hits[0]._source.category;
+        resolve(ap, ba_json)
+      } else {
+        resolve(ap)
+      }
+    }, function(err){
+      reject(err.message)
+    })
   })
-
-  // ap_arr.push(ap_json)
-  // ba_arr.push(ba_json)
-  // result_arr.push({ap_json, ba_json})
-  // console.log(`${config.color.white}BA JSON: ${JSON.stringify(ba_json)}`);
-  // console.log(`${config.color.yellow}APIVO JSON: ${JSON.stringify(ap_json)}`);
 }
 
+async function awaitBaResponse(query_obj, ap_js, i){
+  result_arr.push(await baQuery(query_obj, ap_js))
+  console.log(`${config.color.yellow}APBA JSON\n ${JSON.stringify(result_arr[i])}`);
+  return result_arr[i]
+}
 
 apivoModel.find({}, function(err, docs){
   if(err) log.error(`ERROR while getting docs from mongo: "${err}"`)
@@ -74,7 +70,8 @@ function getApDocs(){
 
 // searh Matches in BA index
 function searchBaMatches(ApDocs){
-  for(let i=0; i< ApDocs.length; i++){
+  for(let i=0; i<ApDocs.length; i++){
+  // ApDocs.forEach(function(item){
     // Create AP properties
     ap_json.ap_beer = ApDocs[i]._source.beer || '';
     ap_json.ap_orig_beer_name = ApDocs[i]._source['Название'];
@@ -104,7 +101,6 @@ function searchBaMatches(ApDocs){
       style: ap_json.ap_style.replace(/[^a-zA-Z0-9 ]/g, ''),
       country: ap_json.country_obj.name,
       abv: (isInteger(ap_json.ap_abv) || isFloat(ap_json.ap_abv)) ? ap_json.ap_abv : 0,
-      ap_obj: ap_json
     }
 
     // Object.assign(target, ...sources)
@@ -120,8 +116,8 @@ function searchBaMatches(ApDocs){
 
     // console.log(config.color.white+JSON.stringify(query_object));
     // LookUP beer in BA from AP properties
+    awaitBaResponse(query_object, ap_json, i)
 
-    baQuery(query_object, ap_json)
   }
 
   // console.log(`AP array length before delay: "${ap_arr.length}"`);
