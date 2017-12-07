@@ -7,7 +7,8 @@ var es_client = require('../libs/elasticsearch'), // require ES module
 
 var ap_arr = [], // apivo search result array from ES
     ba_arr = [], // BeerAdvocate search result array from ES
-    result_arr = [];
+    result_arr = [],
+    allApDocs = [];
 
 var ap_json = {}, // One matched AP JSON result from ES to LOAD
     ba_json = {}; // One matched BA JSON result from ES to LOAD
@@ -17,7 +18,7 @@ var isFloat = n => n === +n && n !== (n|0),
 
 
 // baQuery return Promise
-function baQuery(q, ap) {
+function baQuery(q) {
   return new Promise(function(resolve, reject){
     es_client.client.search(query.getBaFromAp(q))
     .then(function(resp){
@@ -35,9 +36,9 @@ function baQuery(q, ap) {
         ba_json.ba_beer =        resp.hits.hits[0]._source.beer;
         ba_json.ba_style =       resp.hits.hits[0]._source.style;
         ba_json.ba_category =    resp.hits.hits[0]._source.category;
-        resolve(ap, ba_json)
+        resolve(ba_json)
       } else {
-        resolve(ap)
+        resolve({})
       }
     }, function(err){
       reject(err.message)
@@ -45,8 +46,12 @@ function baQuery(q, ap) {
   })
 }
 
-async function awaitBaResponse(query_obj, ap_js, i){
-  result_arr.push(await baQuery(query_obj, ap_js))
+async function awaitBaResponse(query_obj, i, item){
+  let obj = await baQuery(query_obj)
+  console.log(`${i} AP_JSON\n ${config.color.white}${JSON.stringify(item)}`);
+  console.log(`${config.color.yellow}Query object ${JSON.stringify(query_obj)}`);
+  console.log(`${config.color.cyan}Result OBJ: ${JSON.stringify(obj)}`);
+  // result_arr.push(await baQuery(query_obj, ap_js))
   // console.log(`${config.color.yellow}APBA JSON\n ${JSON.stringify(result_arr[i])}`);
   return result_arr[i]
 }
@@ -70,8 +75,8 @@ function getApDocs(){
 
 // searh Matches in BA index
 function searchBaMatches(ApDocs){
-  for(let i=0; i<ApDocs.length; i++){
-  // ApDocs.forEach(function(item){
+  // for(let i=0; i<ApDocs.length; i++){
+  ApDocs.forEach(function(item,i){
     // Create AP properties
     ap_json.ap_beer = ApDocs[i]._source.beer || '';
     ap_json.ap_orig_beer_name = ApDocs[i]._source['Название'];
@@ -116,22 +121,22 @@ function searchBaMatches(ApDocs){
 
     // console.log(config.color.white+JSON.stringify(query_object));
     // LookUP beer in BA from AP properties
-    console.log(`AP object \n${config.color.white}${JSON.stringify(ap_json)}`);
-    awaitBaResponse(query_object, ap_json, i)
+    // console.log(`AP object \n${config.color.white}${JSON.stringify(ap_json)}`);
+    awaitBaResponse(query_object, i, item)
 
-  }
+  })
 
   // console.log(`AP array length before delay: "${ap_arr.length}"`);
   // console.log(`BA array length before delay: "${ba_arr.length}"`);
 
-  setTimeout(function(){
-    // console.log(`${config.color.yellow} BA array length AFTER delay: "${ba_arr.length}"`);
-    // console.log(`${config.color.white} AP array length AFTER delay: "${ap_arr.length}"`);
-
-    result_arr.forEach(function(item){
-      console.log(`${config.color.cyan} result data  AFTER delay: "${JSON.stringify(item)}"`);
-    })
-  }, 5000)
+  // setTimeout(function(){
+  //   // console.log(`${config.color.yellow} BA array length AFTER delay: "${ba_arr.length}"`);
+  //   // console.log(`${config.color.white} AP array length AFTER delay: "${ap_arr.length}"`);
+  //
+  //   result_arr.forEach(function(item){
+  //     console.log(`${config.color.cyan} result data  AFTER delay: "${JSON.stringify(item)}"`);
+  //   })
+  // }, 5000)
 
 }
 
