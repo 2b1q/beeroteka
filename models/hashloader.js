@@ -18,7 +18,6 @@ var isFloat = n => n === +n && n !== (n|0),
 
 // baQuery return Promise
 function baQuery(q,item) {
-  var apjs = item._source
   return new Promise(function(resolve, reject){
     es_client.client.search(query.getBaFromAp(q))
     .then(function(resp){
@@ -36,9 +35,9 @@ function baQuery(q,item) {
         ba_json.ba_beer =        resp.hits.hits[0]._source.beer;
         ba_json.ba_style =       resp.hits.hits[0]._source.style;
         ba_json.ba_category =    resp.hits.hits[0]._source.category;
-        resolve(apjs, ba_json)
+        resolve(ba_json,item._source)
       } else {
-        resolve(apjs)
+        resolve(item._source)
       }
     }, function(err){
       reject(err.message)
@@ -76,7 +75,8 @@ async function awaitBaResponse(item){
   }
 
   console.log(`${config.color.yellow}Query object ${JSON.stringify(query_object)}`);
-  result_arr.push(await baQuery(query_object, item))
+  let obj = await baQuery(query_object, item)
+  result_arr.push(obj)
   console.log(`AP_JSON\n ${config.color.white}${JSON.stringify(item)}`);
   console.log(`${config.color.cyan}Result OBJ: ${JSON.stringify(obj)}`);
   // result_arr.push(await baQuery(query_obj, ap_js))
