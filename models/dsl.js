@@ -134,7 +134,7 @@ var ap_getAllDocs = () => {
     index: apivo,
     body: {
         'from' : 0,
-        'size' : 20, // default 1700
+        'size' : config.es.apivoFetchSize, // default 1700
         "query": { "match_all": {} }
     }
   }

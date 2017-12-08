@@ -12,6 +12,8 @@ var ap_arr = [], // apivo search result array from ES
 var isFloat = n => n === +n && n !== (n|0),
     isInteger = n => n === +n && n === (n|0)
 
+var fetched = false
+
 // build APJSON & Qery object
 const buildJSON1 = (item) => {
   return new Promise(function(resolve){
@@ -91,6 +93,7 @@ const nextReq = async (ap_response_item) => {
   if(data2.result) result = { apdata: data1.ap_json, badata: data2.ba_json }
   else result = { apdata: data1.ap_json, badata: {} }
   result_arr.push(result)
+  if( result_arr.length === config.es.apivoFetchSize ) fetched = true
   return result
 }
 
@@ -115,15 +118,32 @@ function getApDocs(){
 // searh Matches in BeerAdvocate INDEX from Apivo INDEX response
 function searchBaMatches(ApDocs){
   // combine object async wrapper
-  ApDocs.forEach((item) => nextReq(item))
-  // TODO: mongoose INSERTS
-  // DEBUG
-  setTimeout(function(){
-    result_arr.forEach(function(item){
-      console.log(`\n${config.color.white} result data  AFTER delay: "${JSON.stringify(item)}"`);
-    })
-  }, 1000)
+  ApDocs.forEach((item,i,arr) => {
+    nextReq(item)
+    if( i===arr.length-1 ) console.log(`forEach Done!
+      Arr length: ${arr.length}
+      i: ${i}
+      `);
+  })
+
+// TODO: Promise resolve when data fetched
+  setInterval(function () {
+    console.log(`${config.color.cyan}Array length: ${config.color.white}${result_arr.length}`);
+    console.log(`${config.color.yellow}fetched: ${fetched}`);
+  }, 100);
+
+
 }
+
+// TODO: mongoose INSERTS
+// mongoose INSERTS
+// function insertData(data) {
+//   return new Promise((resolve, reject) => {
+//     data.forEach((item) => {
+//       console.log(`\n${config.color.white} result data  AFTER delay: "${JSON.stringify(item)}"`);
+//     })
+//   })
+// }
 
 // common data loader
 var LoadHashes = function(){
