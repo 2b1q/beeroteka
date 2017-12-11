@@ -13,6 +13,7 @@ var isFloat = n => n === +n && n !== (n|0),
     isInteger = n => n === +n && n === (n|0)
 
 var fetched = false
+var global_delay = 200
 
 // build APJSON & Qery object
 const buildJSON1 = (item) => {
@@ -89,6 +90,15 @@ const baReq = (es_query) => {
 const nextReq = async (ap_response_item) => {
   const data1 = await buildJSON1(ap_response_item)
   const data2 = await baReq(data1.query_object)
+  // global_delay += 100
+  // await ((ms) => {
+  //   return new Promise((resolve) => {
+  //     setTimeout(function () {
+  //       console.log('tik tak '+global_delay);
+  //       resolve('ok')
+  //     }, ms);
+  //   })
+  // })(global_delay)
   let result = {}
   if(data2.result) result = { apdata: data1.ap_json, badata: data2.ba_json }
   else result = { apdata: data1.ap_json, badata: {} }
@@ -130,7 +140,7 @@ function searchBaMatches(ApDocs){
   setInterval(function () {
     console.log(`${config.color.cyan}Array length: ${config.color.white}${result_arr.length}`);
     console.log(`${config.color.yellow}fetched: ${fetched}`);
-  }, 100);
+  }, 500);
 
 
 }
