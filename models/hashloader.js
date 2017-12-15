@@ -1,19 +1,17 @@
 var es_client = require('../libs/elasticsearch'), // require ES module
     log = require('../libs/log')(module),
     config = require('../config/config'),
+    // _ = require('lodash'),
     dict = require('./dict'), // rus > eng dict
     apivoModel = require('./apivoModel'), // Create Apivo schema model
     query = require('./dsl');
 
-var ap_arr = [], // apivo search result array from ES
-    ba_arr = [], // BeerAdvocate search result array from ES
-    result_arr = [];
+var result_arr = []; // common result array
 
 var isFloat = n => n === +n && n !== (n|0),
     isInteger = n => n === +n && n === (n|0)
 
 var fetched = false
-var global_delay = 200
 
 // build APJSON & Qery object
 const buildJSON1 = (item) => {
@@ -55,7 +53,7 @@ const buildJSON1 = (item) => {
 }
 
 // ElasticSearch Search(es_query) Promise
-const baReq = (es_query) => {
+const buildJSON2 = (es_query) => {
   return new Promise(function(resolve, reject){
     let JSON2 = {}, ba_json = {}
     es_client.client.search(query.getBaFromAp(es_query))
@@ -89,22 +87,15 @@ const baReq = (es_query) => {
 // combine object async wrapper
 const nextReq = async (ap_response_item) => {
   const data1 = await buildJSON1(ap_response_item)
-  const data2 = await baReq(data1.query_object)
-  // global_delay += 100
-  // await ((ms) => {
-  //   return new Promise((resolve) => {
-  //     setTimeout(function () {
-  //       console.log('tik tak '+global_delay);
-  //       resolve('ok')
-  //     }, ms);
-  //   })
-  // })(global_delay)
+  const data2 = await buildJSON2(data1.query_object)
   let result = {}
+  // if data2 exists join result2 to result1
   if(data2.result) result = { apdata: data1.ap_json, badata: data2.ba_json }
   else result = { apdata: data1.ap_json, badata: {} }
   result_arr.push(result)
   if( result_arr.length === config.es.apivoFetchSize ) fetched = true
-  return result
+  // if( result_arr.length % 100 === 0 ) return Promise.resolve()
+  // return Promise.resolve()
 }
 
 // find mongo recs
@@ -127,38 +118,44 @@ function getApDocs(){
 
 // searh Matches in BeerAdvocate INDEX from Apivo INDEX response
 function searchBaMatches(ApDocs){
-  // combine object async wrapper
-  ApDocs.forEach((item,i,arr) => {
-    nextReq(item)
-    if( i===arr.length-1 ) console.log(`forEach Done!
-      Arr length: ${arr.length}
-      i: ${i}
-      `);
+  return new Promise((resolve) => {
+    // split ApDocs Array by 17 chunks of 100 items
+    // chunks = _.chunk(ApDocs, 40)
+    let promise = Promise.resolve()
+    console.log(`start queue with ${ApDocs.length} items`);
+    ApDocs.forEach((item) => {
+      promise = promise.then(() => {
+        // combine object async wrapper
+        return nextReq(item)
+      })
+    })
+    promise.then(() => {
+      console.log('queue done!');
+      resolve('resolve')
+    })
   })
 
-// TODO: Promise resolve when data fetched
-  setInterval(function () {
-    console.log(`${config.color.cyan}Array length: ${config.color.white}${result_arr.length}`);
-    console.log(`${config.color.yellow}fetched: ${fetched}`);
-  }, 500);
-
-
+  // setInterval(function () {
+  //   console.log(`${config.color.cyan}Array length: ${config.color.white}${result_arr.length}`);
+  //   console.log(`${config.color.yellow}fetched: ${fetched}`);
+  // }, 500);
 }
 
 // TODO: mongoose INSERTS
 // mongoose INSERTS
-// function insertData(data) {
-//   return new Promise((resolve, reject) => {
-//     data.forEach((item) => {
-//       console.log(`\n${config.color.white} result data  AFTER delay: "${JSON.stringify(item)}"`);
-//     })
-//   })
-// }
+function insertData() {
+  return new Promise((resolve, reject) => {
+    result_arr.forEach((item) => {
+      console.log(`\n${config.color.white} result data: "${JSON.stringify(item)}"`);
+    })
+  })
+}
 
 // common data loader
 var LoadHashes = function(){
   getApDocs() // getData from APIVO INDEX
   .then(searchBaMatches) // pass result to next ElasticSearch request
+  .then(insertData) // mongo INSERTS
   .catch(error => {
     log.error(error.message)
   })

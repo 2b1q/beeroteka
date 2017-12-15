@@ -7,7 +7,7 @@ config.server = {
 }
 
 // cluster config
-config.workers = (process.env.NODE_ENV == 'PROD') ? 4 : 2;
+config.workers = (process.env.NODE_ENV == 'PROD') ? 4 : 1;
 
 // cookie token
 config.cookieToken = credentials.cookieToken;
@@ -38,7 +38,7 @@ config.store = {
 // elasticsearch config
 config.es = {
   promiseDelay: 200,
-  apivoFetchSize: 100, // default 1700
+  apivoFetchSize: 1610, // default 1700
   index: {
     ba: 'ba1',
     apivo: 'apivo',
