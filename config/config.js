@@ -7,7 +7,7 @@ config.server = {
 }
 
 // cluster config
-config.workers = (process.env.NODE_ENV == 'PROD') ? 4 : 1;
+config.workers = (process.env.NODE_ENV == 'PROD') ? 4 : 2;
 
 // cookie token
 config.cookieToken = credentials.cookieToken;

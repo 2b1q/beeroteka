@@ -119,8 +119,8 @@ function getApDocs(){
 // searh Matches in BeerAdvocate INDEX from Apivo INDEX response
 function searchBaMatches(ApDocs){
   return new Promise((resolve) => {
-    // split ApDocs Array by 17 chunks of 100 items
-    // chunks = _.chunk(ApDocs, 40)
+    // TODO split ApDocs Array by 17 chunks of 100 items (each chunk resolve() Search Promise)
+    // chunks = _.chunk(ApDocs, 100)
     let promise = Promise.resolve()
     console.log(`start queue with ${ApDocs.length} items`);
     ApDocs.forEach((item) => {
@@ -130,7 +130,8 @@ function searchBaMatches(ApDocs){
       })
     })
     promise.then(() => {
-      console.log('queue done!');
+      console.log(`Queue done!
+        ${config.color.white}result_arr length: ${result_arr.length}`);
       resolve('resolve')
     })
   })
@@ -146,7 +147,8 @@ function searchBaMatches(ApDocs){
 function insertData() {
   return new Promise((resolve, reject) => {
     result_arr.forEach((item) => {
-      console.log(`\n${config.color.white} result data: "${JSON.stringify(item)}"`);
+      let obj = Object.assign(item.apdata, item.badata)
+      console.log(`\n${config.color.white} result data: "${JSON.stringify(obj)}"`);
     })
   })
 }
