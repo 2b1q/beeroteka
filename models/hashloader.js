@@ -101,7 +101,7 @@ const nextReq = async (ap_response_item) => {
 // find mongo recs
 apivoModel.find({}, function(err, docs){
   if(err) log.error(`ERROR while getting docs from mongo: "${err}"`)
-  console.log(docs);
+  console.log(`apivoModel docs: ${docs.length}`);
 })
 
 // Get All Docs FROM AP index
@@ -148,8 +148,13 @@ function insertData() {
   return new Promise((resolve, reject) => {
     result_arr.forEach((item) => {
       let obj = Object.assign(item.apdata, item.badata)
-      console.log(`\n${config.color.white} result data: "${JSON.stringify(obj)}"`);
+      let insert = new apivoModel(obj);
+      insert.save((err) => {
+        if(err) reject(err.message)
+      })
     })
+    console.log(`${config.color.yellow} all object saved`);
+    resolve('OK')
   })
 }
 
