@@ -142,7 +142,6 @@ function searchBaMatches(ApDocs){
   // }, 500);
 }
 
-// TODO: mongoose INSERTS
 // mongoose INSERTS
 function insertData() {
   return new Promise((resolve, reject) => {

@@ -1,4 +1,5 @@
 var credentials = require('../credentials.js'); // add credentials
+
 var config = {};
 
 config.server = {
@@ -14,9 +15,10 @@ config.cookieToken = credentials.cookieToken;
 
 // sessions
 config.sessions = {
-  resave: false,
-  saveUninitialized: false,
-  secret: credentials.cookieToken
+  resave: false, // Resave even no changes
+  saveUninitialized: true, // Save epmpty sessions
+  secret: credentials.cookieToken, // Secret string
+  // store: new MongoStore({ mongooseConnection: require('mongoose').connection }) // use mongo session store
 }
 
 // redis config

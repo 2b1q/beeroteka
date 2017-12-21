@@ -10,7 +10,7 @@ var status = {
   mongo_fail: ()=> {log.info(`${config.color.yellow} MongoDB INIT ${config.color.white} FAIL`)},
 }
 
-// MongoDB init Promise 
+// MongoDB init Promise
 function initMongo(){
   return new Promise(function(resolve, reject){
     if(datastore.initMongo()) resolve(status.mongo_ok())
@@ -19,7 +19,7 @@ function initMongo(){
 }
 
 // Promise _ping ES (if 'err' => process.exit(0))
-var es_ping = function(){
+var BackendInit = function(){
   new Promise(function(resolve, reject){
     es_client.client.ping({requestTimeout: 30000},
       function(err) {
@@ -34,4 +34,4 @@ var es_ping = function(){
     })
 }
 
-module.exports.es_ping = es_ping;
+module.exports.BackendInit = BackendInit;

@@ -1,8 +1,8 @@
 var cluster = require('cluster'),
     log = require('./libs/log')(module);
 
-// init connect to ES (if ES ping 'false' => process.exit(0))
-require('./models/init').es_ping();
+// BackendInit connect to ES Then MongoDB (if BackendInit() 'false' => process.exit(0))
+require('./models/init').BackendInit();
 
 if(cluster.isMaster) require('./master')
 else require('./worker')

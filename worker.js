@@ -22,7 +22,7 @@ app.set('view engine', 'pug');
 // favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 // bodyParser
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10kb'} ));
 app.use(bodyParser.urlencoded({ extended: false }));
 // cookie and sessions
 app.use(cookieParser(config.cookieToken));
