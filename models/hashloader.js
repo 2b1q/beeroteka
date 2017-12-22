@@ -1,4 +1,5 @@
 var es_client = require('../libs/elasticsearch'), // require ES module
+    co = require("co"), // Simple wrapper to the request library for co-like interface (node.js generator based code).
     log = require('../libs/log')(module),
     config = require('../config/config'),
     // _ = require('lodash'),
@@ -122,7 +123,7 @@ function searchBaMatches(ApDocs){
     // TODO split ApDocs Array by 17 chunks of 100 items (each chunk resolve() Search Promise)
     // chunks = _.chunk(ApDocs, 100)
     let promise = Promise.resolve()
-    console.log(`start queue with ${ApDocs.length} items`);
+    console.log(`\n${config.color.white}========[ ${config.color.green}start queue with ${ApDocs.length} items ${config.color.white}]========`);
     ApDocs.forEach((item) => {
       promise = promise.then(() => {
         // combine object async wrapper
@@ -145,15 +146,24 @@ function searchBaMatches(ApDocs){
 // mongoose INSERTS
 function insertData() {
   return new Promise((resolve, reject) => {
-    result_arr.forEach((item) => {
-      let obj = Object.assign(item.apdata, item.badata)
-      let insert = new apivoModel(obj);
-      insert.save((err) => {
-        if(err) reject(err.message)
+    // generator + Promise CO wrapper
+    co(function* (){
+      console.log(`${config.color.green}============= START DELETE =============`);
+      yield apivoModel.collection.drop()
+      console.log(`${config.color.green}============= DELETE COMPLETE =============`);
+      console.log(`${config.color.white}============= START INSERTS =============`);
+      result_arr.forEach((item) => {
+        let obj = Object.assign(item.apdata, item.badata)
+        let insert = new apivoModel(obj);
+        insert.save((err) => {
+          if(err) reject(err.message)
+        })
       })
+      console.log(`${config.color.white}============= ALL object saved =============${config.color.yellow}`);
+      resolve({})
+    }).catch((err) => {
+      reject(err)
     })
-    console.log(`${config.color.yellow} all object saved`);
-    resolve('OK')
   })
 }
 

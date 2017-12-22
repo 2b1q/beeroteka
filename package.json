@@ -10,6 +10,8 @@
     "body-parser": "~1.17.1",
     "busboy": "^0.2.14",
     "cluster": "^0.7.7",
+    "co-request": "^1.0.0",
+    "connect-mongo": "^2.0.0",
     "cookie-parser": "~1.4.3",
     "country-data": "0.0.31",
     "debug": "^2.6.8",

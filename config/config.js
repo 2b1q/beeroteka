@@ -1,4 +1,6 @@
-var credentials = require('../credentials.js'); // add credentials
+var credentials = require('../credentials.js'), // add credentials
+    sessions = require('express-session'),
+    MongoStore = require('connect-mongo')(sessions); // mongo session store
 
 var config = {};
 
@@ -18,7 +20,7 @@ config.sessions = {
   resave: false, // Resave even no changes
   saveUninitialized: true, // Save epmpty sessions
   secret: credentials.cookieToken, // Secret string
-  // store: new MongoStore({ mongooseConnection: require('mongoose').connection }) // use mongo session store
+  store: new MongoStore({ mongooseConnection: require('mongoose').connection }) // use mongo session store
 }
 
 // redis config

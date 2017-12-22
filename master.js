@@ -13,6 +13,6 @@ cluster.on('online', (worker) => {
 });
 
 // fork workers process (not by CPU cores)
-for(var i = 0; i < config.workers; ++i) {
+for(let i = 0; i < config.workers; ++i) {
   cluster.fork();
 }
