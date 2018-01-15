@@ -3,8 +3,13 @@ var express = require('express'),
     hashload = require('../models/hashloader'),
     elastic = require('../models/es_search'); // add es_search API
 
-/** default /beers route */
-router.get('/', function(req, res, next){
+/** default /beers route "catalog" */
+router.get('/', function(req, res, next) {
+  res.render('catalog', { title: 'Beer catalog'})
+});
+
+// searh view
+router.get('/search', function(req, res, next){
   elastic.count(function(styles){
     console.log('Styles count result: %s', JSON.stringify(styles, null, 2));
   });
@@ -19,8 +24,7 @@ router.get('/', function(req, res, next){
     })
 
     // console.log('ES data: \n'+JSON.stringify(data, null, 2));
-    res.render('beers', { title: 'Express +  Bootstrap + Pug + ElasticSearch', user: req.session.username, results: data, query: searchTerm });
-    // res.render('beers', { title: 'Express +  Bootstrap + Pug + ElasticSearch', user: req.session.username, results: {}, query: searchTerm });
+    res.render('search', { title: 'beer Search', user: req.session.username, results: data, query: searchTerm });
   });
 });
 
