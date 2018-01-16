@@ -1,5 +1,8 @@
-!node_modules/pug-bootstrap/layouts/*
-node_modules
+!node_modules/
+node_modules/*
+!node_modules/pug-bootstrap/
+node_modules/pug-bootstrap/*
+!node_modules/pug-bootstrap/layouts/
 jadebootstrap-seed
 credentials.js
 *.log
