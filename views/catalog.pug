@@ -1,5 +1,8 @@
 extends ../node_modules/pug-bootstrap/layouts/starter
 
 append body
-	.container
-		h1= title
+  .container
+    h1= title
+    .container
+      if styles != null
+        +label-default('Total beer: '+styles.hits.total)

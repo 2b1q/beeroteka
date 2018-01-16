@@ -3,17 +3,21 @@ var express = require('express'),
     hashload = require('../models/hashloader'),
     elastic = require('../models/es_search'); // add es_search API
 
-/** default /beers route "catalog" */
+/** default /beers route "/" => Catalog view */
 router.get('/', function(req, res, next) {
-  res.render('catalog', { title: 'Beer catalog'})
+  // commit this staff in Prod
+  elastic.count(function(styles_cnt){
+    console.log(`styles count ${styles_cnt}`);
+  });
+  // return styles
+  elastic.getAllStyles(function(styles){
+    res.render('catalog', { title: 'beer catalog', styles: styles});
+  });
 });
 
 // searh view
 router.get('/search', function(req, res, next){
-  elastic.count(function(styles){
-    console.log('Styles count result: %s', JSON.stringify(styles, null, 2));
-  });
-
+  // search query
   console.log('Req.query: '+req.query.query);
   var searchTerm = req.query.query || 'STOUT';
   elastic.search(searchTerm, function(data) {
@@ -22,7 +26,6 @@ router.get('/search', function(req, res, next){
       let score_percent = Math.round(score/0.05)
       item._source.score_percent = score_percent
     })
-
     // console.log('ES data: \n'+JSON.stringify(data, null, 2));
     res.render('search', { title: 'beer Search', user: req.session.username, results: data, query: searchTerm });
   });
