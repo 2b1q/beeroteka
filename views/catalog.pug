@@ -5,11 +5,14 @@ append body
     h1= title
     .container
       if styles != null
-        +label-default('Total beer: '+styles.hits.total)
+        +label-primary("Total beer")
+        +label-default(styles.hits.total)
         - var obj = styles.aggregations["Beer styles"].buckets;
         - var keyNames = Object.keys(obj);
         .container
         for v in keyNames
-          strong #{v}:&nbsp
-          |#{obj.v}<br>
-          //+badge("42")
+          strong #{v}&nbsp
+          +badge(obj[v]["doc_count"])
+          - var max = Number(obj[v]["stats_abv"]["max"]).toFixed(1)
+          |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{max}
+          |<br>
