@@ -6,3 +6,10 @@ append body
     .container
       if styles != null
         +label-default('Total beer: '+styles.hits.total)
+        - var obj = styles.aggregations["Beer styles"].buckets;
+        - var keyNames = Object.keys(obj);
+        .container
+        for v in keyNames
+          strong #{v}:&nbsp
+          |#{obj.v}<br>
+          //+badge("42")
