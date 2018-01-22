@@ -9,8 +9,13 @@ router.get('/', function(req, res, next) {
   elastic.count(function(styles_cnt){
     console.log(`styles count ${styles_cnt}`);
   });
+
+  elastic.getAllStylesAp((styles) => {
+    console.log(`styles ${JSON.stringify(styles, null, 2)}`);
+  })
+
   // return styles
-  elastic.getAllStyles(function(styles){
+  elastic.getAllStylesBa(function(styles){
     res.render('catalog', { title: 'beer catalog', styles: styles});
   });
 });

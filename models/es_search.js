@@ -105,9 +105,19 @@ var countStyle = (callback) => {
     })
 }
 
-// get all styles
-var getAllStyles = (callback) => {
-  es_client.client.search(aggs.countAllStyles())
+// get all styles from BA index
+var getAllStylesBa = (callback) => {
+  es_client.client.search(aggs.countAllStylesBa())
+    .then(function(resp){
+      callback(resp)
+    }, function(err){
+      log.error(err.message);
+    })
+}
+
+// get all styles from AP index
+var getAllStylesAp = (callback) => {
+  es_client.client.search(aggs.countAllStylesAp())
     .then(function(resp){
       callback(resp)
     }, function(err){
@@ -118,5 +128,6 @@ var getAllStyles = (callback) => {
  module.exports = {
      search: query1,
      count:  countStyle,
-     getAllStyles: getAllStyles
+     getAllStylesBa: getAllStylesBa,
+     getAllStylesAp: getAllStylesAp
  };
