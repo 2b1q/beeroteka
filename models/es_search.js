@@ -5,7 +5,8 @@ var es_client = require('../libs/elasticsearch'), // require ES module
     log = require('../libs/log')(module),
     config = require('../config/config'),
     query = require('./dsl'),
-    aggs = require('./aggs');
+    aggs = require('./aggs'),
+    co = require('co');
 
 var isFloat = n => n === +n && n !== (n|0),
     isInteger = n => n === +n && n === (n|0)
@@ -125,9 +126,31 @@ var getAllStylesAp = (callback) => {
     })
 }
 
+// get all styles AP + BA
+var getAllStyles = (callback) => {
+  // result container
+  let result = {}, ap, ba;
+  // co (generator) async await wrapper
+  co(function *() {
+    // resolve multiple promises in parallel
+    let ap_promise = es_client.client.search(aggs.countAllStylesAp());
+    let ba_promise = es_client.client.search(aggs.countAllStylesBa());
+    var [ap,ba] = yield [ap_promise, ba_promise];
+    result = {
+      ap_aggs: ap,
+      ba_aggs: ba
+    }
+    // console.log(`co data: ${JSON.stringify(result, null, 2)}`);
+    callback(result);
+  }).catch((err) => {
+    log.error(err.message);
+  })
+}
+
  module.exports = {
      search: query1,
      count:  countStyle,
      getAllStylesBa: getAllStylesBa,
-     getAllStylesAp: getAllStylesAp
+     getAllStylesAp: getAllStylesAp,
+     getAllStyles: getAllStyles
  };

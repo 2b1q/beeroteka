@@ -5,10 +5,17 @@ append body
     h1= title
     .container
       if styles != null
-        +label-primary("Total beer")
-        +label-default(styles.hits.total)
-        - var obj = styles.aggregations["Beer styles"].buckets;
+        strong Total &nbsp
+        +label-primary("BA")
+        strong &nbsp beer:&nbsp #{styles.ba_aggs.hits.total}
+        |<br>
+        strong Total &nbsp
+        +label-primary("AP")
+        strong &nbsp beer:&nbsp #{styles.ap_aggs.hits.total}
+        - var obj = styles.ba_aggs.aggregations["Beer styles"].buckets;
         - var keyNames = Object.keys(obj);
+        - var obj2 = styles.ap_aggs.aggregations["Beer styles"].buckets;
+        - var keyNames2 = Object.keys(obj2);
         .container
           .row
             .col-sm-4
@@ -26,4 +33,10 @@ append body
                 |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{max}
                 |<br>
             .col-sm-4
+              for v in keyNames2
+                strong Beer Style: #{obj2[v]["key"]}&nbsp
+                +badge(obj2[v]["doc_count"])
+                |<br>
+                for vv in obj2[v]["Countries"]["buckets"]
+                  |&nbsp&nbsp&nbsp&nbsp#{vv.key}: #{vv.doc_count}<br>
             .col-sm-4

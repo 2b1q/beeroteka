@@ -5,17 +5,9 @@ var express = require('express'),
 
 /** default /beers route "/" => Catalog view */
 router.get('/', function(req, res, next) {
-  // commit this staff in Prod
-  elastic.count(function(styles_cnt){
-    console.log(`styles count ${styles_cnt}`);
-  });
-
-  elastic.getAllStylesAp((styles) => {
-    console.log(`styles ${JSON.stringify(styles, null, 2)}`);
-  })
-
-  // return styles
-  elastic.getAllStylesBa(function(styles){
+  // get ALL styles AP + BA
+  elastic.getAllStyles((styles) => {
+    // console.log(`styles ${JSON.stringify(styles, null, 2)}`);
     res.render('catalog', { title: 'beer catalog', styles: styles});
   });
 });
