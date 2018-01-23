@@ -30,8 +30,25 @@ router.get('/search', function(req, res, next){
 
 // styles JSON
 router.get('/styles', function(req, res, next){
+  if(req.query.agg === 'ap1') {
+    elastic.getApAgg1((styles) => {
+      res.json(styles);
+    })
+  }
+  if(req.query.agg === 'ap2') {
+    console.log('---- ap AGG2 ----');
+    res.redirect('styles');
+  }
+  if(req.query.agg === 'ba1') {
+    console.log('---- ba AGG1 ----');
+    res.redirect('styles');
+  }
+  if(req.query.agg === 'ba2') {
+    console.log('---- ba AGG2 ----');
+    res.redirect('styles');
+  }
+  else
   elastic.getAllStyles(function(styles){
-    // console.log(JSON.stringify(styles));
     res.json(styles);
   });
 })

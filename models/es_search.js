@@ -126,6 +126,16 @@ var getAllStylesAp = (callback) => {
     })
 }
 
+// get AP agg1
+var getApAgg1 = (callback) => {
+  es_client.client.search(aggs.apAgg1())
+    .then(function(resp){
+      callback(resp)
+    }, function(err){
+      log.error(err.message);
+    })
+}
+
 // get all styles AP + BA
 var getAllStyles = (callback) => {
   // result container
@@ -149,8 +159,9 @@ var getAllStyles = (callback) => {
 
  module.exports = {
      search: query1,
-     count:  countStyle,
-     getAllStylesBa: getAllStylesBa,
-     getAllStylesAp: getAllStylesAp,
-     getAllStyles: getAllStyles
+     // count:  countStyle,
+     // getAllStylesBa: getAllStylesBa,
+     // getAllStylesAp: getAllStylesAp,
+     getAllStyles: getAllStyles,
+     getApAgg1: getApAgg1
  };

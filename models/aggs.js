@@ -19,6 +19,39 @@ var countStyle = (style) => {
   }
 }
 
+// Beer AP aggs: ABV by Countries by Styles
+var apAgg1 = () => {
+  return {
+    index: apivo,
+    body:
+    {
+      "from": 0,
+      "size": 0,
+      "aggs": {
+        "Beer styles": {
+          "terms": {
+            "field": "Вид пива"
+          },
+          "aggs": {
+            "Countries": {
+              "terms": {
+                "field": "Страна"
+              },
+              "aggs": {
+                "ABV": {
+                  "terms": {
+                    "field": "abv"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 // Beer Styles by countries styles from Apivo index
 var allStylesAp = () => {
   return {
@@ -606,5 +639,6 @@ var allStylesBa = () => {
 module.exports = {
     countStyle: countStyle,
     countAllStylesBa: allStylesBa,
-    countAllStylesAp: allStylesAp
+    countAllStylesAp: allStylesAp,
+    apAgg1: apAgg1
 };
