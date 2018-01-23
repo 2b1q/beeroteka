@@ -28,18 +28,51 @@ var apAgg1 = () => {
       "from": 0,
       "size": 0,
       "aggs": {
-        "Beer styles": {
+        "Countries": {
           "terms": {
-            "field": "Вид пива"
+            "field": "Страна"
           },
           "aggs": {
-            "Countries": {
+            "Beer styles": {
               "terms": {
-                "field": "Страна"
+                "field": "Вид пива"
               },
               "aggs": {
                 "ABV": {
-                  "terms": {
+                  "stats": {
+                    "field": "abv"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// BA Agg: ABV by Styles by Categories
+var baAgg1 = () => {
+  return {
+    index: indexBa,
+    body:
+    {
+      "from": 0,
+      "size": 0,
+      "aggs": {
+        "Categories": {
+          "terms": {
+            "field": "category"
+          },
+          "aggs": {
+            "Beer styles": {
+              "terms": {
+                "field": "style"
+              },
+              "aggs": {
+                "ABV": {
+                  "max": {
                     "field": "abv"
                   }
                 }
@@ -66,9 +99,9 @@ var allStylesAp = () => {
             "field": "Вид пива"
           },
           "aggs": {
-            "Countries": {
-              "terms": {
-                "field": "Страна"
+            "max abv": {
+              "max": {
+                "field": "abv"
               }
             }
           }
@@ -623,8 +656,8 @@ var allStylesBa = () => {
               }
             },
             "aggs": {
-              "stats_abv": {
-                "stats": {
+              "max abv": {
+                "max": {
                   "field": "abv"
                 }
               }
@@ -640,5 +673,6 @@ module.exports = {
     countStyle: countStyle,
     countAllStylesBa: allStylesBa,
     countAllStylesAp: allStylesAp,
-    apAgg1: apAgg1
+    apAgg1: apAgg1,
+    baAgg1: baAgg1
 };

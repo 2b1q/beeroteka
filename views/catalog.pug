@@ -5,38 +5,25 @@ append body
     h1= title
     .container
       if styles != null
-        strong Total &nbsp
-        +label-primary("BA")
-        strong &nbsp beer:&nbsp #{styles.ba_aggs.hits.total}
-        |<br>
-        strong Total &nbsp
-        +label-primary("AP")
-        strong &nbsp beer:&nbsp #{styles.ap_aggs.hits.total}
-        - var obj = styles.ba_aggs.aggregations["Beer styles"].buckets;
-        - var keyNames = Object.keys(obj);
-        - var obj2 = styles.ap_aggs.aggregations["Beer styles"].buckets;
-        - var keyNames2 = Object.keys(obj2);
+        - var ba_obj = styles.ba_aggs.aggregations["Beer styles"].buckets;
+        - var ba_keys = Object.keys(ba_obj);
+        - var ap_obj = styles.ap_aggs.aggregations["Beer styles"].buckets;
+        - var ap_keys = Object.keys(ap_obj);
         .container
           .row
-            .col-sm-4
-              strong BeerAdvocate styles
-            .col-sm-4
-              strong Apivo styles
-            .col-sm-4
-              strong Both
-          .row
-            .col-sm-4
-              for v in keyNames
-                strong #{v}&nbsp
-                +badge(obj[v]["doc_count"])
-                - var max = Number(obj[v]["stats_abv"]["max"]).toFixed(1)
-                |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{max}
-                |<br>
-            .col-sm-4
-              for v in keyNames2
-                strong Beer Style: #{obj2[v]["key"]}&nbsp
-                +badge(obj2[v]["doc_count"])
-                |<br>
-                for vv in obj2[v]["Countries"]["buckets"]
-                  |&nbsp&nbsp&nbsp&nbsp#{vv.key}: #{vv.doc_count}<br>
-            .col-sm-4
+            .col-sm-6
+              +panel-default("BeerAdvocate total styles: "+styles.ba_aggs.hits.total)
+                for ba_v in ba_keys
+                  strong #{ba_v}&nbsp
+                  +badge(ba_obj[ba_v]["doc_count"])
+                  - var ba_max = Number(ba_obj[ba_v]["max abv"]["value"]).toFixed(1)
+                  |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{ba_max}
+                  |<br>
+            .col-sm-6
+              +panel-default("apivo.ru total styles: "+styles.ap_aggs.hits.total)
+                for ap_v in ap_keys
+                  strong #{ap_obj[ap_v]["key"]}&nbsp
+                  +badge(ap_obj[ap_v]["doc_count"])
+                  - var ap_max = Number(ap_obj[ap_v]["max abv"]["value"]).toFixed(1)
+                  |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{ap_max}
+                  |<br>
