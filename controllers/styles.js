@@ -1,3 +1,4 @@
+// STYLE CONTROLLER module
 var elastic = require('../models/es_search'); // add es_search API
 
 // common '/style' route controller
@@ -23,4 +24,9 @@ exports.styles = function(req, res) {
       res.json(styles);
     });
   }
+}
+
+exports.ales = function(req, res) {
+  console.log('---- invoke style.ale controller ----');
+  res.redirect('/beers/styles');
 }
