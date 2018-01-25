@@ -3,6 +3,24 @@ var elastic = require('../models/es_search'), // add es_search API
     log = require('../libs/log')(module),
     apivoModel = require('../models/apivoModel');
 
+// normalize query params
+let param_normalizer = (p, s) => {
+  let page = (isNaN(p)) ? 1 : Number (p).toFixed(); // default page = 1
+  let size = (isNaN(s)) ? 20 : Number (s).toFixed(); // default size = 20 (if size 'undefined')
+  page = (page >= 1) ? page : 1;
+  size = (size >= 10) ? size : 10;
+  let options = {
+    limit: size,
+    skip: (page*size)-size,
+    page: page
+  }
+  console.log(`-- Normalized params --
+  Page: ${options.page}
+  Limit: ${options.limit}
+  Skip: ${options.skip}`);
+  return options;
+}
+
 // common '/style' route controller
 exports.styles = function(req, res) {
   // find/count mongo recs
@@ -37,21 +55,9 @@ exports.styles = function(req, res) {
 // mongoose find Ales
 exports.ales = function(req, res) {
   console.log(`---- invoke style.ale controller ----`);
-  console.log(`Req.query.p: ${req.query.p}
-    Req.query.s: ${req.query.s}`);
-  let page = (isNaN(req.query.p)) ? 1 : Number (req.query.p).toFixed(); // default page = 1
-  page = (page >= 1) ? page : 1;
-  let size = (isNaN(req.query.s)) ? 20 : Number (req.query.s).toFixed(); // default size = 20 (if size 'undefined')
-  size = (size >= 10) ? size : 10;
-  let options = {
-    limit: size,
-    skip: (page*size)-size
-  }
-  console.log(`
-    Page: ${page}
-    Limit: ${options.limit}
-    Skip: ${options.skip}
-    `);
+  console.log(`Req.query.p: "${req.query.p}", Req.query.s: "${req.query.s}"`);
+  let options = param_normalizer(req.query.p, req.query.s);
+  // MongoDB query
   let query = {
     $or: [ { ap_style: /ale/i }, { ba_style: /ale/i }, { ba_category: /ale/i } ]
     // $and: [ { ap_style: /ale/i }, { ba_style: /ale/i }, { ba_category: /ale/i } ]
