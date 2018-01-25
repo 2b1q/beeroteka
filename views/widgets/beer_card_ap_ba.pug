@@ -50,3 +50,7 @@
             |&nbsp; #{doc.ap_vol}<br>
             strong Тара:
             |&nbsp; #{doc.ap_tara}<br>
+            if doc.ap_url
+              button.btn.btn-primary(data-toggle="modal",data-target="#apModal") Описание
+              +modal(doc.ap_beer,"apModal")
+                +a-btn(doc.ap_url) #{doc.ap_beer}
