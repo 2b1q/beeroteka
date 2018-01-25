@@ -1,8 +1,16 @@
 /** Style controller */
-var elastic = require('../models/es_search'); // add es_search API
+var elastic = require('../models/es_search'), // add es_search API
+    log = require('../libs/log')(module),
+    apivoModel = require('../models/apivoModel');
 
 // common '/style' route controller
 exports.styles = function(req, res) {
+  // find/count mongo recs
+  apivoModel.find({}, function(err, docs){
+    if(err) log.error(`ERROR while getting docs from mongo: "${err}"`)
+    console.log(`apivoModel docs: ${docs.length}`);
+  })
+  // req.query parser
   if(req.query.agg === 'ap1') {
     console.log('---- ap AGG1 ----');
     elastic.getApAgg1((styles) => {

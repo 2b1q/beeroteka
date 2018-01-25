@@ -99,12 +99,6 @@ const nextReq = async (ap_response_item) => {
   // return Promise.resolve()
 }
 
-// find mongo recs
-apivoModel.find({}, function(err, docs){
-  if(err) log.error(`ERROR while getting docs from mongo: "${err}"`)
-  console.log(`apivoModel docs: ${docs.length}`);
-})
-
 // Get All Docs FROM AP index
 function getApDocs(){
   return new Promise(function(resolve, reject){
