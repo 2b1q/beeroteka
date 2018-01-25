@@ -1,29 +1,87 @@
 extends ../node_modules/pug-bootstrap/layouts/starter
 append body
   .container
-    //TODO add bootstrap components: beer cards https://v4-alpha.getbootstrap.com/components/card/, modals, pagination, tooltips
-    h1= title
-    .container
-      if styles != null
-        - var ba_obj = styles.ba_aggs.aggregations["Beer styles"].buckets;
-        - var ba_keys = Object.keys(ba_obj);
-        - var ap_obj = styles.ap_aggs.aggregations["Beer styles"].buckets;
-        - var ap_keys = Object.keys(ap_obj);
-        .container
-          .row
-            .col-sm-6
-              +panel-default("BeerAdvocate total styles: "+styles.ba_aggs.hits.total)
-                for ba_v in ba_keys
-                  strong #{ba_v}&nbsp
-                  +badge(ba_obj[ba_v]["doc_count"])
-                  - var ba_max = Number(ba_obj[ba_v]["max abv"]["value"]).toFixed(1)
-                  |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{ba_max}
-                  |<br>
-            .col-sm-6
-              +panel-default("apivo.ru total styles: "+styles.ap_aggs.hits.total)
-                for ap_v in ap_keys
-                  strong #{ap_obj[ap_v]["key"]}&nbsp
-                  +badge(ap_obj[ap_v]["doc_count"])
-                  - var ap_max = Number(ap_obj[ap_v]["max abv"]["value"]).toFixed(1)
-                  |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{ap_max}
-                  |<br>
+    // TODO add bootstrap components: beer cards https://v4-alpha.getbootstrap.com/components/card/, modals, pagination, tooltips
+    // render '/beers/' route
+    if styles != null
+      h1= title
+      - var ba_obj = styles.ba_aggs.aggregations["Beer styles"].buckets;
+      - var ba_keys = Object.keys(ba_obj);
+      - var ap_obj = styles.ap_aggs.aggregations["Beer styles"].buckets;
+      - var ap_keys = Object.keys(ap_obj);
+      .row
+        .col-sm-6
+          +panel-default("BeerAdvocate total styles: "+styles.ba_aggs.hits.total)
+            for ba_v in ba_keys
+              strong #{ba_v}&nbsp
+              +badge(ba_obj[ba_v]["doc_count"])
+              - var ba_max = Number(ba_obj[ba_v]["max abv"]["value"]).toFixed(1)
+              |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{ba_max}
+              |<br>
+        .col-sm-6
+          +panel-default("apivo.ru total styles: "+styles.ap_aggs.hits.total)
+            for ap_v in ap_keys
+              strong #{ap_obj[ap_v]["key"]}&nbsp
+              +badge(ap_obj[ap_v]["doc_count"])
+              - var ap_max = Number(ap_obj[ap_v]["max abv"]["value"]).toFixed(1)
+              |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{ap_max}
+              |<br>
+
+    // render beer from MongoDB
+    if beers != null
+      |<br><br>
+      h1= title
+      |<b>page:</b> #{options.page} <b>limit:</b> #{options.limit}
+      .jumbotron
+        for doc in beers
+          if doc.ap_beer && doc.ba_beer
+            .row
+              .col-sm
+                +panel-primary(doc.ap_orig_beer_name)
+                  row
+                    .col-md-3
+                      if doc.ap_img
+                        +img-rounded(doc.ap_img,"Circle image")
+                      else if doc.ba_img
+                        +img-rounded(doc.ba_img,"Circle image")
+                      else
+                        +img-circle("../../images/beer_bottle.png","Circle image")
+                    .col-md-5
+                      h4 BA Score: #{doc.ba_beer_score} / 5
+                      - var score_percent = Math.round(doc.ba_beer_score/0.05)
+                      +progress-bar-striped(score_percent)
+                      strong Brewary:
+                      |&nbsp; #{doc.ba_brewary}<br>
+                      strong Beer:
+                      |&nbsp; #{doc.ba_beer}<br>
+                      strong Style:
+                      |&nbsp; #{doc.ba_style}<br>
+                      strong Category:
+                      |&nbsp; #{doc.ba_category}<br>
+                      strong ABV:
+                      |&nbsp; #{doc.ba_abv}
+                    .col-md-4
+                      if doc.ap_beer
+                        h4 apivo.ru
+                        strong Beer:
+                        |&nbsp; #{doc.ap_beer}<br>
+                        strong Название:
+                        |&nbsp; #{doc.ap_orig_beer_name}<br>
+                        strong Brewary:
+                        |&nbsp; #{doc.ap_brewary}<br>
+                        strong Вид пива:
+                        |&nbsp; #{doc.ap_style}<br>
+                        strong Страна:
+                        |&nbsp; #{doc.ap_country}<br>
+                        strong Крепость:
+                        |&nbsp; #{doc.ap_abv}<br>
+                        strong Плотность:
+                        |&nbsp; #{doc.ap_density}<br>
+                        strong Тип брожения:
+                        |&nbsp; #{doc.ap_type}<br>
+                        strong Цена:
+                        |&nbsp; #{doc.ap_price_str}<br>
+                        strong Объем:
+                        |&nbsp; #{doc.ap_vol}<br>
+                        strong Тара:
+                        |&nbsp; #{doc.ap_tara}<br>

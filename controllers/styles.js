@@ -64,7 +64,9 @@ exports.ales = function(req, res) {
   }
   apivoModel.find(query, function(err, docs) {
     if(err) log.error(`ERROR while getting docs from mongo: "${err}"`);
-    res.json(docs);
+    // res.json(docs);
+    console.log(JSON.stringify(docs, null, 2));
+    res.render('catalog', { title: 'Эли', beers: docs, options: options });
   })
   .skip(options.skip)
   .limit(options.limit);
