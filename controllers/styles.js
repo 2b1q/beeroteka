@@ -34,7 +34,34 @@ exports.styles = function(req, res) {
   }
 }
 
+// mongoose find Ales
 exports.ales = function(req, res) {
-  console.log('---- invoke style.ale controller ----');
-  res.redirect('/beers/styles');
+  console.log(`---- invoke style.ale controller ----`);
+  console.log(`Req.query.p: ${req.query.p}
+    Req.query.s: ${req.query.s}`);
+  let page = (isNaN(req.query.p)) ? 1 : Number (req.query.p).toFixed(); // default page = 1
+  page = (page >= 1) ? page : 1;
+  let size = (isNaN(req.query.s)) ? 20 : Number (req.query.s).toFixed(); // default size = 20 (if size 'undefined')
+  size = (size >= 10) ? size : 10;
+  let options = {
+    limit: size,
+    skip: (page*size)-size
+  }
+  console.log(`
+    Page: ${page}
+    Limit: ${options.limit}
+    Skip: ${options.skip}
+    `);
+  let query = {
+    $or: [ { ap_style: /ale/i }, { ba_style: /ale/i }, { ba_category: /ale/i } ]
+    // $and: [ { ap_style: /ale/i }, { ba_style: /ale/i }, { ba_category: /ale/i } ]
+  }
+  apivoModel.find(query, function(err, docs) {
+    if(err) log.error(`ERROR while getting docs from mongo: "${err}"`);
+    res.json(docs);
+  })
+  .skip(options.skip)
+  .limit(options.limit);
+
+
 }
