@@ -1,4 +1,4 @@
-// STYLE CONTROLLER module
+/** Style controller */
 var elastic = require('../models/es_search'); // add es_search API
 
 // common '/style' route controller
