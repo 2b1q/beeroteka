@@ -1,0 +1,23 @@
+.row
+  .col-sm
+    +panel-primary(doc.ba_beer)
+      row
+        .col-md-4
+          if doc.ba_img
+            +img-rounded(doc.ba_img,"Circle image")
+          else
+            +img-circle("../../images/beer_bottle.png","Circle image")
+        .col-md-4
+          h4 BA Score: #{doc.ba_beer_score} / 5
+          - var score_percent = Math.round(doc.ba_beer_score/0.05)
+          +progress-bar-striped(score_percent)
+          strong Brewary:
+          |&nbsp; #{doc.ba_brewary}<br>
+          strong Beer:
+          |&nbsp; #{doc.ba_beer}<br>
+          strong Style:
+          |&nbsp; #{doc.ba_style}<br>
+          strong Category:
+          |&nbsp; #{doc.ba_category}<br>
+          strong ABV:
+          |&nbsp; #{doc.ba_abv}

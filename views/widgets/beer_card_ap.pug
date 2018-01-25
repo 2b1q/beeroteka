@@ -1,0 +1,36 @@
+.row
+  .col-sm
+    +panel-primary(doc.ap_orig_beer_name)
+      row
+        .col-md-4
+          if doc.ap_img
+            +img-rounded(doc.ap_img,"Circle image")
+          else
+            +img-circle("../../images/beer_bottle.png","Circle image")
+        .col-md-4
+          if doc.ap_beer
+            h4 apivo.ru
+            strong Beer:
+            |&nbsp; #{doc.ap_beer}<br>
+            strong Название:
+            |&nbsp; #{doc.ap_orig_beer_name}<br>
+            strong Brewary:
+            |&nbsp; #{doc.ap_brewary}<br>
+            strong Вид пива:
+            |&nbsp; #{doc.ap_style}<br>
+            strong Страна:
+            |&nbsp; #{doc.ap_country}<br>
+            strong Крепость:
+            |&nbsp; #{doc.ap_abv}<br>
+            if doc.ap_density
+              strong Плотность:
+              |&nbsp; #{doc.ap_density}<br>
+            if doc.ap_type
+              strong Тип брожения:
+              |&nbsp; #{doc.ap_type}<br>
+            strong Цена:
+            |&nbsp; #{doc.ap_price_str}<br>
+            strong Объем:
+            |&nbsp; #{doc.ap_vol}<br>
+            strong Тара:
+            |&nbsp; #{doc.ap_tara}<br>
