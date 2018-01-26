@@ -20,8 +20,11 @@ var apivoSchema = new Schema({
   ap_price_num:        Number, // eg "ap_price_num":229
   ap_composition:      String, // "" OR String
   ap_url:              String, // String
+  ap_img:              String, // ap_img URL String
   ap_taste:            String, // "" OR String
-  ap_desc:             {String}, // OBJ String (in real {} OR obj)
+  ap_desc:             {
+    desc:  String // String (in real {} OR obj)
+  },
   approved:            { type: Boolean, default: false }, // IF ap_data EQUAL to ba_date => set to true
   updated:             { type: Date, default: Date.now },
   country_obj: {

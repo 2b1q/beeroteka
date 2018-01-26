@@ -26,6 +26,7 @@ const buildJSON1 = (item) => {
     ap_json.ap_country = item._source['Страна'];
     ap_json.country_obj = dict.getCountry(item._source['Страна']) || {};
     ap_json.ap_abv = item._source.abv;
+    ap_json.ap_img = item._source.img;
     ap_json.ap_vol = item._source['Объем'] || '';
     ap_json.ap_density = item._source['density'] || '';
     ap_json.ap_tara = item._source['Тара'] || '';
@@ -35,7 +36,8 @@ const buildJSON1 = (item) => {
     ap_json.ap_composition = item._source['Состав'] || '';
     ap_json.ap_url = item._source['url'] || '';
     ap_json.ap_taste = item._source['Вкусовые оттенки'] || '';
-    ap_json.ap_desc = item._source['desc'] || {};
+    let {...desc} = item._source.desc; // ...spread
+    ap_json.ap_desc = desc || '';
     // create BA query object
     let query_object = {
       beer: ap_json.ap_beer,
@@ -143,7 +145,9 @@ function insertData() {
     // generator + Promise CO wrapper
     co(function* (){
       console.log(`${config.color.green}============= START DELETE =============`);
-      yield apivoModel.collection.drop()
+      yield apivoModel.remove({}, function(err) {
+        console.log('collection removed')
+      });
       console.log(`${config.color.green}============= DELETE COMPLETE =============`);
       console.log(`${config.color.white}============= START INSERTS =============`);
       result_arr.forEach((item) => {
