@@ -72,22 +72,30 @@ exports.ales = function(req, res) {
   .limit(options.limit);
 }
 
+// mongoose find style by pattern
 exports.find = function (req, res) {
-  console.log(`Req.query: "${req.query.query}"`);
-  if(req.query.query === 'undefined') res.redirect('styles');
-  let pattern = req.query.query.replace(/[^a-zA-Z0-9 '`]/g, '');
-  let regexp = '/'+pattern+'/i';
-  // MongoDB query
-  let query = {
-    $or: [ { ap_style: regexp }, { ba_style: regexp }, { ba_category: regexp } ]
+  console.log(`Req.query: "${req.query.q}"`);
+  // temp options
+  let options = {
+    skip: 0,
+    limit: 30
   }
-  apivoModel.find(query, function(err, docs) {
-    if(err) log.error(`ERROR while getting docs from mongo: "${err}"`);
-    res.json(docs);
-    console.log(JSON.stringify(docs, null, 2));
-    // res.render('catalog', { title: 'Ale', beers: docs, options: options });
-  })
-  .skip(0)
-  .limit(10);
-
+  if(req.query.q === undefined) res.redirect('/beers');
+  else {
+    let pattern = req.query.q.replace(/[^a-zA-Z-/ '`]/g, '');
+    console.log(`query pattern: "${pattern}"`);
+    let regexp = new RegExp(pattern,'i');
+    // MongoDB query
+    let query = {
+      $or: [ { ap_style: regexp }, { ba_style: regexp }, { ba_category: regexp } ]
+    }
+    apivoModel.find(query, function(err, docs) {
+      if(err) log.error(`ERROR while getting docs from mongo: "${err}"`);
+      // res.json(docs);
+      // console.log(JSON.stringify(docs, null, 2));
+      res.render('catalog', { title: 'Style: '+pattern, result: docs, options: options });
+    })
+    .skip(options.skip)
+    .limit(options.limit);
+  }
 }

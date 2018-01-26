@@ -19,6 +19,7 @@ append body
               else
                 strong #{ba_v}&nbsp
                 +badge(ba_obj[ba_v]["doc_count"])
+                |&nbsp<a href="/beers/styles/find?q=#{ba_v}"><span class="glyphicon glyphicon-link"></span></a>
               - var ba_max = Number(ba_obj[ba_v]["max abv"]["value"]).toFixed(1)
               |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{ba_max}
               |<br>
@@ -37,6 +38,18 @@ append body
       |<b>page:</b> #{options.page} <b>limit:</b> #{options.limit}
       .jumbotron
         for doc in beers
+          if doc.ap_beer && doc.ba_beer
+            include widgets/beer_card_ap_ba.pug
+          if doc.ap_beer && !doc.ba_beer
+            include widgets/beer_card_ap.pug
+          if !doc.ap_beer && doc.ba_beer
+            include widgets/beer_card_ba.pug
+    if result != null
+      |<br><br>
+      h1= title
+      |<b>limit:</b> #{options.limit}
+      .jumbotron
+        for doc in result
           if doc.ap_beer && doc.ba_beer
             include widgets/beer_card_ap_ba.pug
           if doc.ap_beer && !doc.ba_beer
