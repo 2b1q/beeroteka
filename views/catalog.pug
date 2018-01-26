@@ -12,8 +12,13 @@ append body
         .col-sm-6
           +panel-default("BeerAdvocate total styles: "+styles.ba_aggs.hits.total)
             for ba_v in ba_keys
-              strong #{ba_v}&nbsp
-              +badge(ba_obj[ba_v]["doc_count"])
+              if /ale/i.test(ba_v)
+                strong #{ba_v}&nbsp
+                +badge(ba_obj[ba_v]["doc_count"])
+                |&nbsp<a href="/beers/styles/ales"><span class="glyphicon glyphicon-link"></span></a>
+              else
+                strong #{ba_v}&nbsp
+                +badge(ba_obj[ba_v]["doc_count"])
               - var ba_max = Number(ba_obj[ba_v]["max abv"]["value"]).toFixed(1)
               |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{ba_max}
               |<br>
