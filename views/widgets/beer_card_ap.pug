@@ -34,3 +34,20 @@
             |&nbsp; #{doc.ap_vol}<br>
             strong Тара:
             |&nbsp; #{doc.ap_tara}<br>
+            if doc.ap_url
+              +a-btn(doc.ap_url) Перейти на сайт
+              |<br>
+            if doc.ap_desc[0]
+              button.btn.btn-primary(data-toggle="modal",data-target="#apModal") Описание
+              +modal(doc.ap_beer,"apModal")
+                if doc.ap_desc[0]
+                  |#{doc.ap_desc[0]}<br>
+                if doc.ap_desc[1]
+                  |#{doc.ap_desc[1]}<br>
+                if doc.ap_desc[2]
+                  |#{doc.ap_desc[2]}<br>
+                if doc.ap_desc[3]
+                  |#{doc.ap_desc[3]}<br>
+                if doc.ap_desc[4]
+                  |#{doc.ap_desc[4]}<br>
+                +a-btn(doc.ap_url) Перейти на сайт

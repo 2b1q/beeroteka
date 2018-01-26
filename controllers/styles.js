@@ -66,7 +66,7 @@ exports.ales = function(req, res) {
     if(err) log.error(`ERROR while getting docs from mongo: "${err}"`);
     // res.json(docs);
     console.log(JSON.stringify(docs, null, 2));
-    res.render('catalog', { title: 'Эли', beers: docs, options: options });
+    res.render('catalog', { title: 'Ale', beers: docs, options: options });
   })
   .skip(options.skip)
   .limit(options.limit);

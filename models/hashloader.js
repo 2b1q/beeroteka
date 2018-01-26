@@ -36,8 +36,8 @@ const buildJSON1 = (item) => {
     ap_json.ap_composition = item._source['Состав'] || '';
     ap_json.ap_url = item._source['url'] || '';
     ap_json.ap_taste = item._source['Вкусовые оттенки'] || '';
-    let {...desc} = item._source.desc; // ...spread
-    ap_json.ap_desc = desc || '';
+    let {...desc} = item._source.desc; // ...rest [] All obj properties
+    ap_json.ap_desc = desc || {};
     // create BA query object
     let query_object = {
       beer: ap_json.ap_beer,
@@ -146,9 +146,9 @@ function insertData() {
     co(function* (){
       console.log(`${config.color.green}============= START DELETE =============`);
       yield apivoModel.remove({}, function(err) {
-        console.log('collection removed')
+        if(err) log.error(err.message);
+        console.log(`${config.color.green}============= DELETE COMPLETE =============`);
       });
-      console.log(`${config.color.green}============= DELETE COMPLETE =============`);
       console.log(`${config.color.white}============= START INSERTS =============`);
       result_arr.forEach((item) => {
         let obj = Object.assign(item.apdata, item.badata)
