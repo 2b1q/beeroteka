@@ -3,9 +3,9 @@
     .row
       .col-md-3
         if json_obj.img
-          +img-rounded(json_obj.img,"Circle image")
+          +img-rounded(json_obj.img,json_obj.beer)
         else
-          +img-circle("../images/beer_bottle.png","Circle image")
+          +img-circle("../images/beer_bottle.png",json_obj.beer)
       .col-md-2
       .col-md-4
         if json_obj.Название
@@ -30,3 +30,6 @@
           |&nbsp; #{json_obj.Объем}<br>
           strong Тара:
           |&nbsp; #{json_obj.Тара}<br>
+          if json_obj.url
+            +a-btn(json_obj.url) Перейти на сайт
+            |<br>

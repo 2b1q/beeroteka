@@ -4,9 +4,9 @@
       row
         .col-md-4
           if doc.ap_img
-            +img-rounded(doc.ap_img,"Circle image")
+            +img-rounded(doc.ap_img,doc.ap_beer)
           else
-            +img-circle("../../images/beer_bottle.png","Circle image")
+            +img-circle("../../images/beer_bottle.png",doc.ap_beer)
         .col-md-4
           if doc.ap_beer
             h4 apivo.ru

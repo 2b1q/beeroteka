@@ -4,9 +4,9 @@
       row
         .col-md-4
           if doc.ba_img
-            +img-rounded(doc.ba_img,"Circle image")
+            +img-rounded(doc.ba_img,doc.ba_beer)
           else
-            +img-circle("../../images/beer_bottle.png","Circle image")
+            +img-circle("../../images/beer_bottle.png",doc.ba_beer)
         .col-md-4
           h4 BA Score: #{doc.ba_beer_score} / 5
           - var score_percent = Math.round(doc.ba_beer_score/0.05)
