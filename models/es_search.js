@@ -40,7 +40,7 @@ function query2(result1data){
         .then(function(resp){
           // IF Query2 clauses have HITS then render this OBJ
           if( resp.hits.hits.length > 0 ) {
-            log.info(`${config.color.yellow} QUERY 2 Hits count: ${config.color.white+resp.hits.hits.length}`)
+            log.info(`${config.color.yellow} QUERY 2 Hits count: ${config.color.white+resp.hits.total}`)
             console.log(`${config.color.yellow}
               >>> RETURN RESULT 2 <<<\n`);
             resp.hits.hits[i]._source.BA_score = item._source.score;
@@ -71,12 +71,12 @@ var query1 = function(searchTxt1, callback){
     es_client.client.search(query.search(searchTxt1, 'ba_simple_query_string'))
       .then(function(resp){
           var result1 = resp.hits.hits;
-          log.info(`${config.color.yellow} QUERY 1 BA Hits count: ${config.color.white+result1.length}`)
+          log.info(`${config.color.yellow} QUERY 1 BA Hits count: ${config.color.white+resp.hits.total}`)
           if( result1.length === 0 ) {
             es_client.client.search(query.search(searchTxt1, 'apivo_simple_query_string'))
             .then(function(resp){
               result1 = resp.hits.hits;
-              log.info(`${config.color.yellow} QUERY 1 APIVO Hits count: ${config.color.white+result1.length}`)
+              log.info(`${config.color.yellow} QUERY 1 APIVO Hits count: ${config.color.white+resp.hits.total}`)
               callback(result1) // return callback
             }, function(err) {
               reject(err.message) // return err.stack

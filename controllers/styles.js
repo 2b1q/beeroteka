@@ -1,5 +1,6 @@
 /** Style controller */
 var elastic = require('../models/es_search'), // add es_search API
+    co = require('co'),
     log = require('../libs/log')(module),
     apivoModel = require('../models/apivoModel');
 
@@ -72,6 +73,24 @@ exports.ales = function(req, res) {
   .limit(options.limit);
 }
 
+// count MongoDocs Promise (for yield generator statements)
+var doc_count_promise = (query) => {
+  return apivoModel.count(query, function (err, count) {
+    if(err) throw err.message;
+  });
+}
+
+// find MongoDocs Promise (for yield generator statements)
+var doc_find_promise = (query, options) => {
+  return apivoModel.find(query, function (err, docs) {
+    if(err) throw err.message;
+    return docs; // return data
+  })
+  .skip(options.skip)
+  .limit(options.limit);
+}
+
+
 // mongoose find style by pattern
 exports.find = function (req, res) {
   console.log(`Req.query: "${req.query.q}"`);
@@ -89,13 +108,16 @@ exports.find = function (req, res) {
     let query = {
       $or: [ { ap_style: regexp }, { ba_style: regexp }, { ba_category: regexp } ]
     }
-    apivoModel.find(query, function(err, docs) {
-      if(err) log.error(`ERROR while getting docs from mongo: "${err}"`);
-      // res.json(docs);
-      // console.log(JSON.stringify(docs, null, 2));
-      res.render('catalog', { title: 'Style: '+pattern, result: docs, options: options });
-    })
-    .skip(options.skip)
-    .limit(options.limit);
+
+    // co wrap 2 async calls
+    co(function* () {
+      let count_docs_promise = yield doc_count_promise(query); // count docs for query
+      let find_docs_promise = yield doc_find_promise(query, options); // then get docs for query
+      console.log(`Found mongoDB docs: ${count_docs_promise}`);
+      res.render('catalog', { title: 'Style: '+pattern, result: find_docs_promise, options: options, total: count_docs_promise });
+    }).catch((err) => {
+      log.error(err.message);
+    });
+
   }
 }

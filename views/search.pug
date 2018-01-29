@@ -15,7 +15,7 @@ append body
 				button.btn.btn-primary(type='submit')= 'Найти пиво'
 		.container
 			if results[0] != null
-				+alert-i-success('Успешный результат поиска по запросу: '+query)
+				+alert-i-success('Успешный результат поиска по запросу: "'+query+'". Найдено записай '+results.length)
 				for result in results
 					- var json_obj = JSON.parse(JSON.stringify(result._source));
 					// render beeradvocate in .jumbotron

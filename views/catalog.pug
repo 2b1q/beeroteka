@@ -47,7 +47,7 @@ append body
     if result != null
       |<br><br>
       h1= title
-      |<b>limit:</b> #{options.limit}
+      |<b>Total MongoDB docs found:</b>&nbsp;#{total}<br><b>limit:</b> #{options.limit}
       .jumbotron
         for doc in result
           if doc.ap_beer && doc.ba_beer
