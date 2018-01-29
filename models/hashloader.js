@@ -5,6 +5,7 @@ var es_client = require('../libs/elasticsearch'), // require ES module
     // _ = require('lodash'),
     dict = require('./dict'), // rus > eng dict
     apivoModel = require('./apivoModel'), // Create Apivo schema model
+    apivoModel = require('./baModel'), // Create Ba schema model
     query = require('./dsl');
 
 var result_arr = []; // common result array
@@ -113,6 +114,29 @@ function getApDocs(){
   });
 }
 
+// get all BA docs
+function getBaDocs() {
+  return es_client.client.search(query.ba_getAllDocs())
+    .then(function(resp){
+      return resp;
+    }, function (err) {
+      throw err;
+    }
+  );
+}
+
+// LoadHashes2
+var LoadHashes2 = function() {
+  co(function* () {
+    let ba_docs = yield getBaDocs(); //
+    console.log(`total BA docs: "${ba_docs.hits.total}"`);
+  }).catch((err) => {
+    log.error(`LoadHashes2 error: ${err.message}`);
+    // Result window is too large, from + size must be less than or equal to: [10000] but was [250000]
+  })
+}
+
+
 // searh Matches in BeerAdvocate INDEX from Apivo INDEX response
 function searchBaMatches(ApDocs){
   return new Promise((resolve) => {
@@ -176,5 +200,6 @@ var LoadHashes = function(){
 }
 
 module.exports = {
-  LoadHashes: LoadHashes
+  LoadHashes: LoadHashes,
+  LoadHashes2: LoadHashes2
 }

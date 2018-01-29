@@ -10,6 +10,7 @@ var search_controller = require('../controllers/search'),
 /* default '/beers' route "/" => Catalog view */
 router.get('/', catalog_controller.default);
 router.get('/catalog/loadhashes', catalog_controller.loadhashes); // TODO add AUTH to this route
+router.get('/catalog/lh2', catalog_controller.lh2); // TODO add AUTH to this route
 
 /* Catalog routes */
 router.get('/search', search_controller.search);

@@ -140,6 +140,18 @@ var ap_getAllDocs = () => {
   }
 }
 
+// BA getAll data
+var ba_getAllDocs = () => {
+  return {
+    index: indexBa,
+    body: {
+        'from' : 0,
+        'size' : 250000,
+        "query": { "match_all": {} }
+    }
+  }
+}
+
 // ba bool_query_string
 var ba_bool_query_string = (searchData) => {
   return {
@@ -196,5 +208,6 @@ var ba_bool_query_string = (searchData) => {
 module.exports = {
   search: query,
   ap_getAllDocs: ap_getAllDocs,
+  ba_getAllDocs: ba_getAllDocs,
   getBaFromAp: ba_bool_query_string
 }
