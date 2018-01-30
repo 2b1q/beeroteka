@@ -2,7 +2,7 @@ var es_client = require('../libs/elasticsearch'), // require ES module
     co = require("co"), // Simple wrapper to the request library for co-like interface (node.js generator based code).
     log = require('../libs/log')(module),
     config = require('../config/config'),
-    // _ = require('lodash'),
+    _ = require('lodash'), // lodash chunks
     dict = require('./dict'), // rus > eng dict
     apivoModel = require('./apivoModel'), // Create Apivo schema model
     apivoModel = require('./baModel'), // Create Ba schema model
@@ -114,9 +114,9 @@ function getApDocs(){
   });
 }
 
-// get all BA docs
-function getBaDocs() {
-  return es_client.client.search(query.ba_getAllDocs())
+// get all BA docs by chunks
+function getBaDocs(from, size) {
+  return es_client.client.search(query.ba_getAllDocs(from, size))
     .then(function(resp){
       return resp;
     }, function (err) {
@@ -125,13 +125,23 @@ function getBaDocs() {
   );
 }
 
-// LoadHashes2
-var LoadHashes2 = function() {
+// LoadChunks co wrap + chunks
+var LoadChunks = function() {
   co(function* () {
-    let ba_docs = yield getBaDocs(); //
-    console.log(`total BA docs: "${ba_docs.hits.total}"`);
+    for(let i=1,
+        chunks = 40, // chunks amount
+        from=0, // start position
+        size=5000, // docs size of chunk
+        ba_docs = yield getBaDocs(from, size);
+        i<=chunks; ++i){
+          console.log(`${config.color.white}chunk "${i}"\n${config.color.green}fetch ${ba_docs.hits.hits.length} of ${ba_docs.hits.total} BA docs from ES`);
+          result_arr.push(ba_docs); // push ES result chunk to array
+          from=+size;
+          ba_docs = yield getBaDocs(from, size); // get new chunk
+    }
+    console.log(`CHUNKS TOTAL "${result_arr.length}"`);
   }).catch((err) => {
-    log.error(`LoadHashes2 error: ${err.message}`);
+    log.error(`LoadChunks error: ${err.message}`);
     // Result window is too large, from + size must be less than or equal to: [10000] but was [250000]
   })
 }
@@ -201,5 +211,5 @@ var LoadHashes = function(){
 
 module.exports = {
   LoadHashes: LoadHashes,
-  LoadHashes2: LoadHashes2
+  LoadChunks: LoadChunks // load ES BA {} result by chunks
 }

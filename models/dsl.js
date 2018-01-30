@@ -141,12 +141,12 @@ var ap_getAllDocs = () => {
 }
 
 // BA getAll data
-var ba_getAllDocs = () => {
+var ba_getAllDocs = (from, size) => {
   return {
     index: indexBa,
     body: {
-        'from' : 0,
-        'size' : 250000,
+        'from' : from,
+        'size' : size, // max size 10000
         "query": { "match_all": {} }
     }
   }

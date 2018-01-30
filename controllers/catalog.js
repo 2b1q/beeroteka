@@ -18,7 +18,7 @@ exports.loadhashes = function(req, res) {
 }
 
 // loadhashes controller
-exports.lh2 = function(req, res) {
-  hashload.LoadHashes2();
+exports.LoadChunks = function(req, res) {
+  hashload.LoadChunks();
   res.redirect('/beers');
 }

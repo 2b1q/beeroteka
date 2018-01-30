@@ -76,14 +76,14 @@ exports.ales = function(req, res) {
 // count MongoDocs Promise (for yield generator statements)
 var doc_count_promise = (query) => {
   return apivoModel.count(query, function (err, count) {
-    if(err) throw err.message;
+    if(err) throw err;
   });
 }
 
 // find MongoDocs Promise (for yield generator statements)
 var doc_find_promise = (query, options) => {
   return apivoModel.find(query, function (err, docs) {
-    if(err) throw err.message;
+    if(err) throw err;
     return docs; // return data
   })
   .skip(options.skip)
