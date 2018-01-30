@@ -114,35 +114,43 @@ function getApDocs(){
   });
 }
 
-// get all BA docs by chunks
-function getBaDocs(from, size) {
-  return es_client.client.search(query.ba_getAllDocs(from, size))
-    .then(function(resp){
-      return resp;
-    }, function (err) {
-      throw err;
-    }
-  );
+/*
+- get all BA docs from ES BA1 index using ES scroll API
+- push HITS to result_arr
+- return Promise
+*/
+function getBaDocs() {
+  return new Promise((resolve) => {
+    es_client.client.search(query.ba_getAllDocs(),
+    function getMoreUntilDone(err, resp) {
+      if(err) throw err;
+      // push each HIT to result_arr
+      resp.hits.hits.forEach((hit) => {
+        result_arr.push(hit._source);
+      });
+      // scroll again IF (resp.hits.total !== result_arr.length)
+      if(resp.hits.total !== result_arr.length){
+        // Next scroll
+        es_client.client.scroll({
+          scrollId: resp._scroll_id,
+          scroll: '10s' // scroll timeout
+        }, getMoreUntilDone);
+      } else {
+        console.log(`${config.color.green}All records fetched.\nHits.total: ${resp.hits.total}`);
+        resolve(resp.hits.total);
+      }
+    });
+  });
 }
 
 // LoadChunks co wrap + chunks
 var LoadChunks = function() {
   co(function* () {
-    for(let i=1,
-        chunks = 40, // chunks amount
-        from=0, // start position
-        size=5000, // docs size of chunk
-        ba_docs = yield getBaDocs(from, size);
-        i<=chunks; ++i){
-          console.log(`${config.color.white}chunk "${i}"\n${config.color.green}fetch ${ba_docs.hits.hits.length} of ${ba_docs.hits.total} BA docs from ES`);
-          result_arr.push(ba_docs); // push ES result chunk to array
-          from=+size;
-          ba_docs = yield getBaDocs(from, size); // get new chunk
-    }
-    console.log(`CHUNKS TOTAL "${result_arr.length}"`);
+    console.log("[ START scrolling ]");
+    yield getBaDocs();
+    console.log(`${config.color.white}[ Scrolling Done! ]`);
   }).catch((err) => {
     log.error(`LoadChunks error: ${err.message}`);
-    // Result window is too large, from + size must be less than or equal to: [10000] but was [250000]
   })
 }
 
