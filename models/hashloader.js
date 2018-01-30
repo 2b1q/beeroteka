@@ -116,20 +116,21 @@ function getApDocs(){
 
 /*
 - get all BA docs from ES BA1 index using ES scroll API
-- push HITS to result_arr
+- push HITS to ba_result[]
 - return Promise
 */
 function getBaDocs() {
+  let ba_result = []; // BA result array
   return new Promise((resolve) => {
     es_client.client.search(query.ba_getAllDocs(),
     function getMoreUntilDone(err, resp) {
       if(err) throw err;
-      // push each HIT to result_arr
+      // push each HIT to ba_result
       resp.hits.hits.forEach((hit) => {
-        result_arr.push(hit._source);
+        ba_result.push(hit._source);
       });
-      // scroll again IF (resp.hits.total !== result_arr.length)
-      if(resp.hits.total !== result_arr.length){
+      // scroll again IF (resp.hits.total !== ba_result.length)
+      if(resp.hits.total !== ba_result.length){
         // Next scroll
         es_client.client.scroll({
           scrollId: resp._scroll_id,
@@ -137,18 +138,24 @@ function getBaDocs() {
         }, getMoreUntilDone);
       } else {
         console.log(`${config.color.green}All records fetched.\nHits.total: ${resp.hits.total}`);
-        resolve(resp.hits.total);
+        resolve(ba_result);
       }
     });
   });
 }
 
-// LoadChunks co wrap + chunks
-var LoadChunks = function() {
+/* LoadHashes2 co wrap
+ get All BA docs using scroll API, Search in AP index, Load result to baModel
+ */
+var LoadHashes2 = function() {
+  let ba_chunks = []; // chunks amount
+  let chunk_size = 1000; // chunk size = 1k {obj} HITS
   co(function* () {
-    console.log("[ START scrolling ]");
-    yield getBaDocs();
-    console.log(`${config.color.white}[ Scrolling Done! ]`);
+    console.log("[ Phase 1 - Start ] => Scrolling all ES hits From BA index");
+    ba_chunks = _.chunk(yield getBaDocs(), chunk_size);
+    console.log(`BA chunks amount: ${ba_chunks.length}\nchunk_size: ${chunk_size}`);
+    console.log(`${config.color.white}[ Phase 1 - Done ]`);
+
   }).catch((err) => {
     log.error(`LoadChunks error: ${err.message}`);
   })
@@ -174,11 +181,6 @@ function searchBaMatches(ApDocs){
       resolve('resolve')
     })
   })
-
-  // setInterval(function () {
-  //   console.log(`${config.color.cyan}Array length: ${config.color.white}${result_arr.length}`);
-  //   console.log(`${config.color.yellow}fetched: ${fetched}`);
-  // }, 500);
 }
 
 // mongoose INSERTS
@@ -218,6 +220,6 @@ var LoadHashes = function(){
 }
 
 module.exports = {
-  LoadHashes: LoadHashes,
-  LoadChunks: LoadChunks // load ES BA {} result by chunks
+  LoadHashes: LoadHashes, // get AP docs, Search in BA, load to apivoModel
+  LoadHashes2: LoadHashes2 // get All BA docs using scroll API, Search in AP index, Load result to baModel
 }
