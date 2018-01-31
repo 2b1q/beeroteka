@@ -145,27 +145,42 @@ function getBaDocs() {
 }
 
 
+function searchApDocs(chunk,i) {
+  console.log(`-resolving chunk ${i}`);
+  return new Promise(function(resolve) {
+    // chunk.forEach((ba_item,n) => {
+    //     // search AP doc from ba_item
+    //     es_client.client.search(query.search(ba_item,'ap_bool_query_string'))
+    //     .then(function(resp){
+    //       console.log(`+solved item ${n}`);
+    //       if(n===ba_item.length) resolve(true);
+    //     }, function(err){
+    //       throw err;
+    //     });
+    // });
 
-// (ES) search in AP from BA index
-function resolveChunk(chunk){
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve("done");
-    }, 500);
   });
 }
 
 // chunk resolver
 function chunkResolver(chunks) {
-  chunks.forEach((chunk, i) => {
-    console.log(`${config.color.green}resolving chunk ${i}`);
-    resolveChunk(chunk); // return Promise
+  return new Promise(function(resolve) {
+    let promise = Promise.resolve(); // start Promise queue
+    chunks.forEach((chunk,i) => {
+      promise = promise.then(() => {
+        searchApDocs(chunk,i);
+      });
+    });
+    promise.then(() => {
+      console.log(`${config.color.white}[ Phase 2 - Done ]\n`);
+      resolve(true); // end Promise queue AND return Promise.resolve() to yield
+    });
   });
 }
 
 /* LoadHashes2 co wrap
- 1. get All BA docs using scroll API, split [] to chunks by 1k items(hits),
- 2. Search in AP index,
+ 1. get All BA docs using scroll API, split [] to chunks by 100 items(hits),
+ 2. Search in AP index, (chunkResolver)
  3. Load result to baModel
  */
 var LoadHashes2 = function() {
@@ -179,6 +194,7 @@ var LoadHashes2 = function() {
     // Phase 2
     console.log(`[ Phase 2 - Start ] => Search in AP from BA index result.`);
     yield chunkResolver(ba_chunks);
+
 
   }).catch((err) => {
     log.error(`LoadChunks error: ${err.message}`);
