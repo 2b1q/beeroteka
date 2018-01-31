@@ -144,24 +144,41 @@ function getBaDocs() {
   });
 }
 
+
+
+// (ES) search in AP from BA index
+function resolveChunk(chunk){
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve("done");
+    }, 500);
+  });
+}
+
+// chunk resolver
+function chunkResolver(chunks) {
+  chunks.forEach((chunk, i) => {
+    console.log(`${config.color.green}resolving chunk ${i}`);
+    resolveChunk(chunk); // return Promise
+  });
+}
+
 /* LoadHashes2 co wrap
  1. get All BA docs using scroll API, split [] to chunks by 1k items(hits),
  2. Search in AP index,
  3. Load result to baModel
  */
 var LoadHashes2 = function() {
-  let tasks = 2; // ES AP Search tasks
   let ba_chunks = []; // chunks amount
-  let chunk_size = 1000; // chunk size = 1k {obj} HITS
+  let chunk_size = 100; // chunk size = 100 {obj} HITS
   co(function* () {
     console.log("[ Phase 1 - Start ] => Scrolling all ES hits From BA index");
     ba_chunks = _.chunk(yield getBaDocs(), chunk_size);
-    console.log(`BA chunks amount: ${ba_chunks.length}\nchunk_size: ${chunk_size}`);
+    console.log(`BA chunks amount: ${ba_chunks.length}\nchunk_size: ${chunk_size} items`);
     console.log(`${config.color.white}[ Phase 1 - Done ]\n`);
     // Phase 2
-    ba_chunks = _.chunk(ba_chunks, tasks);
-    console.log(`[ Phase 2 - Start ] => Search in AP from BA index result.
-  - using ${tasks} tasks of ${ba_chunks.length} chunks`);
+    console.log(`[ Phase 2 - Start ] => Search in AP from BA index result.`);
+    yield chunkResolver(ba_chunks);
 
   }).catch((err) => {
     log.error(`LoadChunks error: ${err.message}`);
