@@ -5,8 +5,8 @@ var config = require('../config/config'),
 
 // common ES query function
 var query = function(searchData, queryType){
-  // console.log(`${config.color.yellow} Query type: ${config.color.white+queryType}`);
-  // console.log(`${config.color.yellow} searchData params: ${config.color.white+JSON.stringify(searchData, null, 2)}`);
+  console.log(`${config.color.yellow} Query type: ${config.color.white+queryType}`);
+  console.log(`${config.color.yellow} searchData params: ${config.color.white+JSON.stringify(searchData, null, 2)}`);
   switch (queryType) {
     case 'ap_bool_query_string':
       return ap_bool_query_string(searchData);

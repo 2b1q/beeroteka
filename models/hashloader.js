@@ -144,20 +144,30 @@ function getBaDocs() {
   });
 }
 
-
+// solving chunk items in parallel
 function searchApDocs(chunk,i) {
-  console.log(`-resolving chunk ${i}`);
+  console.log(`${config.color.green}-resolving chunk ${i}`);
   return new Promise(function(resolve) {
-    // chunk.forEach((ba_item,n) => {
-    //     // search AP doc from ba_item
-    //     es_client.client.search(query.search(ba_item,'ap_bool_query_string'))
-    //     .then(function(resp){
-    //       console.log(`+solved item ${n}`);
-    //       if(n===ba_item.length) resolve(true);
-    //     }, function(err){
-    //       throw err;
-    //     });
-    // });
+    // async ES API searh AP index (1 item)
+    var ap_search_item = ba_item => {
+      return new Promise(function(resolve,reject) {
+        // setTimeout(() => {
+        //   console.log(`${config.color.yellow}${ba_item.beer} +solved`);
+        //   resolve(1);
+        // },500);
+        es_client.client.search(query.search(ba_item,'ap_bool_query_string'))
+        .then((resp) => {
+          // console.log(`${config.color.yellow}+solved`);
+          resolve(resp.hits.hits._source);
+        },(err) => {
+          reject(err.message);
+        });
+      });
+    };
+
+    // solve async Promises in parallel
+    Promise.all(chunk.map(ap_search_item))
+    .then(ap_resp => { resolve(1) });
 
   });
 }
@@ -168,7 +178,8 @@ function chunkResolver(chunks) {
     let promise = Promise.resolve(); // start Promise queue
     chunks.forEach((chunk,i) => {
       promise = promise.then(() => {
-        searchApDocs(chunk,i);
+        // resolve chunk (chunk_size) items
+        return searchApDocs(chunk,i);
       });
     });
     promise.then(() => {
