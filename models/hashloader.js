@@ -150,25 +150,39 @@ function searchApDocs(chunk,i) {
   return new Promise(function(resolve) {
     // async ES API searh AP index (1 item)
     var ap_search_item = ba_item => {
+      // build searh object (avoid bad data in term query)
+      let query_object = {
+        beer: ba_item.beer.replace(/[^a-zA-Z0-9 '`]/g, ''), // drop specific symbols '@!$@^%..' caz ! -> crash the query 2
+        brewary: ba_item.brewary.replace(/[^a-zA-Z0-9 '`]/g, ''),
+        style: ba_item.style.replace(/[^a-zA-Z0-9 ]/g, ''),
+        category: ba_item.category.replace(/[^a-zA-Z0-9 ]/g, ''),
+        abv: (isInteger(ba_item.abv) || isFloat(ba_item.abv)) ? ba_item.abv : 0 // somtimes item._source.abv isNAN
+      }
       return new Promise(function(resolve,reject) {
-        // setTimeout(() => {
-        //   console.log(`${config.color.yellow}${ba_item.beer} +solved`);
-        //   resolve(1);
-        // },500);
-        es_client.client.search(query.search(ba_item,'ap_bool_query_string'))
-        .then((resp) => {
-          // console.log(`${config.color.yellow}+solved`);
-          resolve(resp.hits.hits._source);
-        },(err) => {
-          reject(err.message);
+        es_client.client.search(query.search(query_object, 'ap_bool_query_string'))
+        .then(function(resp) {
+          // lookup AP hits
+          let ap_obj = _.head(resp.hits.hits);
+          if(_.has(ap_obj, '_source'))  ap_obj = ap_obj._source;
+          else ap_obj = undefined;
+          // build result object
+          let resolved_obj = {
+            badata: ba_item,
+            apdata: ap_obj
+          }
+          // build result array
+          result_arr.push(resolved_obj);
+          // found matches
+          if(resp.hits.hits.length>0) console.log(`${config.color.yellow}resolved_obj${config.color.green}`);
+          // resolve async promise
+          resolve(true);
+        },function(err) {
+          reject(err);
         });
       });
     };
-
     // solve async Promises in parallel
-    Promise.all(chunk.map(ap_search_item))
-    .then(ap_resp => { resolve(1) });
-
+    Promise.all(chunk.map(ap_search_item)).then(() => { resolve(true) });
   });
 }
 
