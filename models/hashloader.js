@@ -173,7 +173,9 @@ function searchApDocs(chunk,i) {
           // build result array
           result_arr.push(resolved_obj);
           // found matches
-          if(resp.hits.hits.length>0) console.log(`${config.color.yellow}resolved_obj${config.color.green}`);
+          if(resp.hits.hits.length>0) {
+            console.log(config.color.yellow+JSON.stringify(resolved_obj,null,2)+config.color.green);
+          }
           // resolve async promise
           resolve(true);
         },function(err) {
