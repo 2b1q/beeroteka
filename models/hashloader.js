@@ -5,7 +5,7 @@ var es_client = require('../libs/elasticsearch'), // require ES module
     _ = require('lodash'), // lodash chunks
     dict = require('./dict'), // rus > eng dict
     apivoModel = require('./apivoModel'), // Create Apivo schema model
-    apivoModel = require('./baModel'), // Create Ba schema model
+    baModel = require('./baModel'), // Create Ba schema model
     query = require('./dsl');
 
 var result_arr = []; // common result array
@@ -120,6 +120,7 @@ function getApDocs(){
 - return Promise
 */
 function getBaDocs() {
+  console.log("[ Phase 1 - Start ] => Scrolling all ES hits From BA index");
   let ba_result = []; // BA result array
   return new Promise((resolve) => {
     es_client.client.search(query.ba_getAllDocs(),
@@ -138,6 +139,7 @@ function getBaDocs() {
         }, getMoreUntilDone);
       } else {
         console.log(`${config.color.green}All records fetched.\nHits.total: ${resp.hits.total}`);
+        console.log(`${config.color.white}[ Phase 1 - Done ]\n`);
         resolve(ba_result);
       }
     });
@@ -190,6 +192,7 @@ function searchApDocs(chunk,i) {
 
 // chunk resolver
 function chunkResolver(chunks) {
+  console.log(`[ Phase 2 - Start ] => Search in AP from BA index result.`);
   return new Promise(function(resolve) {
     let promise = Promise.resolve(); // start Promise queue
     chunks.forEach((chunk,i) => {
@@ -205,24 +208,51 @@ function chunkResolver(chunks) {
   });
 }
 
+function drop() {
+  console.log(`[ Phase 3 - Start ] => Load result_arr ${result_arr.length} AP+BA items to baModel`);
+  console.log(`${config.color.green}== Drop baModel IF exists ==`);
+  return new Promise(function(resolve, reject) {
+    baModel.remove({}, function(err) {
+      if(err) reject(err.message);
+      console.log(`${config.color.white}== Done ==`);
+      resolve(true);
+    });
+  });
+}
+
+function inserts(){
+  console.log(`${config.color.green}== START INSERTS ==`);
+  return new Promise(function(resolve, reject) {
+    result_arr.forEach((item) => {
+      let obj = Object.assign(item.badata,item.apdata);
+      let insert = new baModel(obj);
+      insert.save((err) => {
+        if(err) reject(err.message)
+      });
+    });
+    console.log(`${config.color.white}== ALL object saved ==${config.color.yellow}`);
+    resolve(true);
+  });
+}
+
 /* LoadHashes2 co wrap
  1. get All BA docs using scroll API, split [] to chunks by 100 items(hits),
- 2. Search in AP index, (chunkResolver)
+ 2. Search in AP index from BA result
+ chunk by chunk (chunkResolver) 100 async promises in parallel [Promise.all]
  3. Load result to baModel
  */
 var LoadHashes2 = function() {
   let ba_chunks = []; // chunks amount
   let chunk_size = 100; // chunk size = 100 {obj} HITS
   co(function* () {
-    console.log("[ Phase 1 - Start ] => Scrolling all ES hits From BA index");
+    // Phase 1
     ba_chunks = _.chunk(yield getBaDocs(), chunk_size);
     console.log(`BA chunks amount: ${ba_chunks.length}\nchunk_size: ${chunk_size} items`);
-    console.log(`${config.color.white}[ Phase 1 - Done ]\n`);
     // Phase 2
-    console.log(`[ Phase 2 - Start ] => Search in AP from BA index result.`);
     yield chunkResolver(ba_chunks);
-
-
+    // Phase 3
+    yield drop();
+    yield inserts(); // result_arr
   }).catch((err) => {
     log.error(`LoadChunks error: ${err.message}`);
   })
