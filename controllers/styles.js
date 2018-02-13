@@ -2,7 +2,8 @@
 var elastic = require('../models/es_search'), // add es_search API
     co = require('co'),
     log = require('../libs/log')(module),
-    apivoModel = require('../models/apivoModel');
+    apivoModel = require('../models/apivoModel'),
+    baModel = require('../models/baModel');
 
 // normalize query params
 let param_normalizer = (p, s) => {
@@ -25,9 +26,9 @@ let param_normalizer = (p, s) => {
 // common '/style' route controller
 exports.styles = function(req, res) {
   // find/count mongo recs
-  apivoModel.find({}, function(err, docs){
+  baModel.find({}, function(err, docs){
     if(err) log.error(`ERROR while getting docs from mongo: "${err}"`)
-    console.log(`apivoModel docs: ${docs.length}`);
+    console.log(`baModel docs: ${docs.length}`);
   })
   // req.query parser
   if(req.query.agg === 'ap1') {
@@ -63,7 +64,7 @@ exports.ales = function(req, res) {
     $or: [ { ap_style: /ale/i }, { ba_style: /ale/i }, { ba_category: /ale/i } ]
     // $and: [ { ap_style: /ale/i }, { ba_style: /ale/i }, { ba_category: /ale/i } ]
   }
-  apivoModel.find(query, function(err, docs) {
+  baModel.find(query, function(err, docs) {
     if(err) log.error(`ERROR while getting docs from mongo: "${err}"`);
     // res.json(docs);
     // console.log(JSON.stringify(docs, null, 2));
@@ -75,14 +76,14 @@ exports.ales = function(req, res) {
 
 // count MongoDocs Promise (for yield generator statements)
 var doc_count_promise = (query) => {
-  return apivoModel.count(query, function (err, count) {
+  return baModel.count(query, function (err, count) {
     if(err) throw err;
   });
 }
 
 // find MongoDocs Promise (for yield generator statements)
 var doc_find_promise = (query, options) => {
-  return apivoModel.find(query, function (err, docs) {
+  return baModel.find(query, function (err, docs) {
     if(err) throw err;
     return docs; // return data
   })
@@ -97,7 +98,7 @@ exports.find = function (req, res) {
   // temp options
   let options = {
     skip: 0,
-    limit: 30
+    limit: 100
   }
   if(req.query.q === undefined) res.redirect('/beers');
   else {

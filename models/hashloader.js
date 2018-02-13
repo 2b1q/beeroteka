@@ -194,7 +194,7 @@ function searchApDocs(chunk,i) {
           ba_json.ba_url =         ba_item.url;
           ba_json.ba_ratings =     ba_item.Ratings;
           ba_json.ba_reviews =     ba_item.Reviews;
-          ba_json.ba_abv =         ba_item.abv;
+          ba_json.ba_abv =         (isInteger(ba_item.abv) || isFloat(ba_item.abv)) ? ba_item.abv : 0; // fix ValidationError: baModel validation failed: ba_abv: Cast to Number failed for value "[ 0 ]" at path "ba_abv"
           ba_json.ba_brewary =     ba_item.brewary;
           ba_json.ba_beer =        ba_item.beer;
           ba_json.ba_style =       ba_item.style;
@@ -259,13 +259,17 @@ function inserts(){
   ${config.color.white}Total objects to insert: ${result_arr.length}
   ${config.color.white}Matched objects: ${matched}`);
   return new Promise(function(resolve, reject) {
+    let promise = Promise.resolve(); // start Promise queue
     result_arr.forEach((item,i) => {
-      let obj = Object.assign(item.badata, item.apdata);
-      // console.log(`item ${i}:\n${JSON.stringify(obj,null,2)}`);
-      let insert = new baModel(obj);
-      insert.save((err) => {
-        // if(err) reject(err.message)
-        if(err) throw err;
+      promise = promise.then(() => {
+        return (() => {
+          // console.log(`item ${i}:\n${JSON.stringify(obj,null,2)}`);
+          let obj = Object.assign(item.badata, item.apdata);
+          let insert = new baModel(obj);
+          return insert.save((err) => {
+            if(err) throw err;
+          });
+        })();
       });
     });
     console.log(config.color.cyan+'ALL object saved');
@@ -286,7 +290,7 @@ var LoadHashes2 = function() {
   co(function* () {
     // Phase 1
     ba_chunks = _.chunk(yield getBaDocs(), chunk_size);
-    ba_chunks = _.dropRight(ba_chunks, 1800); // debug
+    // ba_chunks = _.dropRight(ba_chunks, 1800); // debug
     log.info(`BA chunks amount: ${ba_chunks.length}\nchunk_size: ${chunk_size} items`);
     // Phase 2
     yield chunkResolver(ba_chunks);
