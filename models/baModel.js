@@ -6,7 +6,20 @@ var Schema = mongoose.Schema;
 
 // BeerAdvocate enriched by Apivo data
 var baSchema = new Schema({
-  ap_beer:             { type: String, required: true }, // Apivo beer name without substr @brewary
+  ba_beer_score:       Number, // Beer BA Score,
+  ba_img:              String, // "img":null,
+  ba_title:            String, // "title":"Wee Heavy Scotch Ale | Brouwerij Kees | BeerAdvocate",
+  ba_url:              String, //"https://www.beeradvocate.com/beer/profile/39015/204826/",
+  ba_ratings:          Number, // "Ratings":10,
+  ba_reviews:          Number, // "Reviews":4,
+  ba_abv:              Number, // (type => Double) eg "abv":9.5,
+  ba_brewary:          String, // "Jolly Pumpkin"
+  ba_beer:             { type: String, required: true }, // eg. "beer":"Wee Heavy Scotch Ale"
+  ba_style:            String, // "Scotch Ale / Wee Heavy",
+  ba_category:         String, // eg. "category":"Irish Ales",
+  approved:            { type: Boolean, default: false }, // IF ap_data EQUAL to ba_date => set to true
+  updated:             { type: Date, default: Date.now },
+  ap_beer:             String, // Apivo beer name without substr @brewary
   ap_orig_beer_name:   String, // Apivo original beer name with @brewary
   ap_brewary:          String, // Apivo brewary
   ap_style:            String, // eg "ap_style":"Red Ale - American Amber / Red",
@@ -29,26 +42,12 @@ var baSchema = new Schema({
     "3":               String,
     "4":               String
   }, // String (in real {} OR obj)
-  approved:            { type: Boolean, default: false }, // IF ap_data EQUAL to ba_date => set to true
-  updated:             { type: Date, default: Date.now },
   country_obj: {
     name:              String,  // eg. "name":"United States"
     code:              String,  // eg. "code":"USA"
     emoji:             String,  // eg. "emoji":"🇺🇸"
     currencies:        [String]        // eg. "currencies":["USD"]
-  }, //"country_obj":{"name":"United States","code":"USA","emoji":"🇺🇸","currencies":["USD"]},
-  ba_score:            Number, // (type => Double) BeerAdvocate (ba1 index DSL 'ba_bool_query_string' search query _score) eg, "score":3.85,
-  ba_beer_score:       Number, // Beer BA Score,
-  ba_img:              String, // "img":null,
-  ba_title:            String, // "title":"Wee Heavy Scotch Ale | Brouwerij Kees | BeerAdvocate",
-  ba_url:              String, //"https://www.beeradvocate.com/beer/profile/39015/204826/",
-  ba_ratings:          Number, // "Ratings":10,
-  ba_reviews:          Number, // "Reviews":4,
-  ba_abv:              Number, // (type => Double) eg "abv":9.5,
-  ba_brewary:          String, // "Jolly Pumpkin"
-  ba_beer:             String, // eg. "beer":"Wee Heavy Scotch Ale"
-  ba_style:            String, // "Scotch Ale / Wee Heavy",
-  ba_category:         String // eg. "category":"Irish Ales",
+  } //"country_obj":{"name":"United States","code":"USA","emoji":"🇺🇸","currencies":["USD"]},
 });
 
 module.exports = mongoose.model('baModel', baSchema );

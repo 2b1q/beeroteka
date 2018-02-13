@@ -8,7 +8,8 @@ var es_client = require('../libs/elasticsearch'), // require ES module
     baModel = require('./baModel'), // Create Ba schema model
     query = require('./dsl');
 
-var result_arr = []; // common result array
+var result_arr = [], // common result array
+    matched = 0; // total HITS matched
 
 var isFloat = n => n === +n && n !== (n|0),
     isInteger = n => n === +n && n === (n|0)
@@ -163,20 +164,53 @@ function searchApDocs(chunk,i) {
       return new Promise(function(resolve,reject) {
         es_client.client.search(query.search(query_object, 'ap_bool_query_string'))
         .then(function(resp) {
+          let ba_json = {}, ap_json = {};
           // lookup AP hits
           let ap_obj = _.head(resp.hits.hits);
-          if(_.has(ap_obj, '_source'))  ap_obj = ap_obj._source;
-          else ap_obj = undefined;
+          if(_.has(ap_obj, '_source')) {
+            // Create AP properties
+            ap_json.ap_beer = ap_obj._source.beer || '';
+            ap_json.ap_orig_beer_name = ap_obj._source['Название'];
+            ap_json.ap_brewary = ap_obj._source.brewary || '';
+            ap_json.ap_style = ap_obj._source['Вид пива'] || '';
+            ap_json.ap_country = ap_obj._source['Страна'];
+            ap_json.country_obj = dict.getCountry(ap_obj._source['Страна']) || {};
+            ap_json.ap_abv = ap_obj._source.abv;
+            ap_json.ap_img = ap_obj._source.img;
+            ap_json.ap_vol = ap_obj._source['Объем'] || '';
+            ap_json.ap_density = ap_obj._source['density'] || '';
+            ap_json.ap_tara = ap_obj._source['Тара'] || '';
+            ap_json.ap_type = ap_obj._source['Тип брожения'] || '';
+            ap_json.ap_price_str = ap_obj._source['Цена'] || '';
+            ap_json.ap_price_num = ap_obj._source['price'] || '';
+            ap_json.ap_composition = ap_obj._source['Состав'] || '';
+            ap_json.ap_url = ap_obj._source['url'] || '';
+            ap_json.ap_taste = ap_obj._source['Вкусовые оттенки'] || '';
+          }
+          // BA properties
+          ba_json.ba_beer_score =  ba_item.score;
+          ba_json.ba_img =         ba_item.img;
+          ba_json.ba_title =       ba_item.title;
+          ba_json.ba_url =         ba_item.url;
+          ba_json.ba_ratings =     ba_item.Ratings;
+          ba_json.ba_reviews =     ba_item.Reviews;
+          ba_json.ba_abv =         ba_item.abv;
+          ba_json.ba_brewary =     ba_item.brewary;
+          ba_json.ba_beer =        ba_item.beer;
+          ba_json.ba_style =       ba_item.style;
+          ba_json.ba_category =    ba_item.category;
+
           // build result object
           let resolved_obj = {
-            badata: ba_item,
-            apdata: ap_obj
+            apdata: ap_json,
+            badata: ba_json
           }
           // build result array
           result_arr.push(resolved_obj);
           // found matches
           if(resp.hits.hits.length>0) {
-            console.log(config.color.yellow+JSON.stringify(resolved_obj,null,2)+config.color.green);
+            matched++;
+            console.log(config.color.yellow +"HIT matched"+ config.color.green);
           }
           // resolve async promise
           resolve(true);
@@ -202,7 +236,7 @@ function chunkResolver(chunks) {
       });
     });
     promise.then(() => {
-      console.log(`${config.color.white}[ Phase 2 - Done ]\n`);
+      console.log(`${config.color.white}[ Phase 2 - Done ] => Matched ${matched} objects\n`);
       resolve(true); // end Promise queue AND return Promise.resolve() to yield
     });
   });
@@ -214,7 +248,7 @@ function drop() {
   return new Promise(function(resolve, reject) {
     baModel.remove({}, function(err) {
       if(err) reject(err.message);
-      console.log(`${config.color.white}== Done ==`);
+      console.log(`${config.color.white} Done`);
       resolve(true);
     });
   });
@@ -222,16 +256,19 @@ function drop() {
 
 function inserts(){
   console.log(`${config.color.green}== START INSERTS ==
-  ${config.color.white}total objects: ${result_arr.length}`);
+  ${config.color.white}Total objects to insert: ${result_arr.length}
+  ${config.color.white}Matched objects: ${matched}`);
   return new Promise(function(resolve, reject) {
-    result_arr.forEach((item) => {
-      let obj = Object.assign(item.badata,item.apdata);
+    result_arr.forEach((item,i) => {
+      let obj = Object.assign(item.badata, item.apdata);
+      // console.log(`item ${i}:\n${JSON.stringify(obj,null,2)}`);
       let insert = new baModel(obj);
       insert.save((err) => {
-        if(err) reject(err.message)
+        // if(err) reject(err.message)
+        if(err) throw err;
       });
     });
-    console.log(`${config.color.white}== ALL object saved ==${config.color.yellow}`);
+    console.log(config.color.cyan+'ALL object saved');
     result_arr = null;
     resolve(true);
   });
@@ -249,7 +286,8 @@ var LoadHashes2 = function() {
   co(function* () {
     // Phase 1
     ba_chunks = _.chunk(yield getBaDocs(), chunk_size);
-    console.log(`BA chunks amount: ${ba_chunks.length}\nchunk_size: ${chunk_size} items`);
+    ba_chunks = _.dropRight(ba_chunks, 1800); // debug
+    log.info(`BA chunks amount: ${ba_chunks.length}\nchunk_size: ${chunk_size} items`);
     // Phase 2
     yield chunkResolver(ba_chunks);
     // Phase 3
@@ -294,7 +332,7 @@ function insertData() {
       });
       console.log(`${config.color.white}============= START INSERTS =============`);
       result_arr.forEach((item) => {
-        let obj = Object.assign(item.apdata, item.badata)
+        let obj = Object.assign(item.apdata, item.badata);
         let insert = new apivoModel(obj);
         insert.save((err) => {
           if(err) reject(err.message)
