@@ -221,7 +221,8 @@ function drop() {
 }
 
 function inserts(){
-  console.log(`${config.color.green}== START INSERTS ==`);
+  console.log(`${config.color.green}== START INSERTS ==
+  ${config.color.white}total objects: ${result_arr.length}`);
   return new Promise(function(resolve, reject) {
     result_arr.forEach((item) => {
       let obj = Object.assign(item.badata,item.apdata);
@@ -231,6 +232,7 @@ function inserts(){
       });
     });
     console.log(`${config.color.white}== ALL object saved ==${config.color.yellow}`);
+    result_arr = null;
     resolve(true);
   });
 }
