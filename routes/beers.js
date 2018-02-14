@@ -17,7 +17,7 @@ router.get('/search', search_controller.search);
 
 /* '/beers/styles' route. Styles controllers */
 router.get('/styles', style_controller.styles);
-router.get('/styles/ales', style_controller.ales);
+// router.get('/styles/ales', style_controller.ales);
 router.get('/styles/find', style_controller.find);
 
 module.exports = router;

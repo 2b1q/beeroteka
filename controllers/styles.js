@@ -54,66 +54,9 @@ exports.styles = function(req, res) {
   }
 }
 
-// mongoose find Ales
-exports.ales = function(req, res) {
-  console.log(`---- invoke style.ale controller ----`);
-  console.log(`Req.query.p: "${req.query.p}", Req.query.s: "${req.query.s}"`);
-  let options = param_normalizer(req.query.p, req.query.s);
-  // MongoDB query pattern
-  let query = {
-    $or: [ { ap_style: /ale/i }, { ba_style: /ale/i }, { ba_category: /ale/i } ]
-    // $and: [ { ap_style: /ale/i }, { ba_style: /ale/i }, { ba_category: /ale/i } ]
-  }
-  // get All docs by query pattern
-  baModel.find(query)
-    .skip(options.skip)
-    .limit(options.limit)
-    .exec(function(err, docs) {
-      if(err) {
-        log.error(`ERROR while getting docs from mongo: "${err}"`);
-        return next(err);
-      }
-      // count docs by query pattern
-      baModel.count(query).exec(function (err, count) {
-        if(err) return next(err);
-        // render context (docs + pagination properties)
-        res.render('catalog', {
-          title: 'Ale',
-          beers: docs, // docs objects (beer cards)
-          options: options,
-          docs: count,
-          pages: Math.ceil(count / options.limit)
-        });
-      })
-    })
-}
-
-// count MongoDocs Promise (for yield generator statements)
-var doc_count_promise = (query) => {
-  return baModel.count(query, function (err, count) {
-    if(err) throw err;
-  });
-}
-
-// find MongoDocs Promise (for yield generator statements)
-var doc_find_promise = (query, options) => {
-  return baModel.find(query, function (err, docs) {
-    if(err) throw err;
-    return docs; // return data
-  })
-  .skip(options.skip)
-  .limit(options.limit);
-}
-
-
 // mongoose find style by pattern
 exports.find = function (req, res) {
   console.log(`Req.query: "${req.query.q}"`);
-  // temp options
-  // let options = {
-  //   skip: 0,
-  //   limit: 100
-  // }
   let options = param_normalizer(req.query.p, req.query.s);
 
   if(req.query.q === undefined) res.redirect('/beers');
@@ -126,15 +69,6 @@ exports.find = function (req, res) {
       $or: [ { ap_style: regexp }, { ba_style: regexp }, { ba_category: regexp } ]
     }
 
-    // co wrap 2 async calls
-    // co(function* () {
-    //   let count_docs_promise = yield doc_count_promise(query); // count docs for query
-    //   let find_docs_promise = yield doc_find_promise(query, options); // then get docs for query
-    //   console.log(`Found mongoDB docs: ${count_docs_promise}`);
-    //   res.render('catalog', { title: 'Style: '+pattern, result: find_docs_promise, options: options, total: count_docs_promise });
-    // }).catch((err) => {
-    //   log.error(err.message);
-    // });
     // get All docs by query pattern
     baModel.find(query)
       .skip(options.skip)
