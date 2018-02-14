@@ -36,7 +36,29 @@ append body
     if beers != null
       |<br><br>
       h1= title
-      |<b>page:</b> #{options.page} <b>limit:</b> #{options.limit}
+      |<b>page:</b> #{options.page} <b>limit:</b> #{options.limit} <b>pages:</b> #{pages} <b>Docs total:</b> #{docs}
+      if pages > 0
+        .container
+          |<ul class="pagination text-center">
+          if options.page == 1
+            |<li class="disabled"><a>First</a></li>
+          else
+            |<li><a href="?">First</a></li>
+          - var i = (Number(options.page) > 5 ? Number(options.page) - 4 : 1)
+          if i !== 1
+            |<li class="disabled"><a>...</a></li>
+          - for (; i <= (Number(options.page) + 4) && i <= pages; i++)
+            if (i == options.page)
+              |<li class="active"><a>#{i}</a></li>
+            else
+              |<li><a href="?p=#{i}">#{i}</a></li>
+            if i == Number(options.page) + 4 && i < pages
+              |<li class="disabled"><a>...</a></li>
+          if options.page == pages
+            |<li class="disabled"><a>Last</a></li>
+          else
+            |<li><a href="?p=#{pages}">Last</a></li>
+          |</ul>
       .jumbotron
         for doc in beers
           if doc.ap_beer && doc.ba_beer

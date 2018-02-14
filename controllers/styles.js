@@ -59,19 +59,33 @@ exports.ales = function(req, res) {
   console.log(`---- invoke style.ale controller ----`);
   console.log(`Req.query.p: "${req.query.p}", Req.query.s: "${req.query.s}"`);
   let options = param_normalizer(req.query.p, req.query.s);
-  // MongoDB query
+  // MongoDB query pattern
   let query = {
     $or: [ { ap_style: /ale/i }, { ba_style: /ale/i }, { ba_category: /ale/i } ]
     // $and: [ { ap_style: /ale/i }, { ba_style: /ale/i }, { ba_category: /ale/i } ]
   }
-  baModel.find(query, function(err, docs) {
-    if(err) log.error(`ERROR while getting docs from mongo: "${err}"`);
-    // res.json(docs);
-    // console.log(JSON.stringify(docs, null, 2));
-    res.render('catalog', { title: 'Ale', beers: docs, options: options });
-  })
-  .skip(options.skip)
-  .limit(options.limit);
+  // get All docs by query pattern
+  baModel.find(query)
+    .skip(options.skip)
+    .limit(options.limit)
+    .exec(function(err, docs) {
+      if(err) {
+        log.error(`ERROR while getting docs from mongo: "${err}"`);
+        return next(err);
+      }
+      // count docs by query pattern
+      baModel.count(query).exec(function (err, count) {
+        if(err) return next(err);
+        // render context (docs + pagination properties)
+        res.render('catalog', {
+          title: 'Ale',
+          beers: docs, // docs objects (beer cards)
+          options: options,
+          docs: count,
+          pages: Math.ceil(count / options.limit)
+        });
+      })
+    })
 }
 
 // count MongoDocs Promise (for yield generator statements)
