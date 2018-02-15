@@ -20,4 +20,7 @@
           strong Category:
           |&nbsp; #{doc.ba_category}<br>
           strong ABV:
-          |&nbsp; #{doc.ba_abv}
+          |&nbsp; #{doc.ba_abv}<br>
+          if doc.ba_url
+            +a-btn(doc.ba_url) Перейти на сайт
+            |<br>

@@ -37,7 +37,7 @@ const buildJSON1 = (item) => {
     ap_json.ap_price_num = item._source['price'] || '';
     ap_json.ap_composition = item._source['Состав'] || '';
     ap_json.ap_url = item._source['url'] || '';
-    ap_json.ap_taste = item._source['Вкусовые оттенки'] || '';
+    ap_json.ap_taste = item._source['Вкусовые оттенки'] || ''; //http://r1c-sue2-s42.fsfk.local/topaz/TopazSiteServlet?OWASP_CSRFTOKEN=E59Z-MDIK-AEU1-PXP8-9307-ULQ0-6J4G-I4VM
     let {...desc} = item._source.desc; // ...rest [] All obj properties
     ap_json.ap_desc = desc || {};
     // create BA query object
@@ -186,6 +186,8 @@ function searchApDocs(chunk,i) {
             ap_json.ap_composition = ap_obj._source['Состав'] || '';
             ap_json.ap_url = ap_obj._source['url'] || '';
             ap_json.ap_taste = ap_obj._source['Вкусовые оттенки'] || '';
+            let {...desc} = ap_obj._source.desc; // ...rest [] All obj properties
+            ap_json.ap_desc = desc || {};
           }
           // BA properties
           ba_json.ba_beer_score =  ba_item.score;
