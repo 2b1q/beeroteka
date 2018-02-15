@@ -2,6 +2,7 @@
 var elastic = require('../models/es_search'), // add es_search API
     co = require('co'),
     log = require('../libs/log')(module),
+    _ = require('lodash'),
     apivoModel = require('../models/apivoModel'),
     baModel = require('../models/baModel');
 
@@ -61,7 +62,8 @@ exports.find = function (req, res) {
 
   if(req.query.q === undefined) res.redirect('/beers');
   else {
-    let pattern = req.query.q.replace(/[^a-zA-Z-/ '`]/g, '');
+    let pattern = req.query.q.replace(/[^a-zA-Z-/ '|`öè]/g, '');
+    title = _.split(pattern, '|');
     console.log(`query pattern: "${pattern}"`);
     let regexp = new RegExp(pattern,'i');
     // MongoDB query
@@ -83,7 +85,8 @@ exports.find = function (req, res) {
           if(err) return next(err);
           // render context (docs + pagination properties)
           res.render('catalog', {
-            title: pattern,
+            title: title,
+            urlpath: pattern,
             beers: docs, // docs objects (beer cards)
             options: options,
             docs: count,

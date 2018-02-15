@@ -543,8 +543,9 @@ var allStylesBa = () => {
                   }
                 },
                 "California Common / Steam Beer": {
-                  "term": {
-                    "style.keyword": "California Common / Steam Beereuze"
+                  "wildcard": {
+                    "style.keyword": "California Common*"
+                    // "style.keyword": "*Beereuze"
                   }
                 },
                 "Light Lager": {

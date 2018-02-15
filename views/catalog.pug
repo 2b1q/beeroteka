@@ -10,21 +10,30 @@ append body
         .col-sm-6
           +panel-default("BeerAdvocate total styles: "+styles.hits.total)
             for ba_v in ba_keys
-              //if /ale/i.test(ba_v)
-                //strong #{ba_v}&nbsp
-                //+badge(ba_obj[ba_v]["doc_count"])
-                //|&nbsp<a href="/beers/styles/ales"><span class="glyphicon glyphicon-link"></span></a>
-              //else
-              strong #{ba_v}&nbsp
-              +badge(ba_obj[ba_v]["doc_count"])
-              |&nbsp<a href="/beers/styles/find?q=#{ba_v}"><span class="glyphicon glyphicon-link"></span></a>
-              - var ba_max = Number(ba_obj[ba_v]["max abv"]["value"]).toFixed(1)
-              |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{ba_max}
-              |<br>
+              if /sour/i.test(ba_v)
+                strong #{ba_v}&nbsp
+                +badge(ba_obj[ba_v]["doc_count"])
+                |&nbsp<a href="/beers/styles/find?q=Sour|Berliner Weissbier|Farmhouse|Flanders Red Ale|Gose|Gueuze"><span class="glyphicon glyphicon-link"></span></a>
+                - var ba_max = Number(ba_obj[ba_v]["max abv"]["value"]).toFixed(1)
+                |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{ba_max}
+                |<br>
+              if /esb/i.test(ba_v)
+                strong #{ba_v}&nbsp
+                +badge(ba_obj[ba_v]["doc_count"])
+                |&nbsp<a href="/beers/styles/find?q=ESB"><span class="glyphicon glyphicon-link"></span></a>
+                - var ba_max = Number(ba_obj[ba_v]["max abv"]["value"]).toFixed(1)
+                |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{ba_max}
+                |<br>
+              else
+                strong #{ba_v}&nbsp
+                +badge(ba_obj[ba_v]["doc_count"])
+                |&nbsp<a href="/beers/styles/find?q=#{ba_v}"><span class="glyphicon glyphicon-link"></span></a>
+                - var ba_max = Number(ba_obj[ba_v]["max abv"]["value"]).toFixed(1)
+                |<br>&nbsp&nbsp&nbsp&nbspmax AVG:&nbsp#{ba_max}
+                |<br>
     // render beer from MongoDB
     if beers != null
-      |<br><br>
-      h1= title
+      |<br><br><br><b>Beer Styles:</b> #{title}<br>
       |<b>page:</b> #{options.page} <b>limit:</b> #{options.limit} <b>pages:</b> #{pages} <b>Docs total:</b> #{docs}
       if pages > 0
         .container
@@ -32,7 +41,7 @@ append body
           if options.page == 1
             |<li class="disabled"><a>First</a></li>
           else
-            |<li><a href="find?q=#{title}">First</a></li>
+            |<li><a href="find?q=#{urlpath}">First</a></li>
           - var i = (Number(options.page) > 5 ? Number(options.page) - 4 : 1)
           if i !== 1
             |<li class="disabled"><a>...</a></li>
@@ -40,13 +49,13 @@ append body
             if (i == options.page)
               |<li class="active"><a>#{i}</a></li>
             else
-              |<li><a href="find?q=#{title}&p=#{i}">#{i}</a></li>
+              |<li><a href="find?q=#{urlpath}&p=#{i}">#{i}</a></li>
             if i == Number(options.page) + 4 && i < pages
               |<li class="disabled"><a>...</a></li>
           if options.page == pages
             |<li class="disabled"><a>Last</a></li>
           else
-            |<li><a href="find?q=#{title}&p=#{pages}">Last</a></li>
+            |<li><a href="find?q=#{urlpath}&p=#{pages}">Last</a></li>
           |</ul>
       .jumbotron
         for doc in beers
