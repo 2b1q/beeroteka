@@ -123,6 +123,20 @@ var allStylesBa = () => {
           "Beer styles": {
             "filters": {
               "filters": {
+                "Sour": {
+                  "bool":
+                  {
+                  	"should" : [
+                  	 	 { "wildcard": { "style.keyword": "*Berliner Weissbier*" }},
+                  		 { "wildcard": { "style.keyword": "*Farmhouse*" }},
+                  		 { "wildcard": { "style.keyword": "*Flanders Red Ale*" }},
+                  		 { "wildcard": { "style.keyword": "*American Wild Ale*" }},
+                  		 { "wildcard": { "style.keyword": "*Gose*" }},
+                  		 { "wildcard": { "style.keyword": "*Gueuze*" }},
+                  		 { "wildcard": { "style.keyword": "*Sour*" }}
+                     ]
+                  }
+                },
                 "Ales": {
                   "wildcard": {
                     "category.keyword": "*Ales"

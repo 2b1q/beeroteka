@@ -149,22 +149,28 @@ var getBaAgg1 = (callback) => {
 // get all styles AP + BA
 var getAllStyles = (callback) => {
   // result container
-  let result = {}, ap, ba;
-  // co (generator) async await wrapper
-  co(function *() {
-    // resolve multiple promises in parallel
-    let ap_promise = es_client.client.search(aggs.countAllStylesAp());
-    let ba_promise = es_client.client.search(aggs.countAllStylesBa());
-    var [ap,ba] = yield [ap_promise, ba_promise];
-    result = {
-      ap_aggs: ap,
-      ba_aggs: ba
-    }
-    // console.log(`co data: ${JSON.stringify(result, null, 2)}`);
-    callback(result);
-  }).catch((err) => {
-    log.error(err.message);
-  })
+  // let result = {}, ap, ba;
+  // // co (generator) async await wrapper
+  // co(function *() {
+  //   // resolve multiple promises in parallel
+  //   let ap_promise = es_client.client.search(aggs.countAllStylesAp());
+  //   let ba_promise = es_client.client.search(aggs.countAllStylesBa());
+  //   var [ap,ba] = yield [ap_promise, ba_promise];
+  //   result = {
+  //     ap_aggs: ap,
+  //     ba_aggs: ba
+  //   }
+  //   // console.log(`co data: ${JSON.stringify(result, null, 2)}`);
+  es_client.client.search(aggs.countAllStylesBa())
+    .then(function(resp) {
+      callback(resp)
+    }, function(err){
+      log.error(err.message);
+    })
+    // callback(result);
+  // }).catch((err) => {
+  //   log.error(err.message);
+  // })
 }
 
  module.exports = {
