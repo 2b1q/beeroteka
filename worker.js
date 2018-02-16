@@ -8,7 +8,7 @@ var express = require('express'),
     sessions = require('express-session'),
     bodyParser = require('body-parser'),
     cluster = require('cluster'), // access to cluster.worker.id
-    flash = require('express-flash-messages');
+    flash = require('connect-flash');
 
 // init express object
 var app = express();
@@ -27,7 +27,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // cookie and sessions
 app.use(cookieParser(config.cookieToken));
 app.use(sessions(config.sessions));
-// app.use(flash())
+app.use(flash());
+
 // setup static path
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -50,6 +51,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+  res.locals.success = req.flash('success');
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

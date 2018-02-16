@@ -17,6 +17,7 @@ config.cookieToken = credentials.cookieToken;
 
 // sessions
 config.sessions = {
+  // cookie: { maxAge: 60000 },
   resave: false, // Resave even no changes
   saveUninitialized: true, // Save epmpty sessions
   secret: credentials.cookieToken, // Secret string

@@ -10,11 +10,21 @@ append body
 			form.navbar-form.navbar-left
 				+icon-primary('search')
 				|&nbsp;&nbsp;
-				input.form-control(name='query', type='text', placeholder='STOUT')
+				input.form-control(name='query', type='text', placeholder='Oatmeal stout')
 				|&nbsp;&nbsp;
 				button.btn.btn-primary(type='submit')= 'Найти пиво'
 		.container
 			if results[0] != null
+				if error && error.length > 0
+					.alert.alert-danger.alert-dismissible.fade-in(role="alert")
+						button.close(type="button" data-dismiss="alert" aria-label="Close")
+							span(aria-hidden="true") ×
+						p= error
+				if success && success.length > 0
+					.alert.alert-success.alert-dismissible.fade-in(role="alert")
+						button.close(type="button" data-dismiss="alert" aria-label="Close")
+							span(aria-hidden="true") ×
+						p= success
 				+alert-i-success('Успешный результат поиска по запросу: "'+query+'". Найдено записай '+results.length)
 				for result in results
 					- var json_obj = JSON.parse(JSON.stringify(result._source));
