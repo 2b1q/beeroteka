@@ -1,0 +1,47 @@
++panel-primary('txt')
+  .row
+    .col-md-3
+      +img-circle("../images/beer_bottle.png",'beer img')
+    .col-md-4
+      h4 BA Score:
+      +progress-bar-striped(0)
+      strong Brewary:
+      |&nbsp; txt<br>
+      strong Beer:
+      |&nbsp; txt<br>
+      strong Style:
+      |&nbsp; txt<br>
+      strong Category:
+      |&nbsp; txt<br>
+      strong ABV:
+      |&nbsp; txt<br>
+      +a-btn('url') Перейти на сайт
+      |<br>
+    .col-md-5
+      h4 apivo.ru
+      strong Beer:
+      |&nbsp; json_obj.beer<br>
+      strong Название:
+      |&nbsp; json_obj.Название<br>
+      strong Brewary:
+      |&nbsp; json_obj.brewary<br>
+      strong Вид пива:
+      |&nbsp; json_obj["Вид пива"]<br>
+      strong Страна:
+      |&nbsp; json_obj.Страна<br>
+      strong Крепость:
+      |&nbsp; json_obj.Крепость<br>
+      strong Тип брожения:
+      |&nbsp; json_obj["Тип брожения"]<br>
+      strong Цена:
+      |&nbsp; json_obj.Цена<br>
+      strong Объем:
+      |&nbsp; json_obj.Объем<br>
+      strong Тара:
+      |&nbsp; json_obj.Тара<br>
+      +a-btn('json_obj.url') Перейти на сайт
+      |<br>
+      button.btn.btn-primary(data-toggle="modal",data-target="#apModal") Описание
+      +modal('json_obj.ap_beer',"apModal")
+        |txt<br>
+        +a-btn('json_obj.url') Перейти на сайт

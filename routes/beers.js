@@ -14,6 +14,7 @@ router.get('/catalog/loadhashes2', catalog_controller.LoadHashes2); // TODO add 
 
 /* Catalog routes */
 router.get('/search', search_controller.search);
+router.get('/api/search', search_controller.ApiPostSearch); // ajax GET API
 
 /* '/beers/styles' route. Styles controllers */
 router.get('/styles', style_controller.styles);

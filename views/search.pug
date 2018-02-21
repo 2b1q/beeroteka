@@ -1,39 +1,24 @@
 extends ../node_modules/pug-bootstrap/layouts/starter
-
+block append head
+	script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+	script(src="../ladda-bootstrap/dist/spin.min.js")
+	script(src="../ladda-bootstrap/dist/ladda.min.js")
+	script(src='../js/l.js')
 append body
 	.container
 		h1= title
 		.container
 			if user != null
-				+label-default('Привет: '+user)
+				//+label-default('Привет: '+user)
 		.container
 			form.navbar-form.navbar-left
 				+icon-primary('search')
 				|&nbsp;&nbsp;
-				input.form-control(name='query', type='text', placeholder='Oatmeal stout')
+				input.form-control(id='f1' name='query', type='text', placeholder='Oatmeal stout')
 				|&nbsp;&nbsp;
-				button.btn.btn-primary(type='submit')= 'Найти пиво'
-		.container
-			if results[0] != null
-				if error && error.length > 0
-					.alert.alert-danger.alert-dismissible.fade-in(role="alert")
-						button.close(type="button" data-dismiss="alert" aria-label="Close")
-							span(aria-hidden="true") ×
-						p= error
-				if success && success.length > 0
-					.alert.alert-success.alert-dismissible.fade-in(role="alert")
-						button.close(type="button" data-dismiss="alert" aria-label="Close")
-							span(aria-hidden="true") ×
-						p= success
-				+alert-i-success('Успешный результат поиска по запросу: "'+query+'". Найдено записай '+results.length)
-				for result in results
-					- var json_obj = JSON.parse(JSON.stringify(result._source));
-					// render beeradvocate in .jumbotron
-					if json_obj.Название && json_obj.BA_beer
-						include widgets/el_search_ap_ba.pug
-					else if json_obj.score
-						include widgets/el_search_ba.pug
-					else if json_obj.Название
-						include widgets/el_search_ap.pug
-			else
-				+alert-i-danger('Ничего не найдено по запросу: '+query)
+				button.btn.btn-primary(id='form-submit' type='submit' class='btn btn-primary ladda-button' data-style='expand-right' data-size='l')= 'Найти пиво'
+		.hidden(id='dataset')
+			.jumbotron(id='ba_jumbotron_hid')
+		.hidden
+			.jumbotron(id='ba_jumbotron')
+				include widgets/el_search_ba_jquery.pug
