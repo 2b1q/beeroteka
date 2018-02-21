@@ -5,6 +5,7 @@ node_modules/pug-bootstrap/*
 !node_modules/pug-bootstrap/layouts/
 jadebootstrap-seed
 credentials.js
+package-lock.json
 *.log
 nohup.out
 node.log

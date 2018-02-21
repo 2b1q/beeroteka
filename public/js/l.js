@@ -14,6 +14,12 @@ $(function() {
     $('#'+div_id+' div.ba_category').append(' '+ba.category); // append category
     $('#'+div_id+' div.ba_abv').append(' '+ba.abv); // append ba_abv
     $('#'+div_id+' div.ba_url > a').attr('href', ba.url); // update ba_url
+    if(ba.img !== null) {
+      $('#'+div_id+' img')
+      .removeClass('img-circle')
+      .addClass('img-rounded')
+      .attr('src',ba.img);
+    }
   }
   var feelCardAp = function(div_id) {
     $('#'+div_id+' .panel-heading').text(ap.beer);
@@ -25,6 +31,13 @@ $(function() {
     $('#'+div_id+' div.ap_abv').append(' '+ap.abv); // append ap_abv
     $('#'+div_id+' div.ap_type').append(' '+ap.type); // append type
     $('#'+div_id+' div.ap_price').append(' '+ap.price); // append price
+    if(ap.img !== null) {
+      $('#'+div_id+' img')
+      .removeClass('img-circle')
+      .addClass('img-rounded')
+      .attr('src',ap.img);
+    } 
+
   }
   // URL API
   var url = '/beers/api/search';
@@ -71,6 +84,7 @@ $(function() {
             ap.tara = json_obj.Тара;
             ap.url = json_obj.url;
             ap.desc = json_obj.desc;
+            ap.img = json_obj.img;
           } else if (!json_obj.hasOwnProperty('Название')) {
             card = 'ba';
             ba.score = json_obj.score;
@@ -81,6 +95,7 @@ $(function() {
             ba.abv = json_obj.abv;
             ba.score_percent = json_obj.score_percent;
             ba.url = json_obj.url;
+            ba.img = json_obj.img;
             $('[id*="clone"] #ap_col').remove(); // remove apivo column
           } else if (!json_obj.hasOwnProperty('BA_beer')) {
             card = 'ap';
@@ -95,6 +110,7 @@ $(function() {
             ap.tara = json_obj.Тара;
             ap.url = json_obj.url;
             ap.desc = json_obj.desc;
+            ap.img = json_obj.img;
             $('[id*="clone"] #ba_col').remove(); // remove ba column
           }
 
