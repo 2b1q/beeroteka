@@ -13,7 +13,7 @@ router.get('/catalog/loadhashes', catalog_controller.loadhashes); // TODO add AU
 router.get('/catalog/loadhashes2', catalog_controller.LoadHashes2); // TODO add AUTH to this route
 
 /* Catalog routes */
-router.get('/search', search_controller.search);
+router.get('/search', search_controller.search); // render search.pug
 router.get('/api/search', search_controller.ApiPostSearch); // ajax GET API
 
 /* '/beers/styles' route. Styles controllers */
