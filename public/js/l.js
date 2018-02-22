@@ -14,17 +14,20 @@ $(function() {
     $('#'+div_id+' div.ba_category').append(' '+ba.category); // append category
     $('#'+div_id+' div.ba_abv').append(' '+ba.abv); // append ba_abv
     $('#'+div_id+' div.ba_url > a').attr('href', ba.url); // update ba_url
+    var img = $('#'+div_id+' img'); // locate img
+    img.attr('alt',ba.beer+' ['+ba.brew+']'); // set alt attr for IMG
     // draw img
     if(ba.img !== null) {
-      $('#'+div_id+' img')
-      .removeClass('img-circle')
+      img.removeClass('img-circle')
       .addClass('img-rounded')
-      .attr('src',ba.img);
+      .attr({
+        src:  ba.img,
+        style:  'width:60%'
+      });
     }
   }
   var feelCardAp = function(div_id) {
     $('#'+div_id+' .panel-heading').text(ap.beer);
-    $('#'+div_id+' #ap_col .text-primary').append(' '+ap.beer);
     $('#'+div_id+' div.ap_brew').append(' '+ap.brew); // append brewary
     $('#'+div_id+' div.ap_beer').append(' '+ap.beer); // append beer
     $('#'+div_id+' div.ap_style').append(' '+ap.style); // append ap_style
@@ -32,28 +35,75 @@ $(function() {
     $('#'+div_id+' div.ap_abv').append(' '+ap.abv); // append ap_abv
     $('#'+div_id+' div.ap_type').append(' '+ap.type); // append type
     $('#'+div_id+' div.ap_price').append(' '+ap.price); // append price
+    $('#'+div_id+' div.ap_url > a').attr('href', ap.url); // update ap_url
+    var img = $('#'+div_id+' img'); // locate img
+    img.attr('alt',ap.beer+' ['+ap.brew+']'); // set alt attr for IMG
     // draw img
     if((ap.img !== null && ba.img !== null)
     ||
     (ba.img === null && ap.img !== null)) {
-      $('#'+div_id+' img')
-      .removeClass('img-circle')
-      .addClass('img-rounded')
-      .attr('src',ap.img);
+      img.removeClass('img-circle')
+      .addClass('img-responsive')
+      .attr({
+        src:  ap.img,
+        // style:  'height:60%'
+      });
     }
     if(ba.img !== null && ap.img === null) {
-      $('#'+div_id+' img')
-      .removeClass('img-circle')
+      img.removeClass('img-circle')
       .addClass('img-rounded')
-      .attr('src',ba.img);
+      .attr({
+        src:  ba.img,
+        // style:  'width:60%'
+      });
     }
     // add description if exist
-    if(ap.desc){
-      var modal = $('#'+div_id+' #modal');
-      modal.find('#apModalLabel').text(ap.beer);
-      modal.removeClass('hidden');
+    if(ap.desc.hasOwnProperty('0')){
+      // console.log('ap.desc: '+JSON.stringify(ap.desc,null,2)+'\nap.beer: '+ap.beer);
+      var modal = $('#'+div_id+' #modal'); // locate modal
+      modal.removeClass('hidden') // remove hidden class
+      .find('#apModalLabel').text(ap.beer+' ['+ap.brew+']'); // add title
+      // build description elems
+      var div_txt = '';
+      for(prop in ap.desc){
+        div_txt+='<div class="text-info">'+ap.desc[prop]+'</div><br>';
+      }
+      modal.find('.ap_desc').append(div_txt); // append description
+      modal.find('a').attr('href', ap.url); // update ap_url
     }
-
+    // console.log('is ap.sostav === undefined: '+(ap.sostav===undefined));
+    // unhide hidden if data exists
+    var col = $('#'+div_id+' #ap_col');
+    if(ap.sostav!==undefined) {
+      col.find('#ap_sostav')
+      .removeClass('hidden') // remove hidden class
+      .append(' '+ap.sostav);
+    }
+    if(ap.tara!==undefined) {
+      col.find('#ap_tara')
+      .removeClass('hidden') // remove hidden class
+      .append(' '+ap.tara);
+    }
+    if(ap.past!==undefined) {
+      col.find('#ap_past')
+      .removeClass('hidden') // remove hidden class
+      .append(' '+ap.past);
+    }
+    if(ap.density!==undefined) {
+      col.find('#ap_density')
+      .removeClass('hidden') // remove hidden class
+      .append(' '+ap.density);
+    }
+    if(ap.taste!==undefined) {
+      col.find('#ap_taste')
+      .removeClass('hidden') // remove hidden class
+      .append(' '+ap.taste);
+    }
+    if(ap.filter!==undefined) {
+      col.find('#ap_filter')
+      .removeClass('hidden') // remove hidden class
+      .append(' '+ap.filter);
+    }
   }
   // URL API
   var url = '/beers/api/search';
@@ -97,7 +147,7 @@ $(function() {
               ap.brew = json_obj.brewary;
               ap.style = json_obj["Вид пива"];
               ap.country = json_obj["Страна"];
-              ap.abv = json_obj.abv;
+              ap.abv = json_obj.Крепость;
               ap.type = json_obj["Тип брожения"];
               ap.price = json_obj.Цена;
               ap.vol = json_obj.vol;
@@ -109,6 +159,7 @@ $(function() {
               ap.density = json_obj.Плотность;
               ap.taste = json_obj["Вкусовые оттенки"];
               ap.filter = json_obj.Фильтрация;
+              ap.sostav = json_obj.Состав;
           } else if (!json_obj.hasOwnProperty('Название')) {
               card = 'ba';
               ba.score = json_obj.score;
@@ -116,7 +167,7 @@ $(function() {
               ba.brew = json_obj.brewary;
               ba.style = json_obj.style;
               ba.category = json_obj.category;
-              ba.abv = json_obj.abv;
+              ba.abv = json_obj.Крепость;
               ba.score_percent = json_obj.score_percent;
               ba.url = json_obj.url;
               ba.img = json_obj.img;
@@ -127,7 +178,7 @@ $(function() {
               ap.brew = json_obj.brewary;
               ap.style = json_obj["Вид пива"];
               ap.country = json_obj["Страна"];
-              ap.abv = json_obj.abv;
+              ap.abv = json_obj.Крепость;
               ap.type = json_obj["Тип брожения"];
               ap.price = json_obj.Цена;
               ap.vol = json_obj.vol;
@@ -139,6 +190,7 @@ $(function() {
               ap.density = json_obj.Плотность;
               ap.taste = json_obj["Вкусовые оттенки"];
               ap.filter = json_obj.Фильтрация;
+              ap.sostav = json_obj.Состав;
               $('[id*="clone"] #ba_col').remove(); // remove ba column
           }
 

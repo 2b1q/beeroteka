@@ -7,24 +7,24 @@
         strong
           .text-primary Score:
         +progress-bar-striped(1)
-      .ba_brew
-        strong Brewary:
       .ba_beer
         strong Beer:
+      .ba_brew
+        strong Brewary:
       .ba_style
         strong Style:
       .ba_category
         strong Category:
       .ba_abv
         strong ABV:
+      |<br>
       .ba_url
         +a-btn('url') Перейти на сайт
     .col-md-4(id='ap_col')
       .ap_beer
-        .text-primary Beer:
-        strong Название:
+        strong Пиво:
       .ap_brew
-        strong Brewary:
+        strong Пивоварня:
       .ap_style
         strong Вид пива:
       .ap_country
@@ -35,17 +35,28 @@
         strong Тип брожения:
       .ap_price
         strong Цена:
-      .ap_vol
+      .hidden(id='ap_vol')
         strong Объем:
-      .ap_tara
+      .hidden(id='ap_tara')
         strong Тара:
+      .hidden(id='ap_density')
+        strong Плотность:
+      .hidden(id='ap_past')
+        strong Пастеризация:
+      .hidden(id='ap_taste')
+        strong Вкусовые оттенки:
+      .hidden(id='ap_sostav')
+        strong Состав:
+      .hidden(id='ap_filter')
+        strong Фильтрация:
+      |<br>
       .ap_url
         +a-btn('url') Перейти на сайт
+      |<br>
       .hidden(id='modal')
         button.btn.btn-primary(data-toggle="modal",data-target="#apModal") Описание
         .ap_modal_desc
           +modal('beer name',"apModal")
             .ap_desc
-              .text-info
             .ap_url
               +a-btn('url') Перейти на сайт
