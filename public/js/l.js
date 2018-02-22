@@ -121,7 +121,14 @@ $(function() {
     $.get(url, { query : query },
 	 	  function(response){
         console.log('HTTP response OK');
-        $('#dataset').removeClass('hidden').addClass('container');
+        var dataset = $('#dataset').removeClass('hidden').addClass('container');
+        // Beer not found!
+        if(response.length === 0) {
+          dataset.find('.jumbotron')
+          .html('<div class="alert alert-danger"><strong>404</strong> Beer "'+query+'" not found!</div>');
+        }
+        else dataset.find('.alert.alert-danger').remove();
+
         response.forEach(function(item) {
           json_obj = item._source;
           // console.log(json_obj.title);
