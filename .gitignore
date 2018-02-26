@@ -3,6 +3,7 @@ node_modules/*
 !node_modules/pug-bootstrap/
 node_modules/pug-bootstrap/*
 !node_modules/pug-bootstrap/layouts/
+!node_modules/pug-bootstrap/_bootstrap.pug
 jadebootstrap-seed
 credentials.js
 package-lock.json
