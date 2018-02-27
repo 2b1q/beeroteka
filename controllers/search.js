@@ -17,7 +17,7 @@ let param_normalizer = (p, s) => {
     skip: (page*size)-size,
     page: page
   }
-  console.log(`-- Normalized params --
+  console.log(`${config.color.white}-- Normalized params --
   Page: ${options.page}
   Limit: ${options.limit}
   Skip: ${options.skip}`);
@@ -44,6 +44,26 @@ exports.ApiGetSearch = function (req,res) {
   });
 }
 
+// send count result
+function json_resp_cnt(query, res, count, collection, docs) {
+  res.json({
+    query: query,
+    docs: count,
+    collection: collection
+  });
+}
+
+// docs response
+function json_resp_docs(query, res, count, collection, docs) {
+  res.json({
+    query: query, // raw query
+    beers: docs, // docs objects (beer cards)
+    options: options, // pagination params
+    docs: count, // total docs
+    collection: 'ba_apivo',
+    pages: Math.ceil(count / options.limit)
+  });
+}
 
 // count beer by query pattern
 function beerCount(query, pattern, res) {
@@ -51,24 +71,12 @@ function beerCount(query, pattern, res) {
   .exec(function (err, count) {
     if(err) return next(err);
     if( count === 0 ){
-        apivoModel.count(pattern)
-        .exec(function (err, count) {
-          if(err) return next(err);
-          // return apivoModel data
-          res.json({
-            query: query,
-            docs: count,
-            collection: 'apivo_ba'
-          });
+      apivoModel.count(pattern)
+      .exec(function (err, count) {
+        if(err) return next(err);
+          json_resp_cnt(query, res, count, 'apivo_ba', docs); // return apivoModel data
         });
-    } else {
-      // return baModel
-      res.json({
-        query: query,
-        docs: count,
-        collection: 'ba_apivo'
-      });
-    }
+    } else json_resp_cnt(query, res, count, 'ba_apivo', docs);
   })
 }
 
@@ -88,14 +96,7 @@ function beerSearch(query, pattern, options, res, collection) {
       baModel.count(pattern).exec(function (err, count) {
         if(err) return next(err);
         // send JSON data with params
-        res.json({
-          query: query, // raw query
-          beers: docs, // docs objects (beer cards)
-          options: options, // pagination params
-          docs: count, // total docs
-          collection: 'ba_apivo',
-          pages: Math.ceil(count / options.limit)
-        });
+        json_resp_docs(query, res, count, 'ba_apivo');
       })
     })
   } else {
@@ -112,14 +113,7 @@ function beerSearch(query, pattern, options, res, collection) {
       apivoModel.count(pattern).exec(function (err, count) {
         if(err) return next(err);
         // send JSON data with params
-        res.json({
-          query: query, // raw query
-          beers: docs, // docs objects (beer cards)
-          options: options, // pagination params
-          docs: count, // total docs
-          collection: 'apivo_ba',
-          pages: Math.ceil(count / options.limit)
-        });
+        json_resp_docs(query, res, count, 'apivo_ba');
       })
     })
   }
@@ -129,7 +123,7 @@ function beerSearch(query, pattern, options, res, collection) {
 // POST advanced Mongoose search controller
 exports.ApiPostSearchMongo = function (req, res) {
   if(!req.body.hasOwnProperty('query')) {
-    console.log(`${config.color.cyan}Bad query: ${JSON.stringify(req.body,null,2)}`);
+    log.error(`${config.color.red}Bad query: ${JSON.stringify(req.body,null,2)}`);
     res.status(500).json({ error: 'bad query' });
   } else {
     console.log(`${config.color.cyan}Ajax HTTP POST Req.body: ${JSON.stringify(req.body,null,2)}`);
