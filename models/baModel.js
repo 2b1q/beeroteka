@@ -14,7 +14,7 @@ var baSchema = new Schema({
   ba_reviews:          Number, // "Reviews":4,
   ba_abv:              Number, // (type => Double) eg "abv":9.5,
   ba_brewary:          String, // "Jolly Pumpkin"
-  ba_beer:             { type: String, required: true }, // eg. "beer":"Wee Heavy Scotch Ale"
+  ba_beer:             String, // eg. "beer":"Wee Heavy Scotch Ale"
   ba_style:            String, // "Scotch Ale / Wee Heavy",
   ba_category:         String, // eg. "category":"Irish Ales",
   approved:            { type: Boolean, default: false }, // IF ap_data EQUAL to ba_date => set to true

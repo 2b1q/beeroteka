@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 
 // Apivo enriched by BeerAdvocate data
 var apivoSchema = new Schema({
-  ap_beer:             { type: String, required: true }, // Apivo beer name without substr @brewary
+  ap_beer:             String, // Apivo beer name without substr @brewary
   ap_orig_beer_name:   String, // Apivo original beer name with @brewary
   ap_brewary:          String, // Apivo brewary
   ap_style:            String, // eg "ap_style":"Red Ale - American Amber / Red",
