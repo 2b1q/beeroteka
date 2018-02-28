@@ -98,10 +98,21 @@ function beerSearch(query, pattern, options, res, collection) {
       // count 'baModel' collection docs by query pattern
       baModel.count(pattern).exec(function (err, count) {
         if(err) return next(err);
-        // send docs with params
-        json_resp_docs(query, res, count, 'ba_apivo', docs);
-      })
-    })
+        if(count !== 0 ) json_resp_docs(query, res, count, 'ba_apivo', docs);
+        else { // try lookup in apivoModel
+          apivoModel.find(pattern).skip(options.skip).limit(options.limit)
+          .exec(function(err, docs) {
+            if(err) return next(`ERROR while getting docs from mongo: "${err}"`);
+            // count docs by query pattern
+            apivoModel.count(pattern).exec(function (err, count) {
+              if(err) return next(err);
+              // send 'apivoModel' collection docs with params
+              json_resp_docs(query, res, count, 'apivo_ba', docs);
+            })
+          });
+        }
+      });
+    });
   } else {
     apivoModel.find(pattern)
     .skip(options.skip)

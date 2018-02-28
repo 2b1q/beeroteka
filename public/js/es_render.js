@@ -59,7 +59,7 @@ $(function() {
     }
     // add description if exist
     if(ap.desc.hasOwnProperty('0')){
-      // console.log('ap.desc: '+JSON.stringify(ap.desc,null,2)+'\nap.beer: '+ap.beer);
+      console.log('ap.desc: '+JSON.stringify(ap.desc,null,2)+'\nap.beer: '+ap.beer);
       var modal = $('#'+div_id+' #modal'); // locate modal
       modal.removeClass('hidden') // remove hidden class
       .find('#apModalLabel').text(ap.beer+' ['+ap.brew+']'); // add title

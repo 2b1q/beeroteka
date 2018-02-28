@@ -58,11 +58,11 @@ $(function() {
       });
     }
     // add description if exist
-    if(ap.desc.hasOwnProperty('0')){
-      // console.log('ap.desc: '+JSON.stringify(ap.desc,null,2)+'\nap.beer: '+ap.beer);
+    if(ap.desc.hasOwnProperty(0)){
+      console.log('ap.desc: '+JSON.stringify(ap.desc,null,2)+'\nap.beer: '+ap.beer);
       var modal = $('#'+div_id+' #modal'); // locate modal
-      modal.removeClass('hidden') // remove hidden class
-      .find('#apModalLabel').text(ap.beer+' ['+ap.brew+']'); // add title
+      modal.removeClass('hidden'); // remove hidden class
+      modal.find('#apModalLabel').text(ap.beer+' ['+ap.brew+']'); // add title
       // build description elems
       var div_txt = '';
       for(prop in ap.desc){
@@ -84,12 +84,12 @@ $(function() {
       .removeClass('hidden') // remove hidden class
       .append(' '+ap.tara);
     }
-    if(ap.past!==undefined) {
-      col.find('#ap_past')
-      .removeClass('hidden') // remove hidden class
-      .append(' '+ap.past);
-    }
-    if(ap.density!==undefined) {
+    // if(ap.past!==undefined) {
+    //   col.find('#ap_past')
+    //   .removeClass('hidden') // remove hidden class
+    //   .append(' '+ap.past);
+    // }
+    if(ap.density!==null) {
       col.find('#ap_density')
       .removeClass('hidden') // remove hidden class
       .append(' '+ap.density);
@@ -121,118 +121,127 @@ $(function() {
       action: "search"
     }
 
-
-    console.log(JSON.stringify(post_body,null,2));
     // start ladda spinner
 	 	e.preventDefault();
 	 	var l = Ladda.create(this);
 	 	l.start();
 
     // ajax POST XHR
-    $.ajax({
+    var request = $.ajax({
       url:url,
-      type: "POST",
+      type: 'POST',
       data: JSON.stringify(post_body),
-      contentType:"application/json; charset=utf-8",
-      dataType:"json",
-      success: function(response){
-        console.log('HTTP response OK');
-        var dataset = $('#dataset').removeClass('hidden').addClass('container');
-        // Beer not found!
-        if(response.length === 0) {
-          dataset.find('.jumbotron')
-          .html('<div class="alert alert-danger"><strong>404</strong> Beer "'+query+'" not found!</div>');
-        }
-        else dataset.find('.alert.alert-danger').remove();
-
-        response.forEach(function(item) {
-          json_obj = item._source;
-          // console.log(json_obj.title);
-          // clone pug beer card pattern
-          var div_id = 'clone'+uniqueId;
-          $('.panel-primary').not('[id*="clone"]')
-          .clone()
-          .appendTo('#ba_jumbotron_hid')
-          .attr('id', div_id );
-          // set card type and data
-          if( json_obj.hasOwnProperty('Название')
-          && json_obj.hasOwnProperty('BA_beer')) {
-              card = 'apba';
-              ba.score = json_obj.BA_score;
-              ba.beer = json_obj.BA_beer;
-              ba.brew = json_obj.BA_brewary;
-              ba.style = json_obj.BA_style;
-              ba.category = json_obj.BA_category;
-              ba.abv = json_obj.BA_abv;
-              ba.url = json_obj.BA_url;
-              ba.score_percent = Math.round(json_obj.BA_score/0.05);
-              ap.beer = json_obj.Название;
-              ap.brew = json_obj.brewary;
-              ap.style = json_obj["Вид пива"];
-              ap.country = json_obj["Страна"];
-              ap.abv = json_obj.Крепость;
-              ap.type = json_obj["Тип брожения"];
-              ap.price = json_obj.Цена;
-              ap.vol = json_obj.vol;
-              ap.tara = json_obj.Тара;
-              ap.url = json_obj.url;
-              ap.desc = json_obj.desc;
-              ap.img = json_obj.img;
-              ap.past = json_obj.Пастеризация;
-              ap.density = json_obj.Плотность;
-              ap.taste = json_obj["Вкусовые оттенки"];
-              ap.filter = json_obj.Фильтрация;
-              ap.sostav = json_obj.Состав;
-          } else if (!json_obj.hasOwnProperty('Название')) {
-              card = 'ba';
-              ba.score = json_obj.score;
-              ba.beer = json_obj.beer;
-              ba.brew = json_obj.brewary;
-              ba.style = json_obj.style;
-              ba.category = json_obj.category;
-              ba.abv = json_obj.Крепость;
-              ba.score_percent = json_obj.score_percent;
-              ba.url = json_obj.url;
-              ba.img = json_obj.img;
-              $('[id*="clone"] #ap_col').remove(); // remove apivo column
-          } else if (!json_obj.hasOwnProperty('BA_beer')) {
-              card = 'ap';
-              ap.beer = json_obj.Название;
-              ap.brew = json_obj.brewary;
-              ap.style = json_obj["Вид пива"];
-              ap.country = json_obj["Страна"];
-              ap.abv = json_obj.Крепость;
-              ap.type = json_obj["Тип брожения"];
-              ap.price = json_obj.Цена;
-              ap.vol = json_obj.vol;
-              ap.tara = json_obj.Тара;
-              ap.url = json_obj.url;
-              ap.desc = json_obj.desc;
-              ap.img = json_obj.img;
-              ap.past = json_obj.Пастеризация;
-              ap.density = json_obj.Плотность;
-              ap.taste = json_obj["Вкусовые оттенки"];
-              ap.filter = json_obj.Фильтрация;
-              ap.sostav = json_obj.Состав;
-              $('[id*="clone"] #ba_col').remove(); // remove ba column
-          }
-          // feel card using JSON response
-          if(card === 'ba') feelCardBa(div_id);
-          else if(card === 'ap') feelCardAp(div_id);
-          else {
-            feelCardBa(div_id);
-            feelCardAp(div_id);
-          }
-          uniqueId++; // next div ID
-        });
-	 	  }
-    })
-    .always(function() {
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json'});
+    request.fail(function (err, msg) {
       l.stop(); // stop spinner anyway
+      console.log('Request failed.\nStatus:'+err.status+'\nStatus text: '+err.statusText+'\nError message: '+msg);
+    });
+    request.done(function(response) {
+      l.stop(); // stop spinner anyway
+      render(response);
     });
 	 	return false;
 	});
-});
+
+  // render response
+  var render = function(response) {
+    console.log('HTTP response OK');
+    var dataset = $('#dataset').removeClass('hidden').addClass('container');
+    // Beer not found!
+    if(response.beers.length === 0) {
+      dataset.find('.jumbotron')
+      .html('<div class="alert alert-danger"><strong>404</strong> Beer "'+query+'" not found!</div>');
+    }
+    else dataset.find('.alert.alert-danger').remove();
+
+    response.beers.forEach(function(json_obj) {
+      // console.log(json_obj.title);
+      // clone pug beer card pattern
+      var div_id = 'clone'+uniqueId;
+      $('.panel-primary').not('[id*="clone"]')
+      .clone()
+      .appendTo('#ba_jumbotron_hid')
+      .attr('id', div_id );
+      // set card type and data
+      if( json_obj.hasOwnProperty('ap_beer')
+      && json_obj.hasOwnProperty('ba_beer')) {
+          card = 'apba';
+          ba.score = json_obj.ba_beer_score;
+          ba.img = json_obj.ba_img;
+          ba.beer = json_obj.ba_beer;
+          ba.brew = json_obj.ba_brewary;
+          ba.style = json_obj.ba_style;
+          ba.category = json_obj.ba_category;
+          ba.abv = json_obj.ba_abv;
+          ba.url = json_obj.ba_url;
+          ba.score_percent = Math.round(json_obj.ba_beer_score/0.05);
+          ap.beer = json_obj.ap_beer;
+          ap.brew = json_obj.ap_brewary;
+          ap.style = json_obj.ap_style;
+          ap.country = json_obj.ap_country;
+          ap.abv = json_obj.ap_abv;
+          ap.type = json_obj.ap_type || undefined;
+          ap.price = json_obj.ap_price_str;
+          ap.vol = json_obj.ap_vol;
+          ap.tara = json_obj.ap_tara;
+          ap.url = json_obj.ap_url;
+          if(json_obj.hasOwnProperty('ap_desc')) ap.desc = json_obj.ap_desc;
+          else ap.desc = {};
+          ap.img = json_obj.ap_img;
+          ap.past = '';
+          if(json_obj.hasOwnProperty('ap_density')) ap.density = json_obj.ap_density;
+          else ap.density = undefined;
+          ap.taste = json_obj.ap_taste || undefined;
+          ap.filter = json_obj.filter || undefined;
+          ap.sostav = json_obj.ap_composition || undefined;
+      } else if (!json_obj.hasOwnProperty('ap_beer')) {
+          card = 'ba';
+          ba.score = json_obj.ba_beer_score;
+          ba.beer = json_obj.ba_beer;
+          ba.brew = json_obj.ba_brewary;
+          ba.style = json_obj.ba_style;
+          ba.category = json_obj.ba_category;
+          ba.abv = json_obj.ba_abv;
+          ba.url = json_obj.ba_url;
+          ba.score_percent = Math.round(json_obj.ba_beer_score/0.05);
+          ba.img = json_obj.ba_img;
+          $('[id*="clone"] #ap_col').remove(); // remove apivo column
+      } else if (!json_obj.hasOwnProperty('ba_beer')
+      &&  json_obj.hasOwnProperty('ap_beer')) {
+          card = 'ap';
+          ap.beer = json_obj.ap_beer;
+          ap.brew = json_obj.ap_brewary;
+          ap.style = json_obj.ap_style;
+          ap.country = json_obj.ap_country;
+          ap.abv = json_obj.ap_abv;
+          ap.type = json_obj.ap_type || undefined;
+          ap.price = json_obj.ap_price_str;
+          ap.vol = json_obj.ap_vol;
+          ap.tara = json_obj.ap_tara;
+          ap.url = json_obj.ap_url;
+          if(json_obj.hasOwnProperty('ap_desc')) ap.desc = json_obj.ap_desc;
+          else ap.desc = {};
+          ap.img = json_obj.ap_img;
+          ap.past = '';
+          if(json_obj.hasOwnProperty('ap_density')) ap.density = json_obj.ap_density;
+          else ap.density = undefined;
+          ap.taste = json_obj.ap_taste || undefined;
+          ap.filter = json_obj.filter || undefined;
+          ap.sostav = json_obj.ap_composition || undefined;
+          $('[id*="clone"] #ba_col').remove(); // remove ba column
+      }
+      // feel card using JSON response
+      if(card === 'ba') feelCardBa(div_id);
+      else if(card === 'ap') feelCardAp(div_id);
+      else {
+        feelCardBa(div_id);
+        feelCardAp(div_id);
+      }
+      uniqueId++; // next div ID
+    }); // end forEach
+  } // end render function
+}); // end DOM ready
 
 // update progress-bar
 function upd_progessbar(div, value) {
