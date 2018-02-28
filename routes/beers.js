@@ -14,8 +14,9 @@ router.get('/catalog/loadhashes2', catalog_controller.LoadHashes2); // TODO add 
 
 /* Search routes */
 router.get('/search', search_controller.search); // render search.pug
+router.get('/search2', search_controller.search2); // render search2.pug
 router.get('/api/search', search_controller.ApiGetSearch); // ajax GET ES API
-router.post('/api/search', search_controller.ApiPostSearchMongo); // ajax POST API advanced beer search Mongoose 
+router.post('/api/search', search_controller.ApiPostSearchMongo); // ajax POST API advanced beer search Mongoose
 
 // REST API beer
 // router.get('/api/', beer.list); // GET all beerMongoose API
