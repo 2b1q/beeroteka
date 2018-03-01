@@ -2,6 +2,50 @@ $(function() {
   var ba = {}, ap = {},
       card = 'ba'; // default card type = ba
       uniqueId = 1;
+
+  // URL API
+  var url = '/beers/api/search';
+  // '#form-submit' click EVENT handler
+	$('#form-submit').click(function(e){
+    $('[id*="clone"]').remove(); // remove cloned elems if exists
+    // get query text from form id='f1' or from attr placeholder
+    var beer_query = $('#f1').val() || $('#f1').attr('placeholder'),
+        post_body = {};
+    // define simple query
+    post_body = {
+      query: {
+        beer: beer_query
+      },
+      action: "search"
+    }
+
+    // start ladda spinner
+	 	e.preventDefault();
+	 	var l = Ladda.create(this);
+	 	l.start();
+
+    // ajax POST XHR
+    var request = $.ajax({
+      url:url,
+      type: 'POST',
+      data: JSON.stringify(post_body),
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json'});
+    request.fail(function (err, msg) {
+      l.stop(); // stop spinner anyway
+      console.log('Request failed.\nStatus:'+err.status+'\nStatus text: '+err.statusText+'\nError message: '+msg);
+    });
+    request.done(function(response) {
+      l.stop(); // stop spinner anyway
+      render(response);
+    });
+	 	return false;
+	});
+
+
+/*
+* render functions
+*/
   // feel cards after JSON response
   var feelCardBa = function(div_id) {
     $('#'+div_id+' .panel-heading').text(ba.beer+' ['+ba.brew+']');
@@ -60,9 +104,9 @@ $(function() {
     // add description if exist
     if(ap.desc.hasOwnProperty(0)){
       console.log('ap.desc: '+JSON.stringify(ap.desc,null,2)+'\nap.beer: '+ap.beer);
-      var modal = $('#'+div_id+' #modal'); // locate modal
-      modal.removeClass('hidden'); // remove hidden class
-      modal.find('#apModalLabel').text(ap.beer+' ['+ap.brew+']'); // add title
+      var modal = $('#'+div_id+' #modal') // locate modal
+      .removeClass('hidden') // remove hidden class
+      .find('#apModalLabel').text(ap.beer+' ['+ap.brew+']'); // add title
       // build description elems
       var div_txt = '';
       for(prop in ap.desc){
@@ -105,46 +149,47 @@ $(function() {
       .append(' '+ap.filter);
     }
   }
-  // URL API
-  var url = '/beers/api/search';
-  // '#form-submit' click EVENT handler
-	$('#form-submit').click(function(e){
-    $('[id*="clone"]').remove(); // remove cloned elems if exists
-    // get query text from form id='f1' or from attr placeholder
-    var beer_query = $('#f1').val() || $('#f1').attr('placeholder'),
-        post_body = {};
-    // define simple query
-    post_body = {
-      query: {
-        beer: beer_query
-      },
-      action: "search"
+
+  // show pagination
+  var paginator = function (options, docs, pages) {
+    var ul = '<ul class="pagination text-center"></ul>';
+    var pag = $('#paginator');
+    pag.removeClass('hidden') // remove hidden class
+    .append(ul);
+    if( options.page === 1 )
+      pag.append('<li class="disabled"><a>First</a></li>');
+    else
+      pag.append('<li><a href="find?q=#{urlpath}">First</a></li>');
+    var i = (Number(options.page) > 5 ? Number(options.page) - 4 : 1)
+    if(i !== 1) {
+      pag.append('<li class="disabled"><a>...</a></li>');
     }
 
-    // start ladda spinner
-	 	e.preventDefault();
-	 	var l = Ladda.create(this);
-	 	l.start();
 
-    // ajax POST XHR
-    var request = $.ajax({
-      url:url,
-      type: 'POST',
-      data: JSON.stringify(post_body),
-      contentType: 'application/json; charset=utf-8',
-      dataType: 'json'});
-    request.fail(function (err, msg) {
-      l.stop(); // stop spinner anyway
-      console.log('Request failed.\nStatus:'+err.status+'\nStatus text: '+err.statusText+'\nError message: '+msg);
-    });
-    request.done(function(response) {
-      l.stop(); // stop spinner anyway
-      render(response);
-    });
-	 	return false;
-	});
 
-  // render response
+/*
+    if options.page == 1
+      |<li class="disabled"><a>First</a></li>
+    else
+      |<li><a href="find?q=#{urlpath}">First</a></li>
+    - var i = (Number(options.page) > 5 ? Number(options.page) - 4 : 1)
+    if i !== 1
+      |<li class="disabled"><a>...</a></li>
+    - for (; i <= (Number(options.page) + 4) && i <= pages; i++)
+      if (i == options.page)
+        |<li class="active"><a>#{i}</a></li>
+      else
+        |<li><a href="find?q=#{urlpath}&p=#{i}">#{i}</a></li>
+      if i == Number(options.page) + 4 && i < pages
+        |<li class="disabled"><a>...</a></li>
+    if options.page == pages
+      |<li class="disabled"><a>Last</a></li>
+    else
+      |<li><a href="find?q=#{urlpath}&p=#{pages}">Last</a></li>
+*/
+  }
+
+  // feel objects & render response
   var render = function(response) {
     console.log('HTTP response OK');
     var dataset = $('#dataset').removeClass('hidden').addClass('container');
@@ -240,6 +285,8 @@ $(function() {
       }
       uniqueId++; // next div ID
     }); // end forEach
+    // show paginator
+    if(response.pages > 0) paginator(response.options, response.docs, response.pages);
   } // end render function
 }); // end DOM ready
 

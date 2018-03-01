@@ -8,26 +8,6 @@ append body
 	.container
 		h4= title
 		.hidden(id='paginator')
-			|<ul class="pagination text-center">
-			if options.page == 1
-				|<li class="disabled"><a>First</a></li>
-			else
-				|<li><a href="find?q=#{urlpath}">First</a></li>
-			- var i = (Number(options.page) > 5 ? Number(options.page) - 4 : 1)
-			if i !== 1
-				|<li class="disabled"><a>...</a></li>
-			- for (; i <= (Number(options.page) + 4) && i <= pages; i++)
-				if (i == options.page)
-					|<li class="active"><a>#{i}</a></li>
-				else
-					|<li><a href="find?q=#{urlpath}&p=#{i}">#{i}</a></li>
-				if i == Number(options.page) + 4 && i < pages
-					|<li class="disabled"><a>...</a></li>
-			if options.page == pages
-				|<li class="disabled"><a>Last</a></li>
-			else
-				|<li><a href="find?q=#{urlpath}&p=#{pages}">Last</a></li>
-			|</ul>
 		.container
 			form.navbar-form.navbar-left
 				+icon-primary('search')
