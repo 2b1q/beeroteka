@@ -7,14 +7,17 @@ block append head
 append body
 	.container
 		h4= title
-		.hidden(id='paginator')
 		.container
 			form.navbar-form.navbar-left
-				+icon-primary('search')
-				|&nbsp;&nbsp;
-				input.form-control(id='f1' name='query', type='text', placeholder='Oatmeal stout')
-				|&nbsp;&nbsp;
-				button.btn.btn-primary(id='form-submit' type='submit' class='btn btn-primary ladda-button' data-style='expand-right' data-size='l')= 'Найти пиво'
+				.container
+					+icon-primary('search')
+					|&nbsp;&nbsp;
+					Strong Beer:
+					|&nbsp;&nbsp;
+					input.form-control(id='f1' name='query', type='text', placeholder='Oatmeal stout')
+					|&nbsp;&nbsp;
+					button.btn.btn-primary(id='form-submit' type='submit' class='btn btn-primary ladda-button' data-style='expand-right' data-size='l')= 'Найти пиво'
+				.container
 		.hidden(id='dataset')
 			.jumbotron(id='ba_jumbotron_hid')
 		.hidden

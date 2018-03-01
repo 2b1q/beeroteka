@@ -23,6 +23,11 @@ $(function() {
 	 	e.preventDefault();
 	 	var l = Ladda.create(this);
 	 	l.start();
+    $('#paginator').removeClass('container').addClass('hidden').find('ul').remove();
+    $('#ba_jumbotron_hid')
+      .removeClass('jumbotron')
+      .addClass('hidden')
+      .after('<img id="spinner" src="../images/spinner2.gif">');
 
     // ajax POST XHR
     var request = $.ajax({
@@ -33,11 +38,15 @@ $(function() {
       dataType: 'json'});
     request.fail(function (err, msg) {
       l.stop(); // stop spinner anyway
+      $('#spinner').remove();
+      $('#ba_jumbotron_hid').removeClass('hidden').addClass('jumbotron');
       console.log('Request failed.\nStatus:'+err.status+'\nStatus text: '+err.statusText+'\nError message: '+msg);
     });
     request.done(function(response) {
       l.stop(); // stop spinner anyway
-      render(response);
+      $('#spinner').remove();
+      $('#ba_jumbotron_hid').removeClass('hidden').addClass('jumbotron');
+      render(response, beer_query);
     });
 	 	return false;
 	});
@@ -152,51 +161,85 @@ $(function() {
 
   // show pagination
   var paginator = function (options, docs, pages) {
+    console.log('pages: '+pages+'\ndocs: '+docs+'\npage: '+options.page);
     var ul = '<ul class="pagination text-center"></ul>';
-    var pag = $('#paginator');
-    pag.removeClass('hidden') // remove hidden class
-    .append(ul);
-    if( options.page === 1 )
-      pag.append('<li class="disabled"><a>First</a></li>');
-    else
-      pag.append('<li><a href="find?q=#{urlpath}">First</a></li>');
-    var i = (Number(options.page) > 5 ? Number(options.page) - 4 : 1)
-    if(i !== 1) {
-      pag.append('<li class="disabled"><a>...</a></li>');
-    }
-
-
-
-/*
-    if options.page == 1
-      |<li class="disabled"><a>First</a></li>
-    else
-      |<li><a href="find?q=#{urlpath}">First</a></li>
-    - var i = (Number(options.page) > 5 ? Number(options.page) - 4 : 1)
-    if i !== 1
-      |<li class="disabled"><a>...</a></li>
-    - for (; i <= (Number(options.page) + 4) && i <= pages; i++)
+    $('#paginator')
+      .removeClass('hidden')
+      .addClass('container')
+      .append(ul);
+    ul = $('#paginator').find('ul');
+    if( options.page === 1 ) ul.append('<li class="disabled"><a>First</a></li>');
+    else ul.append('<li><a page="1">First</a></li>');
+    var i = (Number(options.page) > 5 ? Number(options.page) - 4 : 1);
+    if(i != 1) ul.append('<li class="disabled"><a>...</a></li>');
+    for (; i <= (Number(options.page) + 4) && i <= pages; i++) {
       if (i == options.page)
-        |<li class="active"><a>#{i}</a></li>
+        ul.append('<li class="active"><a>'+i+'</a></li>');
       else
-        |<li><a href="find?q=#{urlpath}&p=#{i}">#{i}</a></li>
-      if i == Number(options.page) + 4 && i < pages
-        |<li class="disabled"><a>...</a></li>
-    if options.page == pages
-      |<li class="disabled"><a>Last</a></li>
-    else
-      |<li><a href="find?q=#{urlpath}&p=#{pages}">Last</a></li>
-*/
+        ul.append('<li><a page='+i+'>'+i+'</a></li>');
+      if(i == Number(options.page) + 4 && i < pages)
+        ul.append('<li class="disabled"><a>...</a></li>');
+    }
+    if(options.page === pages) ul.append('<li class="disabled"><a>Last</a></li>');
+    else ul.append('<li><a page='+pages+' page='+pages+'>Last</a></li>');
+
+    // paginator event handler
+    $('.pagination.text-center')
+    .find('a')
+    .click(function (event) {
+      var page = $(this).attr('page');
+      var beer_query = $('#f1').val() || $('#f1').attr('placeholder'),
+          post_body = {};
+      console.log('page: '+page+'\n beer_query: '+beer_query);
+
+      // define simple query
+      post_body = {
+        query: {
+          beer: beer_query
+        },
+        action: "search",
+        page: page,
+        size: 20
+      }
+
+      $('[id*="clone"]').remove(); // remove cloned elems if exists
+      $('#ba_jumbotron_hid')
+        .removeClass('jumbotron')
+        .addClass('hidden')
+        .after('<img id="spinner" src="../images/spinner2.gif">');
+
+      // ajax POST XHR
+      var request = $.ajax({
+        url:url,
+        type: 'POST',
+        data: JSON.stringify(post_body),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json'});
+      request.fail(function (err, msg) {
+        console.log('Request failed.\nStatus:'+err.status+'\nStatus text: '+err.statusText+'\nError message: '+msg);
+        $('#paginator').removeClass('container').addClass('hidden').find('ul').remove();
+        $('#ba_jumbotron_hid').removeClass('hidden').addClass('jumbotron');
+        $('#spinner').remove();
+      });
+      request.done(function(response) {
+        $('#paginator').removeClass('container').addClass('hidden').find('ul').remove();
+        $('#ba_jumbotron_hid').removeClass('hidden').addClass('jumbotron');
+        $('#spinner').remove();
+        render(response, beer_query);
+      });
+
+    })
+
   }
 
   // feel objects & render response
-  var render = function(response) {
+  var render = function(response, beer_query) {
     console.log('HTTP response OK');
     var dataset = $('#dataset').removeClass('hidden').addClass('container');
     // Beer not found!
     if(response.beers.length === 0) {
       dataset.find('.jumbotron')
-      .html('<div class="alert alert-danger"><strong>404</strong> Beer "'+query+'" not found!</div>');
+      .html('<div class="alert alert-danger"><strong>404</strong> Beer "'+beer_query+'" not found!</div>');
     }
     else dataset.find('.alert.alert-danger').remove();
 
@@ -287,6 +330,7 @@ $(function() {
     }); // end forEach
     // show paginator
     if(response.pages > 0) paginator(response.options, response.docs, response.pages);
+
   } // end render function
 }); // end DOM ready
 
