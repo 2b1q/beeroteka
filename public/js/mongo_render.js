@@ -3,6 +3,25 @@ $(function() {
       card = 'ba'; // default card type = ba
       uniqueId = 1;
 
+  // advanced data
+  var advanced = {};
+  $('.panel-heading')
+  .find('a')
+  .click(function (e) {
+    // feel default data object
+    advanced = {
+      brew: $('#f2').attr('placeholder')
+    }
+    // console.log('default data:\n'+JSON.stringify(advanced,null,2));
+    // brew keyup event handler
+    $('#f2').keyup(function (event) {
+      advanced = {
+        brew: $('#f2').val()
+      }
+      // console.log('updated data: '+JSON.stringify(advanced,null,2));
+    })
+  })
+
   // URL API
   var url = '/beers/api/search';
   // '#form-submit' click EVENT handler
@@ -18,6 +37,18 @@ $(function() {
       },
       action: "search"
     }
+
+    var expanded = $('.panel-heading')
+    .find('a').attr('aria-expanded');
+
+    if(expanded === 'true') {
+      if(advanced.hasOwnProperty('brew')) {
+        post_body.query.brew = advanced.brew;
+        post_body.query.query_type = 'advanced';
+      }
+    }
+
+    console.log('post_body: '+JSON.stringify(post_body,null,2));
 
     // start ladda spinner
 	 	e.preventDefault();

@@ -14,9 +14,9 @@ append body
 						+icon-primary('search')
 						|&nbsp;
 						Strong Beer:
-				.col-sm-2
+				.col-sm-3
 					input.form-control(id='f1' name='query', type='text', placeholder='Oatmeal stout')
-				.col-sm-2
+				.col-sm-1
 					button.btn.btn-primary(id='form-submit' type='submit' class='btn btn-primary ladda-button' data-style='expand-right' data-size='l')= 'Найти пиво'
 			.row
 				.col-sm-5
@@ -25,16 +25,12 @@ append body
 			.row
 				.col-sm-5
 			.row
+				.col-sm-1
 				.col-sm-3
 					+accordion("sample")
-						+accordion-item-info("Advanced search","sample")
-							.container
-								.row
-									.col-sm-1
-										Strong Brew:
-									.col-sm-1
-										input.form-control(id='f1' name='query', type='text', placeholder='Jaws')
-				.col-sm-2
+						+accordion-item-info("Brew","sample")
+							input.form-control(id='f2', type='text', placeholder='Jaws', value='')
+				.col-sm-1
 		.hidden(id='paginator')
 		.hidden(id='dataset')
 			.jumbotron(id='ba_jumbotron_hid')
