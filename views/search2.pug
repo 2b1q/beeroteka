@@ -8,16 +8,33 @@ append body
 	.container
 		h4= title
 		.container
-			form.navbar-form.navbar-left
-				.container
-					+icon-primary('search')
-					|&nbsp;&nbsp;
-					Strong Beer:
-					|&nbsp;&nbsp;
+			.row
+				.col-sm-1
+					.text-right
+						+icon-primary('search')
+						|&nbsp;
+						Strong Beer:
+				.col-sm-2
 					input.form-control(id='f1' name='query', type='text', placeholder='Oatmeal stout')
-					|&nbsp;&nbsp;
+				.col-sm-2
 					button.btn.btn-primary(id='form-submit' type='submit' class='btn btn-primary ladda-button' data-style='expand-right' data-size='l')= 'Найти пиво'
-				.container
+			.row
+				.col-sm-5
+			.row
+				.col-sm-5
+			.row
+				.col-sm-5
+			.row
+				.col-sm-3
+					+accordion("sample")
+						+accordion-item-info("Advanced search","sample")
+							.container
+								.row
+									.col-sm-1
+										Strong Brew:
+									.col-sm-1
+										input.form-control(id='f1' name='query', type='text', placeholder='Jaws')
+				.col-sm-2
 		.hidden(id='paginator')
 		.hidden(id='dataset')
 			.jumbotron(id='ba_jumbotron_hid')
