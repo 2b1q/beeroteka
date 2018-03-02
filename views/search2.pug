@@ -31,6 +31,11 @@ append body
 						+accordion-item-info("Brew","sample")
 							input.form-control(id='f2', type='text', placeholder='Jaws', value='')
 				.col-sm-1
+					+dropdown("Beer Style",[
+						{text:"Bootstrap"},
+						{text:"JADE"},
+						{text:"NodeJS"}
+						])
 		.hidden(id='paginator')
 		.hidden(id='dataset')
 			.jumbotron(id='ba_jumbotron_hid')
