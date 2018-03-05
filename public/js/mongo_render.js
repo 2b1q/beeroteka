@@ -58,8 +58,13 @@ $(function() {
 
     if(!post_body.query.beer && !post_body.query.hasOwnProperty('query_type')){
       console.log('error');
+      $('.ladda-spinner').remove();
+      $('.alert.alert-danger.fade.in.alert-dismissible').remove();
       $('#paginator').removeClass('container').addClass('hidden').find('ul').remove();
-      $('#ba_jumbotron_hid').removeClass('hidden').addClass('jumbotron')
+      $('#dataset')
+      .removeClass('hidden')
+      .find('#ba_jumbotron_hid')
+      .addClass('jumbotron')
       .append('<div class="alert alert-danger fade in alert-dismissible">Поле пиво может быть пустым только с дополнительными параметрами поиска</div>');
     } else {
       // start ladda spinner
@@ -83,11 +88,13 @@ $(function() {
         l.stop(); // stop spinner anyway
         $('#spinner').remove();
         $('#ba_jumbotron_hid').removeClass('hidden').addClass('jumbotron');
+        $('.ladda-spinner').remove();
         console.log('Request failed.\nStatus:'+err.status+'\nStatus text: '+err.statusText+'\nError message: '+msg);
       });
       request.done(function(response) {
         l.stop(); // stop spinner anyway
         $('#spinner').remove();
+        $('.ladda-spinner').remove();
         $('#ba_jumbotron_hid').removeClass('hidden').addClass('jumbotron');
         render(response, beer_query);
       });
