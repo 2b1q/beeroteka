@@ -22,6 +22,12 @@ $(function() {
     })
   })
 
+  // remove placeholder text
+  $('#f1').click(function (e) {
+    $(this).attr('placeholder','');
+  })
+
+
   // URL API
   var url = '/beers/api/search';
   // '#form-submit' click EVENT handler
@@ -50,36 +56,43 @@ $(function() {
 
     console.log('post_body: '+JSON.stringify(post_body,null,2));
 
-    // start ladda spinner
-	 	e.preventDefault();
-	 	var l = Ladda.create(this);
-	 	l.start();
-    $('#paginator').removeClass('container').addClass('hidden').find('ul').remove();
-    $('#ba_jumbotron_hid')
-      .removeClass('jumbotron')
-      .addClass('hidden')
-      .after('<img id="spinner" src="../images/spinner2.gif">');
+    if(!post_body.query.beer && !post_body.query.hasOwnProperty('query_type')){
+      console.log('error');
+      $('#paginator').removeClass('container').addClass('hidden').find('ul').remove();
+      $('#ba_jumbotron_hid').removeClass('hidden').addClass('jumbotron')
+      .append('<div class="alert alert-danger fade in alert-dismissible">Поле пиво может быть пустым только с дополнительными параметрами поиска</div>');
+    } else {
+      // start ladda spinner
+  	 	e.preventDefault();
+  	 	var l = Ladda.create(this);
+  	 	l.start();
+      $('#paginator').removeClass('container').addClass('hidden').find('ul').remove();
+      $('#ba_jumbotron_hid')
+        .removeClass('jumbotron')
+        .addClass('hidden')
+        .after('<img id="spinner" src="../images/spinner2.gif">');
 
-    // ajax POST XHR
-    var request = $.ajax({
-      url:url,
-      type: 'POST',
-      data: JSON.stringify(post_body),
-      contentType: 'application/json; charset=utf-8',
-      dataType: 'json'});
-    request.fail(function (err, msg) {
-      l.stop(); // stop spinner anyway
-      $('#spinner').remove();
-      $('#ba_jumbotron_hid').removeClass('hidden').addClass('jumbotron');
-      console.log('Request failed.\nStatus:'+err.status+'\nStatus text: '+err.statusText+'\nError message: '+msg);
-    });
-    request.done(function(response) {
-      l.stop(); // stop spinner anyway
-      $('#spinner').remove();
-      $('#ba_jumbotron_hid').removeClass('hidden').addClass('jumbotron');
-      render(response, beer_query);
-    });
-	 	return false;
+      // ajax POST XHR
+      var request = $.ajax({
+        url:url,
+        type: 'POST',
+        data: JSON.stringify(post_body),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json'});
+      request.fail(function (err, msg) {
+        l.stop(); // stop spinner anyway
+        $('#spinner').remove();
+        $('#ba_jumbotron_hid').removeClass('hidden').addClass('jumbotron');
+        console.log('Request failed.\nStatus:'+err.status+'\nStatus text: '+err.statusText+'\nError message: '+msg);
+      });
+      request.done(function(response) {
+        l.stop(); // stop spinner anyway
+        $('#spinner').remove();
+        $('#ba_jumbotron_hid').removeClass('hidden').addClass('jumbotron');
+        render(response, beer_query);
+      });
+  	 	return false;
+    }
 	});
 
 
