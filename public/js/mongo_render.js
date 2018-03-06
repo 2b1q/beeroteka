@@ -1,9 +1,18 @@
 $(function() {
   var ba = {}, ap = {},
-      card = 'ba'; // default card type = ba
-      uniqueId = 1;
+      card = 'ba', // default card type = ba
+      uniqueId = 1,
+      post_body = {};
 
-  // advanced data
+  // define simple query
+  post_body = {
+    query: {
+      beer: $('#f1').attr('placeholder')
+    },
+    action: "search"
+  }
+
+  // advanced data Brew handler
   var advanced = {};
   $('.panel-heading')
   .find('a')
@@ -22,11 +31,18 @@ $(function() {
     })
   })
 
+  // style btn handler
+  $('.dropdown-menu').find('a').click(function () {
+      advanced.style = $(this).text(); // set style
+      post_body.query.query_type = 'advanced'; // set query_type
+      post_body.query.style = advanced.style;
+      $('.btn.btn-default.dropdown-toggle').text(advanced.style);
+  })
+
   // remove placeholder text
   $('#f1').click(function (e) {
     $(this).attr('placeholder','');
   })
-
 
   // URL API
   var url = '/beers/api/search';
@@ -34,15 +50,9 @@ $(function() {
 	$('#form-submit').click(function(e){
     $('[id*="clone"]').remove(); // remove cloned elems if exists
     // get query text from form id='f1' or from attr placeholder
-    var beer_query = $('#f1').val() || $('#f1').attr('placeholder'),
-        post_body = {};
+    var beer_query = $('#f1').val() || $('#f1').attr('placeholder');
     // define simple query
-    post_body = {
-      query: {
-        beer: beer_query
-      },
-      action: "search"
-    }
+    post_body.query.beer = beer_query;
 
     var expanded = $('.panel-heading')
     .find('a').attr('aria-expanded');
