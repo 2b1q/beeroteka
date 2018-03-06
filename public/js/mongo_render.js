@@ -175,9 +175,11 @@ $(function() {
     if(ap.desc.hasOwnProperty(0)){
       console.log('ap.desc: '+JSON.stringify(ap.desc,null,2)+'\nap.beer: '+ap.beer);
       var modal = $('#'+div_id+' #modal') // locate modal
-      .removeClass('hidden') // remove hidden class
-      .find('#apModalLabel').text(ap.beer+' ['+ap.brew+']'); // add title
-      // build description elems
+      .removeClass('hidden'); // remove hidden class
+      modal.find('.btn.btn-primary').attr('data-target','#modal_'+div_id); // change data-target
+      modal.find('#apModal').attr('id','modal_'+div_id);
+      modal.find('#apModalLabel').text(ap.beer+' ['+ap.brew+']'); // add title
+      // // build description elems
       var div_txt = '';
       for(prop in ap.desc){
         div_txt+='<div class="text-info">'+ap.desc[prop]+'</div><br>';
