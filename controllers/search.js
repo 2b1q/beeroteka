@@ -28,12 +28,12 @@ let param_normalizer = (p, s) => {
 
 // simple search view
 exports.search = function(req, res) {
-  res.render('search', { title: 'beer Search', user: req.session.username });
+  res.render('search', { title: 'Поиск по названию пива или пивоварни', user: req.session.username });
 }
 
 // Advanced search view
 exports.search2 = function(req, res) {
-  res.render('search2', { title: 'advanced beer Search' });
+  res.render('search2', { title: 'Расширенный поиск пива' });
 }
 
 // GET Ajax API 'beers/api/search'
