@@ -31,12 +31,22 @@ $(function() {
     })
   })
 
+  // add dropdown devider and reset filter
+  $('.dropdown-menu').find('li').first()
+  .before('<li role="presentation"><a class="reset" role="menuitem" tabindex="-1">Reset filter</a></li><li role="presentation" class="divider"></li>');
+
   // style btn handler
   $('.dropdown-menu').find('a').click(function () {
       advanced.style = $(this).text(); // set style
       post_body.query.query_type = 'advanced'; // set query_type
       post_body.query.style = advanced.style;
       $('.btn.btn-default.dropdown-toggle').text(advanced.style);
+      // reset style filter
+      if( $(this).attr('class') === 'reset' ) {
+        delete post_body.query.query_type;
+        delete post_body.query.style;
+        $('.btn.btn-default.dropdown-toggle').text('Beer Style');
+      }
   })
 
   // remove placeholder text
