@@ -2,8 +2,10 @@ extends ../node_modules/pug-bootstrap/layouts/starter
 block append head
 	script(src="../ladda-bootstrap/dist/spin.min.js")
 	script(src="../ladda-bootstrap/dist/ladda.min.js")
+	script(src='../js/bootstrap-slider.min.js')
 	script(src='../js/mongo_render.js')
 	link(rel="stylesheet",href="../ladda-bootstrap/dist/ladda-themeless.min.css")
+	link(rel="stylesheet",href="../css/bootstrap-slider.min.css")
 append body
 	.container
 		h4= title
@@ -13,7 +15,7 @@ append body
 					.text-right
 						+icon-primary('search')
 						|&nbsp;
-						Strong Beer:
+						Strong Пиво:
 				.col-sm-3
 					input.form-control(id='f1' name='query', type='text', placeholder='Атомная прачечная')
 				.col-sm-1
@@ -25,11 +27,12 @@ append body
 			.row
 				.col-sm-5
 			.row
-				.col-sm-1
-				.col-sm-3
+				.col-sm-4
 					+accordion("sample")
-						+accordion-item-info("Brew","sample")
+						+accordion-item-info("Brewery and ABV","sample")
 							input.form-control(id='f2', type='text', placeholder='Jaws', value='')
+							|<b>ABV >= </b>
+							|<input id="abv_slider" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="34" data-slider-step="1" data-slider-value="8"/>
 				.col-sm-1
 					+dropdown("Beer Style",[
 						{text:"Ales"},

@@ -8,6 +8,7 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "body-parser": "~1.17.1",
+    "bootstrap-slider": "^10.0.0",
     "busboy": "^0.2.14",
     "cluster": "^0.7.7",
     "co": "^4.6.0",

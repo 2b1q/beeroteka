@@ -12,21 +12,30 @@ $(function() {
     action: "search"
   }
 
+  // Instantiate a slider
+  $("#abv_slider").slider({});
+
   // advanced data Brew handler
   var advanced = {};
   $('.panel-heading')
   .find('a')
   .click(function (e) {
+    // get slider default values
+    advanced.abv = { $gte: $("#abv_slider").attr('data-slider-value') }
+    // slide handler
+    $("#abv_slider").on('slide', function (slideEvt) {
+      advanced.abv = { $gte: slideEvt.value }
+    })
     // feel default data object
-    advanced = {
-      brew: $('#f2').attr('placeholder')
-    }
+    advanced.brew = $('#f2').attr('placeholder')
+    $('#f2').click(function () {
+      advanced.brew = '';
+      $(this).attr('placeholder','');
+    })
     // console.log('default data:\n'+JSON.stringify(advanced,null,2));
     // brew keyup event handler
     $('#f2').keyup(function (event) {
-      advanced = {
-        brew: $('#f2').val()
-      }
+      advanced.brew = $('#f2').val()
       // console.log('updated data: '+JSON.stringify(advanced,null,2));
     })
   })
@@ -70,6 +79,7 @@ $(function() {
     if(expanded === 'true') {
       if(advanced.hasOwnProperty('brew')) {
         post_body.query.brew = advanced.brew;
+        post_body.query.abv = advanced.abv;
         post_body.query.query_type = 'advanced';
       }
     }
@@ -312,7 +322,7 @@ $(function() {
     // Beer not found!
     if(response.beers.length === 0) {
       dataset.find('.jumbotron')
-      .html('<div class="alert alert-danger"><strong>404</strong> Beer "'+beer_query+'" not found!</div>');
+      .html('<div class="alert alert-danger"><strong>404</strong> Beer not found!<br>Query: '+JSON.stringify(post_body.query, null,2)+'</div>');
     }
     else dataset.find('.alert.alert-danger').remove();
 
