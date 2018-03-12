@@ -153,10 +153,16 @@ function build_query_pattern(beer, brew, style, query_type, abv, country, ba_bee
     if( style !== '' ) and.push({ $or: [ { ba_category: style_rxp }, { ba_style: style_rxp }, { ap_style: style_rxp } ] });
     if( country !== '' ) and.push({ $or: [ { ap_country: country_rxp }, { ba_category: country_rxp } ] });
     if( logic !== null ){
-      if( _.has(logic,'ba_abv') ||
-          _.has(logic,'$and') ||
-          _.has(logic,'$or')
-        ) and.push(logic);
+      if( _.has(logic,'arr') &&
+          Array.isArray(logic.arr)
+        ) logic.arr.forEach((item) => { and.push(item) });
+        /* example: ABV >= 6 and ABV < 7 
+        "logic": {
+          "arr": [
+            { "$or": [{"ba_abv": { "$gte": 6 }},{"ap_abv": { "$gte": 6 }} ] },
+            { "$or": [{"ba_abv": { "$lt": 7 }}, {"ap_abv": { "$lt": 7 }} ] }
+           	]
+        }*/
       else {
         run_statement = false;
         res.status(500).json({ error: 'bad logic query: '+JSON.stringify(logic,null,2) });

@@ -11,7 +11,7 @@ $(function() {
     },
     action: "search"
   }
-
+// TODO: change slider to ex.2, fix paginator 
   // Instantiate a slider
   $("#abv_slider").slider({});
 
