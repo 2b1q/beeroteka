@@ -130,7 +130,7 @@ function beerSearch(query, pattern, options, res, collection) {
 }
 
 // build mongoose query pattern
-function build_query_pattern(beer, brew, style, query_type, abv, country, ba_beer_score, res) {
+function build_query_pattern(beer, brew, style, query_type, abv, country, ba_beer_score, logic, res) {
   let pattern = {};
   // cleanup user input fields
   beer.replace(/[^a-zA-Z-/ '|`öèä]/g, '');
@@ -152,6 +152,16 @@ function build_query_pattern(beer, brew, style, query_type, abv, country, ba_bee
     if( brew !== '' ) and.push({ $or: [ { ap_brewary: brew_rxp }, { ba_brewary: brew_rxp } ] });
     if( style !== '' ) and.push({ $or: [ { ba_category: style_rxp }, { ba_style: style_rxp }, { ap_style: style_rxp } ] });
     if( country !== '' ) and.push({ $or: [ { ap_country: country_rxp }, { ba_category: country_rxp } ] });
+    if( logic !== null ){
+      if( _.has(logic,'ba_abv') ||
+          _.has(logic,'$and') ||
+          _.has(logic,'$or')
+        ) and.push(logic);
+      else {
+        run_statement = false;
+        res.status(500).json({ error: 'bad logic query: '+JSON.stringify(logic,null,2) });
+      }
+    }
     if( abv !== null ) {
       if( _.has(abv,'$gte') ||
           _.has(abv,'$gt')  ||
@@ -201,9 +211,10 @@ exports.ApiPostSearchMongo = function (req, res) {
         query_type = query.query_type || 'normal', // normal OR advanced
         abv = query.abv || null, // { $gte: 10 } => abv >= 10
         country = query.country || '',
-        ba_beer_score = query.ba_beer_score || null; // { $gte: 10 } => ba_beer_score >= 10
+        ba_beer_score = query.ba_beer_score || null, // { $gte: 10 } => ba_beer_score >= 10
+        logic = query.logic || null;
 
-    let pattern = build_query_pattern(beer, brew, style, query_type, abv, country, ba_beer_score, res);
+    let pattern = build_query_pattern(beer, brew, style, query_type, abv, country, ba_beer_score, logic, res);
     console.log(`${config.color.green}Mongoose Query pattern:\n ${JSON.stringify(pattern,null,2)}`);
 
     // if object pattern has properties $or OR $and
