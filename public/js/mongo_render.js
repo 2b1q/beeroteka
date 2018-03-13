@@ -21,30 +21,32 @@ $(function() {
   .find('a')
   .click(function (e) {
     // get slider default values
-    // var abv_arr = $('#abv_slider').attr('value').split(',');
-    // console.log('default values: '+$('#abv_slider').attr('value'));
-    // console.log('val1: '+abv_arr[0]+'\nval2: '+abv_arr[1]);
-    // // logic pattern
-    // advanced.logic = {
-    //   "arr":
-    //   [
-    //     { "$or": [{"ba_abv": { "$gte": Number(abv_arr[0]) }},{"ap_abv": { "$gte": Number(abv_arr[1]) }} ] },
-    //     { "$or": [{"ba_abv": { "$lt": Number(abv_arr[0]) }}, {"ap_abv": { "$lt": Number(abv_arr[1]) }} ] }
-    //   ]
-    // }
+    var abv_arr = $('#abv_slider').attr('value').split(',');
+    console.log('default values: '+$('#abv_slider').attr('value'));
+    var abv1 = Number(abv_arr[0]),
+        abv2 = Number(abv_arr[1]);
+    console.log('val1: '+abv1+'\nval2: '+abv2);
+    // logic pattern
+    advanced.logic = {
+      "arr":
+        [
+          { "$or": [{"ba_abv": { "$gte": abv1 }},{"ap_abv": { "$gte": abv2 }} ] },
+          { "$or": [{"ba_abv": { "$lt": abv1 }}, {"ap_abv": { "$lt": abv2 }} ] }
+        ]
+    }
     // advanced.abv = { $gte: $("#abv_slider").attr('data-slider-value') }
     // slide handler
-    // $("#abv_slider").on('slide', function (slideEvt) {
-    //   // advanced.abv = { $gte: slideEvt.value }
-    //   console.log('val1: '+slideEvt.value[0]+'\nval2: '+slideEvt.value[1]);
-    //   advanced.logic = {
-    //     "arr":
-    //     [
-    //       { "$or": [{"ba_abv": { "$gte": Number(abv_arr[0]) }},{"ap_abv": { "$gte": Number(abv_arr[1]) }} ] },
-    //       { "$or": [{"ba_abv": { "$lt": Number(abv_arr[0]) }}, {"ap_abv": { "$lt": Number(abv_arr[1]) }} ] }
-    //     ]
-    //   }
-    // })
+    $("#abv_slider").on('slide', function (slideEvt) {
+      // advanced.abv = { $gte: slideEvt.value }
+      console.log('val1: '+slideEvt.value[0]+'\nval2: '+slideEvt.value[1]);
+      advanced.logic = {
+        "arr":
+        [
+          { "$or": [{"ba_abv": { "$gte": Number(slideEvt.value[0]) }},{"ap_abv": { "$gte": Number(slideEvt.value[1]) }} ] },
+          { "$or": [{"ba_abv": { "$lt": Number(slideEvt.value[0]) }}, {"ap_abv": { "$lt": Number(slideEvt.value[1]) }} ] }
+        ]
+      }
+    })
     // feel default data object
     advanced.brew = $('#f2').attr('placeholder')
     $('#f2').click(function () {
@@ -65,14 +67,6 @@ $(function() {
 
   // style btn handler
   $('.dropdown-menu').find('a').click(function () {
-      var abv_arr = $('#abv_slider').attr('value').split(',');
-      advanced.logic = {
-        "arr":
-        [
-          { "$or": [{"ba_abv": { "$gte": Number(abv_arr[0]) }},{"ap_abv": { "$gte": Number(abv_arr[1]) }} ] },
-          { "$or": [{"ba_abv": { "$lt": Number(abv_arr[0]) }}, {"ap_abv": { "$lt": Number(abv_arr[1]) }} ] }
-        ]
-      }
       advanced.style = $(this).text(); // set style
       post_body.query.query_type = 'advanced'; // set query_type
       post_body.query.style = advanced.style;
@@ -109,7 +103,7 @@ $(function() {
         post_body.query.logic = advanced.logic;
         post_body.query.query_type = 'advanced';
       }
-    }
+    } else delete post_body.query.query_type; // remove advanced query type
 
     console.log('post_body: '+JSON.stringify(post_body,null,2));
 
@@ -298,19 +292,18 @@ $(function() {
     .find('a')
     .click(function (event) {
       var page = $(this).attr('page');
-      var beer_query = $('#f1').val() || $('#f1').attr('placeholder'),
-          post_body = {};
+      var beer_query = $('#f1').val() || $('#f1').attr('placeholder');
       console.log('page: '+page+'\n beer_query: '+beer_query);
 
       // define simple query
-      post_body = {
-        query: {
-          beer: beer_query
-        },
-        action: "search",
-        page: page,
-        size: 20
-      }
+      // post_body = {
+      //   query: {
+      //     beer: beer_query
+      //   },
+      //   action: "search",
+      //   page: page,
+      //   size: 20
+      // }
 
       $('[id*="clone"]').remove(); // remove cloned elems if exists
       $('#ba_jumbotron_hid')
