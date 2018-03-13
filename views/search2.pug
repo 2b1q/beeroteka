@@ -31,8 +31,7 @@ append body
 					+accordion("sample")
 						+accordion-item-info("Brewery and ABV","sample")
 							input.form-control(id='f2', type='text', placeholder='Jaws', value='')
-							|<b>ABV >= </b>
-							|<input id="abv_slider" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="34" data-slider-step="1" data-slider-value="8"/>
+							|<b>ABV 0</b> <input id="abv_slider" type="text" class="span2" value="" data-slider-min="0" data-slider-max="35" data-slider-step="1" data-slider-value="[4,10]"/> <b>ABV 35</b>
 				.col-sm-1
 					+dropdown("Beer Style",[
 						{text:"Ales"},
