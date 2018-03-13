@@ -264,7 +264,7 @@ $(function() {
   }
 
   // show pagination
-  var paginator = function (options, docs, pages) {
+  var paginator = function (options, docs, pages, query) {
     console.log('pages: '+pages+'\ndocs: '+docs+'\npage: '+options.page);
     var ul = '<ul class="pagination text-center"></ul>';
     $('#paginator')
@@ -291,19 +291,19 @@ $(function() {
     $('.pagination.text-center')
     .find('a')
     .click(function (event) {
-      var page = $(this).attr('page');
-      var beer_query = $('#f1').val() || $('#f1').attr('placeholder');
-      console.log('page: '+page+'\n beer_query: '+beer_query);
+      var page = $(this).attr('page'),
+          post_body = {};
+      // var beer_query = $('#f1').val() || $('#f1').attr('placeholder');
+      var beer_query = query.beer;
+      console.log('page: '+page+'\n query: '+JSON.stringify(query,null,2));
 
       // define simple query
-      // post_body = {
-      //   query: {
-      //     beer: beer_query
-      //   },
-      //   action: "search",
-      //   page: page,
-      //   size: 20
-      // }
+      post_body = {
+        query: query,
+        action: "search",
+        page: page,
+        size: 20
+      }
 
       $('[id*="clone"]').remove(); // remove cloned elems if exists
       $('#ba_jumbotron_hid')
@@ -432,7 +432,7 @@ $(function() {
       uniqueId++; // next div ID
     }); // end forEach
     // show paginator
-    if(response.pages > 0) paginator(response.options, response.docs, response.pages);
+    if(response.pages > 0) paginator(response.options, response.docs, response.pages, response.query);
 
   } // end render function
 }); // end DOM ready
