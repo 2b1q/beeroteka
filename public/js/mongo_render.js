@@ -1,3 +1,4 @@
+// DOM is ready
 $(function() {
   var ba = {}, ap = {},
       card = 'ba', // default card type = ba
@@ -11,7 +12,7 @@ $(function() {
     },
     action: "search"
   }
-// TODO:  fix paginator
+
   // Instantiate a slider
   $("#abv_slider").slider({});
 
@@ -22,28 +23,70 @@ $(function() {
   .click(function (e) {
     // get slider default values
     var abv_arr = $('#abv_slider').attr('value').split(',');
-    console.log('default values: '+$('#abv_slider').attr('value'));
+    // console.log('default values: '+$('#abv_slider').attr('value'));
     var abv1 = Number(abv_arr[0]),
         abv2 = Number(abv_arr[1]);
     console.log('val1: '+abv1+'\nval2: '+abv2);
+
     // logic pattern
     advanced.logic = {
       "arr":
-        [
-          { "$or": [{"ba_abv": { "$gte": abv1 }},{"ap_abv": { "$gte": abv2 }} ] },
-          { "$or": [{"ba_abv": { "$lt": abv1 }}, {"ap_abv": { "$lt": abv2 }} ] }
-        ]
+      [
+        { "$or": [{"ba_abv": { "$gte": abv1 }},{"ap_abv": { "$gte": abv2 }} ] },
+        { "$or": [{"ba_abv": { "$lt": abv1 }}, {"ap_abv": { "$lt": abv2 }} ] }
+      ]
     }
+    // advanced.logic = {
+    //   "arr":
+    //   [
+    //     {"$or":
+    //       [
+    //         {
+    //           "$and":
+    //             [
+    //               {"ba_abv": { "$gte": abv1 }},
+    //               {"ap_abv": { "$gte": abv1 }},
+    //               {"ba_abv": { "$lt": abv2 }},
+    //               {"ap_abv": { "$lt": abv2 }}
+    //             ]
+    //         }
+    //       ]
+    //     },
+    //     {"$or":
+    //       [
+    //         {"$and":
+    //             [
+    //               {"ba_abv": { "$gte": abv1 }},
+    //               {"ba_abv": { "$lt": abv2 }}
+    //             ]
+    //           }
+    //       ]
+    //     },
+    //     {"$or":
+    //       [
+    //         {"$and":
+    //             [
+    //               {"ap_abv": { "$gte": abv1 }},
+    //               {"ap_abv": { "$lt": abv2 }}
+    //             ]
+    //           }
+    //       ]
+    //     }
+    //   ]
+    // }
     // advanced.abv = { $gte: $("#abv_slider").attr('data-slider-value') }
     // slide handler
     $("#abv_slider").on('slide', function (slideEvt) {
       // advanced.abv = { $gte: slideEvt.value }
-      console.log('val1: '+slideEvt.value[0]+'\nval2: '+slideEvt.value[1]);
+      // console.log('val1: '+slideEvt.value[0]+'\nval2: '+slideEvt.value[1]);
+      abv1 = Number(slideEvt.value[0]),
+      abv2 = Number(slideEvt.value[1]);
+
       advanced.logic = {
         "arr":
         [
-          { "$or": [{"ba_abv": { "$gte": Number(slideEvt.value[0]) }},{"ap_abv": { "$gte": Number(slideEvt.value[1]) }} ] },
-          { "$or": [{"ba_abv": { "$lt": Number(slideEvt.value[0]) }}, {"ap_abv": { "$lt": Number(slideEvt.value[1]) }} ] }
+          { "$or": [{"ba_abv": { "$gte": abv1 }},{"ap_abv": { "$gte": abv2 }} ] },
+          { "$or": [{"ba_abv": { "$lt": abv1 }}, {"ap_abv": { "$lt": abv2 }} ] }
         ]
       }
     })
@@ -263,6 +306,10 @@ $(function() {
     }
   }
 
+  /*
+  *  - show paginator
+  *  - paginator click handler
+  */
   // show pagination
   var paginator = function (options, docs, pages, query) {
     console.log('pages: '+pages+'\ndocs: '+docs+'\npage: '+options.page);
@@ -296,7 +343,6 @@ $(function() {
       // var beer_query = $('#f1').val() || $('#f1').attr('placeholder');
       var beer_query = query.beer;
       console.log('page: '+page+'\n query: '+JSON.stringify(query,null,2));
-
       // define simple query
       post_body = {
         query: query,
@@ -330,12 +376,13 @@ $(function() {
         $('#spinner').remove();
         render(response, beer_query);
       });
-
     })
-
   }
 
-  // feel objects & render response
+  /*
+  * - feel objects
+  * - render response
+  */
   var render = function(response, beer_query) {
     console.log('HTTP response OK');
     var dataset = $('#dataset').removeClass('hidden').addClass('container');
