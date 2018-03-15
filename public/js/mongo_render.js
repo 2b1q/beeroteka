@@ -1,10 +1,11 @@
 // DOM is ready
 $(function() {
+  // initial params
   var ba = {}, ap = {},
       card = 'ba', // default card type = ba
       uniqueId = 1,
-      post_body = {};
-
+      post_body = {},
+      advanced = {};
   // define simple query
   post_body = {
     query: {
@@ -17,9 +18,7 @@ $(function() {
   $("#abv_slider").slider({});
 
   // advanced data Brew handler
-  var advanced = {};
-  $('.panel-heading')
-  .find('a')
+  $('.panel-heading').find('a')
   .click(function (e) {
     // get slider default values
     var abv_arr = $('#abv_slider').attr('value').split(',');
@@ -32,84 +31,46 @@ $(function() {
     advanced.logic = {
       "arr":
       [
-        { "$or": [{"ba_abv": { "$gte": abv1 }},{"ap_abv": { "$gte": abv2 }} ] },
-        { "$or": [{"ba_abv": { "$lt": abv1 }}, {"ap_abv": { "$lt": abv2 }} ] }
+        { "$or": [{"ba_abv": { "$gte": abv1 }},{"ap_abv": { "$gte": abv1 }} ] },
+        { "$or": [{"ba_abv": { "$lt": abv2 }}, {"ap_abv": { "$lt": abv2 }} ] }
       ]
     }
-    // advanced.logic = {
-    //   "arr":
-    //   [
-    //     {"$or":
-    //       [
-    //         {
-    //           "$and":
-    //             [
-    //               {"ba_abv": { "$gte": abv1 }},
-    //               {"ap_abv": { "$gte": abv1 }},
-    //               {"ba_abv": { "$lt": abv2 }},
-    //               {"ap_abv": { "$lt": abv2 }}
-    //             ]
-    //         }
-    //       ]
-    //     },
-    //     {"$or":
-    //       [
-    //         {"$and":
-    //             [
-    //               {"ba_abv": { "$gte": abv1 }},
-    //               {"ba_abv": { "$lt": abv2 }}
-    //             ]
-    //           }
-    //       ]
-    //     },
-    //     {"$or":
-    //       [
-    //         {"$and":
-    //             [
-    //               {"ap_abv": { "$gte": abv1 }},
-    //               {"ap_abv": { "$lt": abv2 }}
-    //             ]
-    //           }
-    //       ]
-    //     }
-    //   ]
-    // }
-    // advanced.abv = { $gte: $("#abv_slider").attr('data-slider-value') }
     // slide handler
     $("#abv_slider").on('slide', function (slideEvt) {
-      // advanced.abv = { $gte: slideEvt.value }
-      // console.log('val1: '+slideEvt.value[0]+'\nval2: '+slideEvt.value[1]);
       abv1 = Number(slideEvt.value[0]),
       abv2 = Number(slideEvt.value[1]);
-
+      // logic pattern
       advanced.logic = {
         "arr":
         [
-          { "$or": [{"ba_abv": { "$gte": abv1 }},{"ap_abv": { "$gte": abv2 }} ] },
-          { "$or": [{"ba_abv": { "$lt": abv1 }}, {"ap_abv": { "$lt": abv2 }} ] }
+          { "$or": [{"ba_abv": { "$gte": abv1 }},{"ap_abv": { "$gte": abv1 }} ] },
+          { "$or": [{"ba_abv": { "$lt": abv2 }}, {"ap_abv": { "$lt": abv2 }} ] }
         ]
       }
     })
+
     // feel default data object
-    advanced.brew = $('#f2').attr('placeholder')
+    advanced.brew = $('#f2').attr('placeholder');
+    // Brew cleanup on click
     $('#f2').click(function () {
       advanced.brew = '';
       $(this).attr('placeholder','');
     })
-    // console.log('default data:\n'+JSON.stringify(advanced,null,2));
     // brew keyup event handler
     $('#f2').keyup(function (event) {
       advanced.brew = $('#f2').val()
-      // console.log('updated data: '+JSON.stringify(advanced,null,2));
     })
   })
 
   // add dropdown devider and reset filter
-  $('.dropdown-menu').find('li').first()
+  $('.dropdown-menu')
+  .find('li')
+  .first()
   .before('<li role="presentation"><a class="reset" role="menuitem" tabindex="-1">Reset filter</a></li><li role="presentation" class="divider"></li>');
 
   // style btn handler
-  $('.dropdown-menu').find('a').click(function () {
+  $('.dropdown-menu').find('a')
+  .click(function () {
       advanced.style = $(this).text(); // set style
       post_body.query.query_type = 'advanced'; // set query_type
       post_body.query.style = advanced.style;
@@ -147,6 +108,10 @@ $(function() {
         post_body.query.query_type = 'advanced';
       }
     } else delete post_body.query.query_type; // remove advanced query type
+
+    // drop empty fields
+    if(!post_body.query.brew) delete post_body.query.brew;
+    if(!post_body.query.beer) delete post_body.query.beer;
 
     console.log('post_body: '+JSON.stringify(post_body,null,2));
 
