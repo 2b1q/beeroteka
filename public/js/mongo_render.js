@@ -62,6 +62,10 @@ $(function() {
     })
   })
 
+  // set default style => Ales (to find in both collections)
+  $('.btn.btn-default.dropdown-toggle').text('Ales');
+  post_body.query.style = $('.btn.btn-default.dropdown-toggle').text();
+
   // add dropdown devider and reset filter
   $('.dropdown-menu')
   .find('li')

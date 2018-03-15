@@ -148,15 +148,15 @@ function build_query_pattern(beer, brew, style, query_type, abv, country, ba_bee
   // construct Advanced query pattern
   } else if ( query_type === 'advanced' ) {
     let and = [];
-    if( beer !== '' ) and.push({ $or: [ { ap_beer: beer_rxp }, { ba_beer: beer_rxp } ] });
-    if( brew !== '' ) and.push({ $or: [ { ap_brewary: brew_rxp }, { ba_brewary: brew_rxp } ] });
-    if( style !== '' ) and.push({ $or: [ { ba_category: style_rxp }, { ba_style: style_rxp }, { ap_style: style_rxp } ] });
+    if(beer) and.push({ $or: [ { ap_beer: beer_rxp }, { ba_beer: beer_rxp } ] });
+    if(brew) and.push({ $or: [ { ap_brewary: brew_rxp }, { ba_brewary: brew_rxp } ] });
+    if(style) and.push({ $or: [ { ba_category: style_rxp }, { ba_style: style_rxp }, { ap_style: style_rxp } ] });
     if( country !== '' ) and.push({ $or: [ { ap_country: country_rxp }, { ba_category: country_rxp } ] });
     if( logic !== null ){
       if( _.has(logic,'arr') &&
           Array.isArray(logic.arr)
         ) logic.arr.forEach((item) => { and.push(item) });
-        /* example: ABV >= 6 and ABV < 7 
+        /* example: ABV >= 6 and ABV < 7
         "logic": {
           "arr": [
             { "$or": [{"ba_abv": { "$gte": 6 }},{"ap_abv": { "$gte": 6 }} ] },
