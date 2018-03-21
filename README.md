@@ -1,17 +1,17 @@
 # README #
 **FrontEnd for beer aggregator:**
- * NodeJS
- * Express
- * Bootstrap
- * PUG (template engine)
- * apache2 - nodeJS reverse proxy 
+ - NodeJS
+ - Express
+ - Bootstrap
+ - PUG (template engine)
+ - apache2 - nodeJS reverse proxy 
 **backend:**
- * PySpider (Python spider framework) - docker IMG
- * ElasticSearch [ES] (search engine) - docker IMG
- * MogoDB (core data store) - docker IMG
- * MySQL (crawler backend) - docker IMG
- * RabbitMQ (crawler messaging) - docker IMG
- * logstash (ES dataloader) - docker IMG
+ - PySpider (Python spider framework) - docker IMG
+ - ElasticSearch [ES] (search engine) - docker IMG
+ - MogoDB (core data store) - docker IMG
+ - MySQL (crawler backend) - docker IMG
+ - RabbitMQ (crawler messaging) - docker IMG
+ - logstash (ES dataloader) - docker IMG
 
 # Pull repo
 git clone https://b-b-q@bitbucket.org/b-b-q/beeroteka.git
