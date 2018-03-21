@@ -1,14 +1,19 @@
 # README
-Web FrontEnd for beer aggregator
+Web FrontEnd for beer aggregator.
+Main components:
+- NodeJS Web frontend
+- NodeJS backend (data store & elasticsearch engine)
+- Dataloader (From Crawler to ES)
+- Crawler (PySpider framework)
 
-# Web Frontend + Web backend
-- NodeJS
-- Express
-- Bootstrap
+# Web FrontEnd + Web BackEnd (WFE + WBE) 
+- NodeJS (WBE)
+- Express (WBE)
+- Bootstrap (WFE component library)
 - PUG (template engine)
-- apache2 - nodeJS reverse proxy 
+- revproxy docker IMG - apache2 reverse proxy based on alpine linux (proxing TCP:80 => TCP:3000)
 
-# Backend (Crawler, Search engine, Store)
+# Backend (Crawler, Search engine, Store, dataloader)
 - PySpider (Python spider framework) - docker IMG
 - ElasticSearch [ES] (search engine) - docker IMG
 - MogoDB (core data store) - docker IMG
