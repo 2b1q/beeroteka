@@ -1,6 +1,8 @@
 # README
 Web FrontEnd for beer aggregator.
-Main components:
+Beer search and crawl engine.
+
+# Main components
 - NodeJS Web frontend
 - NodeJS backend (data store & elasticsearch engine)
 - Dataloader (From Crawler to ES)
