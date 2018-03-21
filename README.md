@@ -1,11 +1,14 @@
-# README #
-**FrontEnd for beer aggregator:**
+# README
+**FrontEnd for beer aggregator**
+
+# Web Frontend + Web backend
 - NodeJS
 - Express
 - Bootstrap
 - PUG (template engine)
 - apache2 - nodeJS reverse proxy 
-**backend:**
+
+# Backend (Crawler, Search engine, Store)
 - PySpider (Python spider framework) - docker IMG
 - ElasticSearch [ES] (search engine) - docker IMG
 - MogoDB (core data store) - docker IMG
@@ -41,5 +44,5 @@ git clone https://b-b-q@bitbucket.org/b-b-q/beeroteka.git
 8. docker run --name webui -m 256m -d -p 5000:5000 --link mysql:mysql --link rabbitmq:rabbitmq --link scheduler:scheduler --link phantomjs:phantomjs crawler webui
 
 # Run backend for NodeJS FrontEnd without COMPOSER (ElasticSearch + MongoDB)
-docker run --name elasticsearch -d -p 9200:9200 -v "$PWD/elasticsearch/esdata":/usr/share/elasticsearch/data elasticsearch
-docker run -d --name mongo -p 127.0.0.1:27017:27017 -p 127.0.0.1:28017:28017 -e MONGODB_USER="beeroteka" -e MONGODB_DATABASE="beeroteka" -e MONGODB_PASS="password" tutum/mongodb
+1. docker run --name elasticsearch -d -p 9200:9200 -v "$PWD/elasticsearch/esdata":/usr/share/elasticsearch/data elasticsearch
+2. docker run -d --name mongo -p 127.0.0.1:27017:27017 -p 127.0.0.1:28017:28017 -e MONGODB_USER="beeroteka" -e MONGODB_DATABASE="beeroteka" -e MONGODB_PASS="password" tutum/mongodb
