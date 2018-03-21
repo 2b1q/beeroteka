@@ -1,5 +1,5 @@
 # README
-**FrontEnd for beer aggregator**
+Web FrontEnd for beer aggregator
 
 # Web Frontend + Web backend
 - NodeJS
@@ -18,8 +18,10 @@
 
 # Pull repo
 git clone https://b-b-q@bitbucket.org/b-b-q/beeroteka.git
+backend data https://yadi.sk/d/L654kqlU3TcFgL 
 
 # Requirements
+ - Docker https://docs.docker.com/install/
  - PySpider Dockerfile (build pyspider IMG)
  - PySpider docker-compose.yml (pyspider composer)
  - PySpider config.json
@@ -27,11 +29,45 @@ git clone https://b-b-q@bitbucket.org/b-b-q/beeroteka.git
  - ES data
  - MySQL data
  
+# Install flow
+1. install docker
+2. pull repo and backend data
+3. install Crawler (optional)
+4. install NodeJS backend (ES + MongoDB)
+5. run NodeJS backend containers
+6. npm install NodeJS modules
+7. run nodeJS 
+8. Load data from ES to MongoDB 
+
+# build PySpider Crawler IMG
+1. cd pyspider
+2. docker build -t crawler .
+3. docker run --name revproxy -d -p 80:80 revproxy
+
+# build Logstash dataloader IMG
+1. cd logstash
+2. docker build -t dataloader .
+
+# run logstash (pickup data from MySQL and load to ES)
+1. run mysql
+2. run ES
+3. docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/apivo-result2es.conf
+4. docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/badvocate-result2es.conf
+
+# build and run reverse proxy IMG
+1. cd reverse_proxy
+2. docker build -t revproxy .
+3. docker run --name revproxy -d -p 80:80 revproxy
+
+# build and run torbox
+1. docker run --name torbox  -d -p 8118:8118 -p 9050:9050 rdsubhas/tor-privoxy-alpine
+ 
 # Run backend Crawler components with COMPOSER (MySQL + RabbitMQ + PySpider framework)
 1. docker run --name mysql -d -v /path/to/mysql_data/:/var/lib/mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=yes mysql
 2. docker run --name rabbitmq -d rabbitmq
-3. sleep 20
-4. docker-compose up
+3. docker run --name torbox  -d rdsubhas/tor-privoxy-alpine
+4. sleep 20
+5. docker-compose up
 
 # Run backend Crawler components without COMPOSER 
 1. docker run --name mysql -d -v /path/to/mysql_data/:/var/lib/mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=yes mysql
