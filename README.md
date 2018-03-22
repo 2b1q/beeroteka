@@ -109,12 +109,9 @@ Beer search and crawl engine.
 ### run logstash (pickup data from MySQL and load to ES) (optional)
 1. run mysql
 2. run ES
-3. 
+3. load data from MySQL to ES
 ```
 docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/apivo-result2es.conf
-```
-4. 
-```
 docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/badvocate-result2es.conf
 ```
 
