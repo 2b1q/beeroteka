@@ -126,3 +126,18 @@ Beer search and crawl engine.
 - curl -XGET "$ES_URL/ES_index/_mapping?pretty" # check mappings in resultdb index
 
 ## Docker 
+#### delete All unused volumes
+docker volume rm $(docker volume ls -qf dangling=true)
+#### drop all containers
+docker rm $(docker ps -a|awk '($1 !~ /CONTAINER/){ print $1}')
+#### drop crawler containers 
+docker rm -f  $(docker ps -a|grep -i crawler|awk '{print $1}')
+#### read container logs
+docker logs <container_name> 
+#### inspect container
+docker inspect mysql
+docker logs mysql
+#### Short docker PS output
+docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}"
+#### build crawler from current dir with Dockerfile
+docker build -t crawler .
