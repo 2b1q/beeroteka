@@ -8,14 +8,14 @@ Beer search and crawl engine.
 - Dataloader (From Crawler to ES)
 - Crawler (PySpider framework)
 
-# Web FrontEnd + Web BackEnd (WFE + WBE) 
+## Web FrontEnd + Web BackEnd (WFE + WBE) 
 - NodeJS (WBE)
 - Express (WBE)
 - Bootstrap (WFE component library)
 - PUG (template engine)
 - revproxy docker IMG - apache2 reverse proxy based on alpine linux (proxing TCP:80 => TCP:3000)
 
-# Backend (Crawler, Search engine, Store, dataloader)
+## Backend (Crawler, Search engine, Store, dataloader)
 - PySpider (Python spider framework) - docker IMG
 - ElasticSearch [ES] (search engine) - docker IMG
 - MogoDB (core data store) - docker IMG
@@ -23,12 +23,12 @@ Beer search and crawl engine.
 - RabbitMQ (crawler messaging) - docker IMG
 - logstash (ES dataloader) - docker IMG
 
-# Pull repo
+## Pull repo
 1. git clone https://b-b-q@bitbucket.org/b-b-q/beeroteka.git
 2. Load backend data https://yadi.sk/d/L654kqlU3TcFgL 
 
-# Requirements
-## Crawler Requirements
+## Requirements
+### Crawler Requirements
  - Docker https://docs.docker.com/install/
  - PySpider Dockerfile (build pyspider IMG)
  - PySpider docker-compose.yml (pyspider composer)
@@ -36,7 +36,7 @@ Beer search and crawl engine.
  - MySQL data 
  - torbox
  
-## dataloader Requirements
+### dataloader Requirements
  - Docker https://docs.docker.com/install/
  - MySQL container
  - MySQL data (mysql_data.tar.gz)
@@ -45,14 +45,14 @@ Beer search and crawl engine.
  - logstash container 
  - logstash configs (logstash.tar.gz)
  
-## NodeJS Web FrontEnd Requirements
+### NodeJS Web FrontEnd Requirements
 - Docker https://docs.docker.com/install/
 - ES container (see "Run backend for NodeJS")
 - MongoDB container (see "Run backend for NodeJS")
 - ES data (esdata.tar.gz)
 - git NodeJS repo
  
-# Install flow
+## Install flow
 1. install docker and docker composer
 2. pull repo and backend data
 3. install Crawler (optional)
@@ -62,37 +62,43 @@ Beer search and crawl engine.
 7. run nodeJS 
 8. Load data from ES to MongoDB 
 
-# build PySpider Crawler IMG (optional)
+## Build docker images
+### build PySpider Crawler IMG (optional)
 1. cd pyspider
 2. docker build -t crawler .
 3. docker run --name revproxy -d -p 80:80 revproxy
 
-# build Logstash dataloader IMG (optional)
+### build Logstash dataloader IMG (optional)
 1. cd logstash
 2. docker build -t dataloader .
 
-# run logstash (pickup data from MySQL and load to ES) (optional)
+### run logstash (pickup data from MySQL and load to ES) (optional)
 1. run mysql
 2. run ES
 3. docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/apivo-result2es.conf
 4. docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/badvocate-result2es.conf
 
-# build and run reverse proxy IMG (optional)
+### build and run reverse proxy IMG (optional)
 1. cd reverse_proxy
 2. docker build -t revproxy .
 3. docker run --name revproxy -d -p 80:80 revproxy
 
-# build and run torbox (optional)
+### build and run torbox (optional)
 1. docker run --name torbox  -d -p 8118:8118 -p 9050:9050 rdsubhas/tor-privoxy-alpine
- 
-# Run backend Crawler components with COMPOSER (MySQL + RabbitMQ + PySpider framework) (optional)
+
+## RUN components with COMPOSER
+### Run backend Crawler components (MySQL + RabbitMQ + PySpider framework) (optional)
 1. docker run --name mysql -d -v /path/to/mysql_data/:/var/lib/mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=yes mysql
 2. docker run --name rabbitmq -d rabbitmq
 3. docker run --name torbox  -d rdsubhas/tor-privoxy-alpine
 4. sleep 20
 5. docker-compose up
+### Run ES with composer
+1. cd es
+2. docker-compose up
 
-# Run backend Crawler components without COMPOSER (optional)
+## RUN components without COMPOSER
+### Run backend Crawler components (optional)
 1. docker run --name mysql -d -v /path/to/mysql_data/:/var/lib/mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=yes mysql
 2. docker run --name rabbitmq -d rabbitmq
 3. docker run --name phantomjs -d crawler phantomjs
@@ -102,16 +108,12 @@ Beer search and crawl engine.
 7. docker run --name scheduler -d --link mysql:mysql --link rabbitmq:rabbitmq crawler scheduler
 8. docker run --name webui -m 256m -d -p 5000:5000 --link mysql:mysql --link rabbitmq:rabbitmq --link scheduler:scheduler --link phantomjs:phantomjs crawler webui
 
-# Run backend for NodeJS FrontEnd without COMPOSER (ElasticSearch + MongoDB)
+### Run backend for NodeJS FrontEnd (ElasticSearch + MongoDB)
 1. docker run --name elasticsearch -d -p 9200:9200 -v "$PWD/elasticsearch/esdata":/usr/share/elasticsearch/data elasticsearch
 2. docker run -d --name mongo -p 127.0.0.1:27017:27017 -p 127.0.0.1:28017:28017 -e MONGODB_USER="beeroteka" -e MONGODB_DATABASE="beeroteka" -e MONGODB_PASS="password" tutum/mongodb
 
-# Run ES with composer
-1. cd es
-2. docker-compose up
-
-# MySQL backups
-#### backup crawler data
+## Backups
+### backup MySQL crawler data
 - docker exec mysql /usr/bin/mysqldump -u root resultdb > /tmp/resultdb.sql && gzip -f /tmp/resultdb.sql
 - docker exec mysql /usr/bin/mysqldump -u root projectdb > /tmp/projectdb.sql && gzip -f /tmp/projectdb.sql
 - docker exec mysql /usr/bin/mysqldump -u root taskdb > /tmp/taskdb.sql && gzip -f /tmp/taskdb.sql
