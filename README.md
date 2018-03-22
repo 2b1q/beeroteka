@@ -117,3 +117,12 @@ Beer search and crawl engine.
 - docker exec mysql /usr/bin/mysqldump -u root resultdb > /tmp/resultdb.sql && gzip -f /tmp/resultdb.sql
 - docker exec mysql /usr/bin/mysqldump -u root projectdb > /tmp/projectdb.sql && gzip -f /tmp/projectdb.sql
 - docker exec mysql /usr/bin/mysqldump -u root taskdb > /tmp/taskdb.sql && gzip -f /tmp/taskdb.sql
+
+## ES hints
+### show ES indexes
+1. export ES_URL=localhost:9200
+2. curl $ES_URL/_cat/indices?v
+### show mappings
+- curl -XGET "$ES_URL/ES_index/_mapping?pretty" # check mappings in resultdb index
+
+## Docker 
