@@ -109,35 +109,59 @@ Beer search and crawl engine.
 ### run logstash (pickup data from MySQL and load to ES) (optional)
 1. run mysql
 2. run ES
-3. docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/apivo-result2es.conf
-4. docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/badvocate-result2es.conf
+3. 
+```
+docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/apivo-result2es.conf
+```
+4. 
+```
+docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/badvocate-result2es.conf
+```
 
 ## Backups
 ### backup MySQL crawler data
-- docker exec mysql /usr/bin/mysqldump -u root resultdb > /tmp/resultdb.sql && gzip -f /tmp/resultdb.sql
-- docker exec mysql /usr/bin/mysqldump -u root projectdb > /tmp/projectdb.sql && gzip -f /tmp/projectdb.sql
-- docker exec mysql /usr/bin/mysqldump -u root taskdb > /tmp/taskdb.sql && gzip -f /tmp/taskdb.sql
-
+```
+docker exec mysql /usr/bin/mysqldump -u root resultdb > /tmp/resultdb.sql && gzip -f /tmp/resultdb.sql
+docker exec mysql /usr/bin/mysqldump -u root projectdb > /tmp/projectdb.sql && gzip -f /tmp/projectdb.sql
+docker exec mysql /usr/bin/mysqldump -u root taskdb > /tmp/taskdb.sql && gzip -f /tmp/taskdb.sql
+```
 ## ES hints
 ### show ES indexes
+```
 1. export ES_URL=localhost:9200
 2. curl $ES_URL/_cat/indices?v
+```
 ### show mappings
-- curl -XGET "$ES_URL/ES_index/_mapping?pretty" # check mappings in resultdb index
-
+```
+curl -XGET "$ES_URL/ES_index/_mapping?pretty" # check mappings in resultdb index
+```
 ## Docker 
 #### delete All unused volumes
+```
 docker volume rm $(docker volume ls -qf dangling=true)
+```
 #### drop all containers
+```
 docker rm $(docker ps -a|awk '($1 !~ /CONTAINER/){ print $1}')
+```
 #### drop crawler containers 
+```
 docker rm -f  $(docker ps -a|grep -i crawler|awk '{print $1}')
+```
 #### read container logs
+```
 docker logs <container_name> 
+```
 #### inspect container
+```
 docker inspect mysql
 docker logs mysql
+```
 #### Short docker PS output
+```
 docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}"
+```
 #### build crawler from current dir with Dockerfile
+```
 docker build -t crawler .
+```
