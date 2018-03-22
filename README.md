@@ -64,35 +64,43 @@ Beer search and crawl engine.
 
 ## Build docker images
 ### build PySpider Crawler IMG (optional)
+```
 1. cd pyspider
 2. docker build -t crawler .
 3. docker run --name revproxy -d -p 80:80 revproxy
-
+```
 ### build Logstash dataloader IMG (optional)
+```
 1. cd logstash
 2. docker build -t dataloader .
-
+```
 ### build and run reverse proxy IMG (optional)
+```
 1. cd reverse_proxy
 2. docker build -t revproxy .
 3. docker run --name revproxy -d -p 80:80 revproxy
-
+```
 ### build and run torbox (optional)
-1. docker run --name torbox  -d -p 8118:8118 -p 9050:9050 rdsubhas/tor-privoxy-alpine
-
+```
+docker run --name torbox  -d -p 8118:8118 -p 9050:9050 rdsubhas/tor-privoxy-alpine
+```
 ## RUN components with COMPOSER
 ### Run backend Crawler components (MySQL + RabbitMQ + PySpider framework) (optional)
+```
 1. docker run --name mysql -d -v /path/to/mysql_data/:/var/lib/mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=yes mysql
 2. docker run --name rabbitmq -d rabbitmq
 3. docker run --name torbox  -d rdsubhas/tor-privoxy-alpine
 4. sleep 20
 5. docker-compose up
+```
 ### Run ES with composer
+```
 1. cd es
 2. docker-compose up
-
+```
 ## RUN components without COMPOSER
 ### Run backend Crawler components (optional)
+```
 1. docker run --name mysql -d -v /path/to/mysql_data/:/var/lib/mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=yes mysql
 2. docker run --name rabbitmq -d rabbitmq
 3. docker run --name phantomjs -d crawler phantomjs
@@ -101,11 +109,12 @@ Beer search and crawl engine.
 6. docker run --name fetcher -m 256m -d --link phantomjs:phantomjs --link rabbitmq:rabbitmq crawler fetcher --no-xmlrpc
 7. docker run --name scheduler -d --link mysql:mysql --link rabbitmq:rabbitmq crawler scheduler
 8. docker run --name webui -m 256m -d -p 5000:5000 --link mysql:mysql --link rabbitmq:rabbitmq --link scheduler:scheduler --link phantomjs:phantomjs crawler webui
-
+```
 ### Run backend for NodeJS FrontEnd (ElasticSearch + MongoDB)
+```
 1. docker run --name elasticsearch -d -p 9200:9200 -v "$PWD/elasticsearch/esdata":/usr/share/elasticsearch/data elasticsearch
 2. docker run -d --name mongo -p 127.0.0.1:27017:27017 -p 127.0.0.1:28017:28017 -e MONGODB_USER="beeroteka" -e MONGODB_DATABASE="beeroteka" -e MONGODB_PASS="password" tutum/mongodb
-
+```
 ### run logstash (pickup data from MySQL and load to ES) (optional)
 1. run mysql
 2. run ES
