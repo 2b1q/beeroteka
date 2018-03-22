@@ -108,3 +108,9 @@ Beer search and crawl engine.
 # Run ES with composer
 1. cd es
 2. docker-compose up
+
+# MySQL backups
+#### backup crawler data
+- docker exec mysql /usr/bin/mysqldump -u root resultdb > /tmp/resultdb.sql && gzip -f /tmp/resultdb.sql
+- docker exec mysql /usr/bin/mysqldump -u root projectdb > /tmp/projectdb.sql && gzip -f /tmp/projectdb.sql
+- docker exec mysql /usr/bin/mysqldump -u root taskdb > /tmp/taskdb.sql && gzip -f /tmp/taskdb.sql
