@@ -72,12 +72,6 @@ Beer search and crawl engine.
 1. cd logstash
 2. docker build -t dataloader .
 
-### run logstash (pickup data from MySQL and load to ES) (optional)
-1. run mysql
-2. run ES
-3. docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/apivo-result2es.conf
-4. docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/badvocate-result2es.conf
-
 ### build and run reverse proxy IMG (optional)
 1. cd reverse_proxy
 2. docker build -t revproxy .
@@ -111,6 +105,12 @@ Beer search and crawl engine.
 ### Run backend for NodeJS FrontEnd (ElasticSearch + MongoDB)
 1. docker run --name elasticsearch -d -p 9200:9200 -v "$PWD/elasticsearch/esdata":/usr/share/elasticsearch/data elasticsearch
 2. docker run -d --name mongo -p 127.0.0.1:27017:27017 -p 127.0.0.1:28017:28017 -e MONGODB_USER="beeroteka" -e MONGODB_DATABASE="beeroteka" -e MONGODB_PASS="password" tutum/mongodb
+
+### run logstash (pickup data from MySQL and load to ES) (optional)
+1. run mysql
+2. run ES
+3. docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/apivo-result2es.conf
+4. docker run -it --rm -v "$PWD"/logstash/config-dir:/config-dir --link mysql:mysql --link elasticsearch:elasticsearch dataloader -f /config-dir/badvocate-result2es.conf
 
 ## Backups
 ### backup MySQL crawler data
