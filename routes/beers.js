@@ -21,6 +21,7 @@ router.post('/api/search', search_controller.ApiPostSearchMongo); // ajax POST A
 
 /* infographics */
 router.get('/graphics', graphics_controller.show); // show graphics data
+router.post('/api/graphics', graphics_controller.charts); // AJAX graphics API
 
 // REST API beer
 // router.get('/api/', beer.list); // GET all beerMongoose API

@@ -5,12 +5,12 @@ $(function () {
     datasets: [{
       data: [169370, 25000],
       backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)'
+        'rgba(204, 102, 0, 1)',
+        'rgba(255, 179, 26, 1)'
       ],
       borderColor: [
-        'rgba(255,99,132,1)',
-        'rgba(54, 162, 235, 1)'
+        'rgba(0, 0, 0, 1)',
+        'rgba(0,0,0,0,1)'
       ],
       borderWidth: 1
     }],
