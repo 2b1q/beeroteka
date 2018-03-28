@@ -13,7 +13,7 @@ exports.show = function (req, res) {
 }
 
 /*
-get data for chart1 (Ales)
+get data for chart1 and chart2 (Ales)
 from MongoDB baModel collection
 and return Promise with data
 */
@@ -33,7 +33,12 @@ function alesMongo(cnt) {
       }
     },
     {
-      $group: { _id: (cnt => cnt ? null : '$ba_style')(cnt), count: {$sum: 1} } // if cnt = true then _id: null esle _id: '$ba_style'
+      $group: {
+        _id: (cnt => cnt ? null : '$ba_style')(cnt),
+        count: {$sum: 1}, // if cnt = true then _id: null esle _id: '$ba_style'
+        max_abv: { $max: '$ba_abv' },
+        min_abv: { $min: '$ba_abv' }
+       }
       // $group: { _id: '$ba_style', count: {$sum: 1} } // group by ba_style count
     }
   ];
@@ -48,7 +53,7 @@ function alesMongo(cnt) {
 }
 
 /*
-get data for chart1 (Lagers)
+get data for chart1 and chart2 (Lagers)
 from MongoDB baModel collection
 and return Promise with data
 */
@@ -66,7 +71,12 @@ function lagersMongo(cnt) {
       }
     },
     {
-      $group: { _id: (cnt => cnt ? null : '$ba_style')(cnt), count: {$sum: 1} } // if cnt = true then _id: null esle _id: '$ba_style'
+      $group: {
+        _id: (cnt => cnt ? null : '$ba_style')(cnt),
+        count: {$sum: 1}, // if cnt = true then _id: null esle _id: '$ba_style'
+        max_abv: { $max: '$ba_abv' },
+        min_abv: { $min: '$ba_abv' }
+       }
       // $group: { _id: '$ba_style', count: {$sum: 1} } // group by ba_style count
     }
   ];
@@ -81,7 +91,7 @@ function lagersMongo(cnt) {
 }
 
 /*
-get data for chart1 (Hybrid)
+get data for chart1 and chart2 (Hybrid)
 from MongoDB baModel collection
 and return Promise with data
 */
@@ -107,7 +117,12 @@ function hybridMongo(cnt) {
       }
     },
     {
-      $group: { _id: (cnt => cnt ? null : '$ba_style')(cnt), count: {$sum: 1} } // if cnt = true then _id: null esle _id: '$ba_style'
+      $group: {
+        _id: (cnt => cnt ? null : '$ba_style')(cnt), // if cnt = true then _id: null esle _id: '$ba_style'
+        count: {$sum: 1},
+        max_abv: { $max: '$ba_abv' },
+        min_abv: { $min: '$ba_abv' }
+       }
       // $group: { _id: null, count: {$sum: 1} }
       // $group: { _id: '$ba_style', count: {$sum: 1} } // group by ba_style count
     }
@@ -118,6 +133,32 @@ function hybridMongo(cnt) {
     .exec((err, data) => {
       if(err) reject(err);
       resolve(data);
+    })
+  });
+}
+
+/*
+get data for chart2 (abv, count by styles)
+from MongoDB baModel collection
+and return Promise with data
+*/
+function StylesMongo() {
+  var pattern =
+  [
+    {
+      $group: {
+        _id: '$ba_style',
+        count: {$sum: 1},
+        max_abv: { $max: '$ba_abv' }
+      }
+    }
+  ];
+  return new Promise(function(resolve, reject) {
+    baModel
+    .aggregate(pattern)
+    .exec((err, response) => {
+      if(err) reject(err);
+      resolve(response);
     })
   });
 }
@@ -155,6 +196,7 @@ function AllCharts(res) {
 
 // build charts AJAX
 exports.charts = function (req, res) {
+  let cnt = true; // if cnt = true then return only CNT for all styles
   // check AJAX GET request HAS 'chart' param
   if(!req.body.hasOwnProperty('chart')) {
     log.error(`${config.color.red}Bad query: ${JSON.stringify(req.body,null,2)}`);
@@ -164,7 +206,6 @@ exports.charts = function (req, res) {
     let chart = req.body.chart || 'all'; // get chart param. default => 'all'
     switch (chart) {
       case 'c1': // Ales, Lager, Hybrid from MongoDB baModel collection
-        let cnt = true; // if cnt = true then return only CNT for all styles
         Promise.all([
           alesMongo(cnt), // get Ales count
           lagersMongo(cnt), // get Lager count
@@ -183,6 +224,30 @@ exports.charts = function (req, res) {
           res.status(500).json({ error: reason });
         })
         break;
+      case 'c2':
+        Promise.all([
+          alesMongo(cnt), // get Ales count
+          lagersMongo(cnt), // get Lager count
+          hybridMongo(cnt) // get Hybrid count
+        ])
+        .then(data => {
+          let json_resp = {
+            ales:   data[0],
+            lagers: data[1],
+            hybrid: data[2]
+          }
+          res.json(json_resp)
+        })
+        .catch(reason => {
+          log.error(reason);
+          res.status(500).json({ error: reason });
+        })
+        break;
+      case 'c3':
+        StylesMongo().then(data => {
+          res.json(data);
+        })
+      break;
       case 'all':
         AllCharts(res);
         break;
