@@ -17,7 +17,8 @@ get data for chart1 (Ales)
 from MongoDB baModel collection
 and return Promise with data
 */
-function alesMongo() {
+function alesMongo(cnt) {
+  // var field = (cnt => cnt ? null : '$ba_style')(cnt); AF + IIFE + args
   var pattern =
   [
     {
@@ -32,8 +33,8 @@ function alesMongo() {
       }
     },
     {
-      $group: { _id: null, count: {$sum: 1} }
-      // $group: { _id: '$ba_style', count: {$sum: 1} }
+      $group: { _id: (cnt => cnt ? null : '$ba_style')(cnt), count: {$sum: 1} } // if cnt = true then _id: null esle _id: '$ba_style'
+      // $group: { _id: '$ba_style', count: {$sum: 1} } // group by ba_style count
     }
   ];
   return new Promise(function(resolve, reject) {
@@ -51,7 +52,7 @@ get data for chart1 (Lagers)
 from MongoDB baModel collection
 and return Promise with data
 */
-function lagersMongo() {
+function lagersMongo(cnt) {
   var pattern =
   [
     {
@@ -59,16 +60,14 @@ function lagersMongo() {
         $or: [
           { ba_style: /lager/ig },
           { ba_style: /pils/ig },
-          { ba_style: /bock/ig },
           { ba_category: /lager/ig },
-          { ba_category: /bock/ig },
           { ba_category: /pils/ig }
         ]
       }
     },
     {
-      $group: { _id: null, count: {$sum: 1} }
-      // $group: { _id: '$ba_style', count: {$sum: 1} }
+      $group: { _id: (cnt => cnt ? null : '$ba_style')(cnt), count: {$sum: 1} } // if cnt = true then _id: null esle _id: '$ba_style'
+      // $group: { _id: '$ba_style', count: {$sum: 1} } // group by ba_style count
     }
   ];
   return new Promise(function(resolve, reject) {
@@ -86,7 +85,7 @@ get data for chart1 (Hybrid)
 from MongoDB baModel collection
 and return Promise with data
 */
-function hybridMongo() {
+function hybridMongo(cnt) {
   var pattern =
   [
     {
@@ -98,22 +97,19 @@ function hybridMongo() {
           { ba_style: /Herbed/ig },
           { ba_style: /Spiced/ig },
           { ba_style: /smoked/ig },
-          { ba_style: /bock/ig },
-          { ba_style: /pils/ig },
           { ba_category: /Hybrid/ig },
           { ba_category: /Vegetable/ig },
           { ba_category: /fruit/ig },
           { ba_category: /Herbed/ig },
           { ba_category: /Spiced/ig },
-          { ba_category: /smoked/ig },
-          { ba_category: /bock/ig },
-          { ba_category: /pils/ig }
+          { ba_category: /smoked/ig }
         ]
       }
     },
     {
-      $group: { _id: null, count: {$sum: 1} }
-      // $group: { _id: '$ba_style', count: {$sum: 1} }
+      $group: { _id: (cnt => cnt ? null : '$ba_style')(cnt), count: {$sum: 1} } // if cnt = true then _id: null esle _id: '$ba_style'
+      // $group: { _id: null, count: {$sum: 1} }
+      // $group: { _id: '$ba_style', count: {$sum: 1} } // group by ba_style count
     }
   ];
   return new Promise(function(resolve, reject) {
@@ -142,9 +138,9 @@ function allStylesES() {
 
 // AllCharts
 function AllCharts(res) {
-  var p1 = alesMongo(),
-      p2 = lagersMongo(),
-      p3 = hybridMongo(),
+  var p1 = alesMongo(false),
+      p2 = lagersMongo(false),
+      p3 = hybridMongo(false),
       p4 = allStylesES();
   Promise.all([ p1, p2, p3, p4 ])
     .then(charts => {
@@ -152,7 +148,7 @@ function AllCharts(res) {
         c1: charts[0], // chart1 data
         c2: charts[1], // chart2 data
         c3: charts[2], // chart3 data
-        c3: charts[3] // chart3 data
+        c4: charts[3] // chart3 data
       });
     })
 }
@@ -167,9 +163,24 @@ exports.charts = function (req, res) {
     log.info(`${config.color.cyan}\nAjax HTTP GET Req.body: ${JSON.stringify(req.body,null,2)}`);
     let chart = req.body.chart || 'all'; // get chart param. default => 'all'
     switch (chart) {
-      case 'c1':
-        alesMongo().then( result => {
-          res.json(result)
+      case 'c1': // Ales, Lager, Hybrid from MongoDB baModel collection
+        let cnt = true; // if cnt = true then return only CNT for all styles
+        Promise.all([
+          alesMongo(cnt), // get Ales count
+          lagersMongo(cnt), // get Lager count
+          hybridMongo(cnt) // get Hybrid count
+        ])
+        .then(data => {
+          let json_resp = {
+            ales:   data[0][0].count,
+            lagers: data[1][0].count,
+            hybrid: data[2][0].count
+          }
+          res.json(json_resp)
+        })
+        .catch(reason => {
+          log.error(reason);
+          res.status(500).json({ error: reason });
         })
         break;
       case 'all':

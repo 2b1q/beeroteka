@@ -7,9 +7,14 @@ append body
 	.container
 		h3= title
 		.row
-			.col-sm-5
-				+accordion("sample")
-					+accordion-item-default("Ales vs Lagers","sample","true")
-						|<canvas id="chart1" width="250" height="250"></canvas>
-			.col-sm-3
-			.col-sm-3
+			.col-sm-4
+				+accordion("c1")
+					+accordion-item-default("Ales vs Lagers vs Hybrid","c1","true")
+						|<canvas id="chart1" width="100%" height="100%"></canvas>
+			.col-sm-4
+				+accordion("c2")
+					+accordion-item-default("chart2","c2","true")
+						strong chart2
+		.row
+			.col-sm-4
+			.col-sm-4
