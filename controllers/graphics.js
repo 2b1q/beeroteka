@@ -158,7 +158,10 @@ function StylesMongo() {
     .aggregate(pattern)
     .exec((err, response) => {
       if(err) reject(err);
-      resolve(response);
+      // resolve(response);
+      // resolve(response.map( key => key.count))
+      // concat Arr1 & Arr2 to [[],[]]
+      resolve( _.concat([response.map( key => key._id)], [response.map( key => key.count)]))
     })
   });
 }
