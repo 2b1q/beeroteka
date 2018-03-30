@@ -146,9 +146,14 @@ function StylesMongo() {
   var pattern =
   [
     {
+      $match: {
+        ba_abv: { $gt: 10 }
+      }
+    },
+    {
       $group: {
         _id: '$ba_style',
-        count: {$sum: 1},
+        count: { $sum: 1 },
         max_abv: { $max: '$ba_abv' }
       }
     }

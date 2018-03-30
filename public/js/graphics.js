@@ -1,3 +1,4 @@
+"use strict";
 // DOM ready
 $(function () {
   var url = '/beers/api/graphics'; // graphics URL API
@@ -12,7 +13,7 @@ $(function () {
   // chart3 on DOM loaded
   var ctx3 = $('#chart3'); // locate chart3
   ctx3.addClass('hidden'); // hide chart3
-  ctx3.after('<img id="spinner2" src="../images/spinner2.gif" width="50%" height="50%">'); // add spinner
+  ctx3.after('<img id="spinner3" src="../images/spinner2.gif" width="50%" height="50%">'); // add spinner
 
   /*
     get data for chart1
@@ -79,7 +80,7 @@ $(function () {
   request.done(function(response) {
     $('#spinner2').remove(); // remove beer spinner
     console.log('Chart 2 response: '+JSON.stringify(response, null,2));
-    // if no data => add info alert 
+    // if no data => add info alert
     if( response.ales.length === 0 ||
         response.lagers.length === 0 ||
         response.hybrid.length === 0)
@@ -124,6 +125,66 @@ $(function () {
       });
     }
   });
+
+  /*
+    get data for chart3 (bar)
+    ajax POST XHR
+   */
+  var request = $.ajax({
+    url:url,
+    type: 'POST',
+    data: JSON.stringify({ "chart": "c3" }),
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json'});
+  request.fail(function (err, msg) {
+    $('#spinner3').remove(); // remove beer spinner
+    // add Error alert
+    $('#chart3').after('<div class="alert alert-danger"><strong>Error!</strong><br>Ошибка получения данных для графика 3.<br>HTTP Status: '+err.status+' '+err.statusText+'</div>');
+    console.log('Request failed.\nStatus:'+err.status+'\nStatus text: '+err.statusText+'\nError message: '+msg);
+  });
+  request.done(function(response) {
+    $('#spinner3').remove(); // remove beer spinner
+    // console.log('Chart 3 response: '+JSON.stringify(response, null,2));
+    ctx3.removeClass('hidden'); // unhide chart3
+    var colorArr = new Array(response[0].length).fill(1);
+    // fill RGBA colors
+    colorArr = colorArr.map(function () {
+      return random_rgba()
+    });
+
+      // construct data for chart3
+      var data = {
+        datasets: [{
+          data: response[2],
+          label: 'max ABV.',
+          backgroundColor: colorArr,
+          // backgroundColor: colorArr,
+          borderWidth: 0
+        }],
+        // These labels appear in the legend and in the tooltips when hovering different arcs
+        labels: response[0]
+      };
+      // render chart2 bar
+      new Chart(ctx3, {
+          type: 'bar',
+          data: data,
+          options: {
+            scales: {
+                xAxes: [{
+                    stacked: true
+                }],
+                yAxes: [{
+                    stacked: true
+                }]
+            }
+        }
+      });
+  });
+
+  function random_rgba() {
+    var o = Math.round, r = Math.random, s = 255;
+    return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + 1 + ')';
+  }
 
 
 })
