@@ -13,6 +13,135 @@ exports.show = function (req, res) {
 }
 
 /*
+cnt ales group by brew MongoDB
+*/
+function cntAlesBrews() {
+  var pattern =
+  [
+    {
+      $match: {
+        $or: [
+          { ba_style: /ale/ig },
+          { ba_style: /apa/ig },
+          { ba_style: /ipa/ig },
+          { ba_style: /stout/ig },
+          { ba_category: /ales/ig }
+        ],
+        $and: [
+          { ba_abv: { $gte: 5 } }
+        ]
+      }
+    },
+    {
+      $group: {
+        _id: '$ba_brewary',
+        count: {$sum: 1}
+       }
+    }
+  ];
+  return new Promise(function(resolve, reject) {
+    baModel
+      .aggregate(pattern)
+      .exec((err, data) => {
+        if(err) reject(err);
+        resolve(
+          data.map(k => {
+            if(k.count >= 50) return { brew: k._id, count: k.count } // transform array
+          })
+          .filter(k => k != null ) // remove null elems
+        )
+      })
+  });
+}
+
+/*
+cnt lagers group by brew MongoDB
+*/
+function cntLagersBrews() {
+  var pattern =
+  [
+    {
+      $match: {
+        $or: [
+          { ba_style: /lager/ig },
+          { ba_style: /pils/ig },
+          { ba_category: /lager/ig },
+          { ba_category: /pils/ig }
+        ]
+      }
+    },
+    {
+      $group: {
+        _id: '$ba_brewary',
+        count: {$sum: 1}
+       }
+    }
+  ];
+  return new Promise(function(resolve, reject) {
+    baModel
+      .aggregate(pattern)
+      .exec((err, data) => {
+        if(err) reject(err);
+        resolve(
+          data.map(k => {
+            if(k.count >= 20) return { brew: k._id, count: k.count } // transform array
+          })
+          .filter(k => k != null ) // remove null elems
+        )
+      })
+  });
+}
+
+/*
+cnt hybrid group by brew MongoDB
+*/
+function cntHybridBrews() {
+  var pattern =
+  [
+    {
+      $match: {
+        $or: [
+          { ba_style: /Hybrid/ig },
+          { ba_style: /Vegetable/ig },
+          { ba_style: /fruit/ig },
+          { ba_style: /Herbed/ig },
+          { ba_style: /Spiced/ig },
+          { ba_style: /smoked/ig },
+          { ba_category: /Hybrid/ig },
+          { ba_category: /Vegetable/ig },
+          { ba_category: /fruit/ig },
+          { ba_category: /Herbed/ig },
+          { ba_category: /Spiced/ig },
+          { ba_category: /smoked/ig }
+        ],
+        $and: [
+          { ba_abv: { $gte: 5 } }
+        ]
+      }
+    },
+    {
+      $group: {
+        _id: '$ba_brewary',
+        count: {$sum: 1}
+       }
+    }
+  ];
+  return new Promise(function(resolve, reject) {
+    baModel
+      .aggregate(pattern)
+      .exec((err, data) => {
+        if(err) reject(err);
+        resolve(
+          data.map(k => {
+            if(k.count >= 20) return { brew: k._id, count: k.count } // transform array
+          })
+          .filter(k => k != null ) // remove null elems
+        )
+      })
+  });
+}
+
+/*
 get data for chart1 and chart2 (Ales)
 from MongoDB baModel collection
 and return Promise with data
@@ -229,9 +358,6 @@ exports.charts = function (req, res) {
             ales: (obj => _.has(obj, 'count') ? obj.count : 0)(data[0][0]),
             lagers: (obj => _.has(obj, 'count') ? obj.count : 0)(data[1][0]),
             hybrid: (obj => _.has(obj, 'count') ? obj.count : 0)(data[2][0])
-            // ales: data[0][0].count,
-            // lagers: data[1][0].count,
-            // hybrid: data[2][0].count
           }
           res.json(json_resp)
         })
@@ -263,7 +389,10 @@ exports.charts = function (req, res) {
         StylesMongo().then(data => {
           res.json(data);
         })
-      break;
+        break;
+      case 'c4':
+        alesMongo(false).then(data => res.json(data.map(k => k._id))); // JSON response with ALE styles
+        break;
       case 'all':
         AllCharts(res);
         break;
