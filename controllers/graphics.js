@@ -138,9 +138,9 @@ function hybridMongo(cnt) {
 }
 
 /*
-get data for chart2 (abv, count by styles)
+get data for chart3 (abv, count by styles)
 from MongoDB baModel collection
-and return Promise with data
+and return Promise with arr [[],[],[]]
 */
 function StylesMongo() {
   var pattern =
@@ -158,10 +158,14 @@ function StylesMongo() {
     .aggregate(pattern)
     .exec((err, response) => {
       if(err) reject(err);
-      // resolve(response);
-      // resolve(response.map( key => key.count))
-      // concat Arr1 & Arr2 to [[],[]]
-      resolve( _.concat([response.map( key => key._id)], [response.map( key => key.count)]))
+      // transform response array
+      // map array.key.objects to new arrays
+      // & concat Arr1 & Arr2 & Arr3 to [[],[],[]]
+      resolve( _.concat(
+        [response.map( key => key._id)],
+        [response.map( key => key.count)],
+        [response.map( key => key.max_abv)]
+      ))
     })
   });
 }
@@ -216,9 +220,13 @@ exports.charts = function (req, res) {
         ])
         .then(data => {
           let json_resp = {
-            ales:   data[0][0].count,
-            lagers: data[1][0].count,
-            hybrid: data[2][0].count
+            // IIFE + AF + ternary (if obj has count property => return property else return 0)
+            ales: (obj => _.has(obj, 'count') ? obj.count : 0)(data[0][0]),
+            lagers: (obj => _.has(obj, 'count') ? obj.count : 0)(data[1][0]),
+            hybrid: (obj => _.has(obj, 'count') ? obj.count : 0)(data[2][0])
+            // ales: data[0][0].count,
+            // lagers: data[1][0].count,
+            // hybrid: data[2][0].count
           }
           res.json(json_resp)
         })

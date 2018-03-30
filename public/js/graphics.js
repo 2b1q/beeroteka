@@ -10,7 +10,10 @@ $(function () {
   ctx2.addClass('hidden'); // hide chart2
   ctx2.after('<img id="spinner2" src="../images/spinner2.gif" width="100%" height="100%">'); // add spinner
   // chart3 on DOM loaded
-  
+  var ctx3 = $('#chart3'); // locate chart3
+  ctx3.addClass('hidden'); // hide chart3
+  ctx3.after('<img id="spinner2" src="../images/spinner2.gif" width="50%" height="50%">'); // add spinner
+
   /*
     get data for chart1
     ajax POST XHR
@@ -29,8 +32,8 @@ $(function () {
   });
   request.done(function(response) {
     $('#spinner1').remove(); // remove beer spinner
-    ctx1.removeClass('hidden'); // hide chart1
-    console.log('response: '+JSON.stringify(response, null,2));
+    ctx1.removeClass('hidden'); // unhide chart1
+    console.log('Chart 1 response: '+JSON.stringify(response, null,2));
     // construct data for chart1
     var data = {
       datasets: [{
@@ -75,42 +78,51 @@ $(function () {
   });
   request.done(function(response) {
     $('#spinner2').remove(); // remove beer spinner
-    ctx2.removeClass('hidden'); // hide chart2
-    console.log('response: '+JSON.stringify(response, null,2));
-    // construct data for chart2
-    var data = {
-      datasets: [{
-        data: [response.ales[0].max_abv, response.lagers[0].max_abv, response.hybrid[0].max_abv],
-        label: 'max ABV.',
-        backgroundColor: [
-          'rgba(204,102,0,1)',
-          'rgba(255,230,153,1)',
-          'rgba(221,153,255,1)'
-        ],
-        borderColor: [
-          'rgba(255,255,255,1)',
-          'rgba(255,255,255,1)',
-          'rgba(255,255,255,1)'
-        ]
-      }],
-      // These labels appear in the legend and in the tooltips when hovering different arcs
-      labels: [ 'Ales' , 'Lagers', 'Hybrid' ]
-    };
-    // render chart1 doughnut
-    new Chart(ctx2, {
-        type: 'bar',
-        data: data,
-        options: {
-          scales: {
-              xAxes: [{
-                  stacked: true
-              }],
-              yAxes: [{
-                  stacked: true
-              }]
-          }
-      }
-    });
+    console.log('Chart 2 response: '+JSON.stringify(response, null,2));
+    // if no data => add info alert 
+    if( response.ales.length === 0 ||
+        response.lagers.length === 0 ||
+        response.hybrid.length === 0)
+    {
+      // add info alert
+      $('#chart2').after('<div class="alert alert-info">Не достаточно данных для построения графика 2.</div>');
+    } else {
+      ctx2.removeClass('hidden'); // unhide chart2
+      // construct data for chart2
+      var data = {
+        datasets: [{
+          data: [response.ales[0].max_abv, response.lagers[0].max_abv, response.hybrid[0].max_abv],
+          label: 'max ABV.',
+          backgroundColor: [
+            'rgba(204,102,0,1)',
+            'rgba(255,230,153,1)',
+            'rgba(221,153,255,1)'
+          ],
+          borderColor: [
+            'rgba(255,255,255,1)',
+            'rgba(255,255,255,1)',
+            'rgba(255,255,255,1)'
+          ]
+        }],
+        // These labels appear in the legend and in the tooltips when hovering different arcs
+        labels: [ 'Ales' , 'Lagers', 'Hybrid' ]
+      };
+      // render chart2 bar
+      new Chart(ctx2, {
+          type: 'bar',
+          data: data,
+          options: {
+            scales: {
+                xAxes: [{
+                    stacked: true
+                }],
+                yAxes: [{
+                    stacked: true
+                }]
+            }
+        }
+      });
+    }
   });
 
 
