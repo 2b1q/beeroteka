@@ -12,6 +12,52 @@ exports.show = function (req, res) {
   res.render('infographics', { title: 'Пиво в цифрах' });
 }
 
+// mongoDB pattern match
+var pttrn = {
+  hybrid:
+  {
+    $match: {
+        $or: [
+          { ba_style: /Hybrid/ig },
+          { ba_style: /Vegetable/ig },
+          { ba_style: /fruit/ig },
+          { ba_style: /Herbed/ig },
+          { ba_style: /Spiced/ig },
+          { ba_style: /smoked/ig },
+          { ba_category: /Hybrid/ig },
+          { ba_category: /Vegetable/ig },
+          { ba_category: /fruit/ig },
+          { ba_category: /Herbed/ig },
+          { ba_category: /Spiced/ig },
+          { ba_category: /smoked/ig }
+        ]
+    }
+  },
+  lagers:
+  {
+      $match: {
+        $or: [
+          { ba_style: /lager/ig },
+          { ba_style: /pils/ig },
+          { ba_category: /lager/ig },
+          { ba_category: /pils/ig }
+        ]
+      }
+  },
+  ales:
+  {
+    $match: {
+      $or: [
+        { ba_style: /ale/ig },
+        { ba_style: /apa/ig },
+        { ba_style: /ipa/ig },
+        { ba_style: /stout/ig },
+        { ba_category: /ales/ig }
+      ]
+    }
+  }
+}
+
 /*
 cnt ales group by brew MongoDB
 */
@@ -60,16 +106,7 @@ cnt lagers group by brew MongoDB
 function cntLagersBrews() {
   var pattern =
   [
-    {
-      $match: {
-        $or: [
-          { ba_style: /lager/ig },
-          { ba_style: /pils/ig },
-          { ba_category: /lager/ig },
-          { ba_category: /pils/ig }
-        ]
-      }
-    },
+    pttrn.lagers,
     {
       $group: {
         _id: '$ba_brewary',
@@ -93,36 +130,17 @@ function cntLagersBrews() {
 }
 
 /*
-cnt hybrid group by brew MongoDB
+cnt hybrid group by styles MongoDB
 */
-function cntHybridBrews() {
+function cntStyles(pttrn) {
   var pattern =
   [
-    {
-      $match: {
-        $or: [
-          { ba_style: /Hybrid/ig },
-          { ba_style: /Vegetable/ig },
-          { ba_style: /fruit/ig },
-          { ba_style: /Herbed/ig },
-          { ba_style: /Spiced/ig },
-          { ba_style: /smoked/ig },
-          { ba_category: /Hybrid/ig },
-          { ba_category: /Vegetable/ig },
-          { ba_category: /fruit/ig },
-          { ba_category: /Herbed/ig },
-          { ba_category: /Spiced/ig },
-          { ba_category: /smoked/ig }
-        ],
-        $and: [
-          { ba_abv: { $gte: 5 } }
-        ]
-      }
-    },
+    pttrn,
     {
       $group: {
-        _id: '$ba_brewary',
-        count: {$sum: 1}
+        _id: '$ba_style',
+        beers: { $sum: 1 },
+        max_abv: { $max: '$ba_abv' }
        }
     }
   ];
@@ -131,12 +149,7 @@ function cntHybridBrews() {
       .aggregate(pattern)
       .exec((err, data) => {
         if(err) reject(err);
-        resolve(
-          data.map(k => {
-            if(k.count >= 20) return { brew: k._id, count: k.count } // transform array
-          })
-          .filter(k => k != null ) // remove null elems
-        )
+        resolve(data)
       })
   });
 }
@@ -150,17 +163,7 @@ function alesMongo(cnt) {
   // var field = (cnt => cnt ? null : '$ba_style')(cnt); AF + IIFE + args
   var pattern =
   [
-    {
-      $match: {
-        $or: [
-          { ba_style: /ale/ig },
-          { ba_style: /apa/ig },
-          { ba_style: /ipa/ig },
-          { ba_style: /stout/ig },
-          { ba_category: /ales/ig }
-        ]
-      }
-    },
+    (x => x.ales )(pttrn),
     {
       $group: {
         _id: (cnt => cnt ? null : '$ba_style')(cnt),
@@ -189,16 +192,7 @@ and return Promise with data
 function lagersMongo(cnt) {
   var pattern =
   [
-    {
-      $match: {
-        $or: [
-          { ba_style: /lager/ig },
-          { ba_style: /pils/ig },
-          { ba_category: /lager/ig },
-          { ba_category: /pils/ig }
-        ]
-      }
-    },
+    (x => x.lagers )(pttrn),
     {
       $group: {
         _id: (cnt => cnt ? null : '$ba_style')(cnt),
@@ -227,24 +221,7 @@ and return Promise with data
 function hybridMongo(cnt) {
   var pattern =
   [
-    {
-      $match: {
-        $or: [
-          { ba_style: /Hybrid/ig },
-          { ba_style: /Vegetable/ig },
-          { ba_style: /fruit/ig },
-          { ba_style: /Herbed/ig },
-          { ba_style: /Spiced/ig },
-          { ba_style: /smoked/ig },
-          { ba_category: /Hybrid/ig },
-          { ba_category: /Vegetable/ig },
-          { ba_category: /fruit/ig },
-          { ba_category: /Herbed/ig },
-          { ba_category: /Spiced/ig },
-          { ba_category: /smoked/ig }
-        ]
-      }
-    },
+    (x => x.hybrid )(pttrn),
     {
       $group: {
         _id: (cnt => cnt ? null : '$ba_style')(cnt), // if cnt = true then _id: null esle _id: '$ba_style'
@@ -391,7 +368,23 @@ exports.charts = function (req, res) {
         })
         break;
       case 'c4':
-        alesMongo(false).then(data => res.json(data.map(k => k._id))); // JSON response with ALE styles
+        // alesMongo(false).then(data => res.json(data.map(k => k._id))); // JSON response with ALE styles
+        Promise.all([
+          cntStyles(pttrn.ales),
+          cntStyles(pttrn.lagers),
+          cntStyles(pttrn.hybrid)])
+          .then(data => {
+            let json_resp = {
+              ales:   data[0],
+              lagers: data[1],
+              hybrid: data[2]
+            }
+            res.json(json_resp)
+          })
+          .catch(reason => {
+            log.error(reason);
+            res.status(500).json({ error: reason });
+          })
         break;
       case 'all':
         AllCharts(res);
