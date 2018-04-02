@@ -168,10 +168,59 @@ $(function () {
       });
   });
 
+  // set random RGBA color
   function random_rgba() {
     var o = Math.round, r = Math.random, s = 255;
     return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + 1 + ')';
   }
+
+
+//   // d3 svg canvas chart 4
+//   var svg = d3.select('#chart4'),
+//             width = +svg.attr("width"),
+//             height = +svg.attr("height"),
+//             g = svg.append("g").attr("transform", "translate(20,0)");
+//
+//   // Setting up a way to handle the data
+//   var tree = d3.cluster()                 // This D3 API method setup the Dendrogram datum position.
+//             .size([height, width - 460])    // Total width - bar chart width = Dendrogram chart width
+//             .separation(function separate(a, b) {
+//                   return a.parent == b.parent            // 2 levels tree grouping for category
+//                   || a.parent.parent == b.parent
+//                   || a.parent == b.parent.parent ? 0.4 : 0.8;
+//             });
+//
+// //
+// var d3data = {
+//   name: 'beer',
+//   children: [
+//     {
+//       name: 'ale styles',
+//       children: [
+//         { name: 'Quadrupel (Quad)' },
+//         { name: 'Quadrupel (Quad)' },
+//         { name: 'Quadrupel (Quad)' }
+//       ]
+//     },
+//     {
+//       name: 'lager styles',
+//       children: [
+//         { name: 'Quadrupel (Quad)' },
+//         { name: 'Quadrupel (Quad)' },
+//         { name: 'Quadrupel (Quad)' }
+//       ]
+//     },
+//     {
+//       name: 'hybrid styles',
+//       children: [
+//         { name: 'Quadrupel (Quad)' },
+//         { name: 'Quadrupel (Quad)' },
+//         { name: 'Quadrupel (Quad)' }
+//       ]
+//     }
+//   ]
+// }
+
 
 
 })
