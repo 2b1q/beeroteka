@@ -5,15 +5,19 @@ $(function () {
   // chart1 on DOM loaded
   var ctx1 = $('#chart1'); // locate chart1
   ctx1.addClass('hidden'); // hide chart1
-  ctx1.after('<img id="spinner1" src="../images/spinner2.gif" width="100%" height="100%">'); // add spinner
+  ctx1.after('<img id="spinner1" src="../images/spinner2.gif" width="50%" height="50%">'); // add spinner
   // chart2 on DOM loaded
   var ctx2 = $('#chart2'); // locate chart2
   ctx2.addClass('hidden'); // hide chart2
-  ctx2.after('<img id="spinner2" src="../images/spinner2.gif" width="100%" height="100%">'); // add spinner
+  ctx2.after('<img id="spinner2" src="../images/spinner2.gif" width="50%" height="50%">'); // add spinner
   // chart3 on DOM loaded
   var ctx3 = $('#chart3'); // locate chart3
   ctx3.addClass('hidden'); // hide chart3
-  ctx3.after('<img id="spinner3" src="../images/spinner2.gif" width="50%" height="50%">'); // add spinner
+  ctx3.after('<img id="spinner3" src="../images/spinner2.gif" width="20%" height="20%">'); // add spinner
+  // chart4 on DOM loaded
+  var ctx4 = $('#chart4'); // locate chart4
+  ctx4.addClass('hidden'); // hide chart4
+  ctx4.after('<img id="spinner4" src="../images/spinner2.gif" width="20%" height="20%">'); // add spinner
 
   /*
     get data for chart1 & chart2
@@ -205,7 +209,9 @@ function d3fetch() {
   //  d3 svg canvas chart 4
   d3.json(url, d3_request_object)
   .then(function (response) {
-    // console.log('d3 resp: '+response);
+    console.log('d3 response => Done');
+    $('#spinner4').remove(); // remove beer spinner
+    ctx4.removeClass('hidden'); // unhide chart4
     treeData.children[0].children = response.ales
     treeData.children[1].children = response.lagers
     treeData.children[2].children = response.hybrid
