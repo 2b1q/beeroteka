@@ -37,7 +37,7 @@ $(function () {
   request.done(function(response) {
     $('#spinner1').remove(); // remove beer spinner
     $('#spinner2').remove(); // remove beer spinner
-    console.log('Chart 1 and 2 response: '+JSON.stringify(response, null,2));
+    console.log('Chart 1 and 2 response => Done');
     // if no data => add info alert
     if( response.ales.length === 0 ||
         response.lagers.length === 0 ||
@@ -131,7 +131,7 @@ $(function () {
   });
   request.done(function(response) {
     $('#spinner3').remove(); // remove beer spinner
-    // console.log('Chart 3 response: '+JSON.stringify(response, null,2));
+    console.log('Chart 3 response => Done');
     ctx3.removeClass('hidden'); // unhide chart3
     var colorArr = new Array(response[0].length).fill(1);
     // fill RGBA colors
@@ -174,53 +174,108 @@ $(function () {
     return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + 1 + ')';
   }
 
+/*
+ d3 test data
+*/
+var treeData = {
+  _id: 'BEER',
+  children: [
+    {
+      _id: 'Ale styles',
+      children: []
+    },
+    {
+      _id: 'Lager styles',
+      children: []
+    },
+    {
+      _id: 'Hybrid styles',
+      children: []
+    }
+  ]
+}
 
-//   // d3 svg canvas chart 4
-//   var svg = d3.select('#chart4'),
-//             width = +svg.attr("width"),
-//             height = +svg.attr("height"),
-//             g = svg.append("g").attr("transform", "translate(20,0)");
-//
-//   // Setting up a way to handle the data
-//   var tree = d3.cluster()                 // This D3 API method setup the Dendrogram datum position.
-//             .size([height, width - 460])    // Total width - bar chart width = Dendrogram chart width
-//             .separation(function separate(a, b) {
-//                   return a.parent == b.parent            // 2 levels tree grouping for category
-//                   || a.parent.parent == b.parent
-//                   || a.parent == b.parent.parent ? 0.4 : 0.8;
-//             });
-//
-// //
-// var d3data = {
-//   name: 'beer',
-//   children: [
-//     {
-//       name: 'ale styles',
-//       children: [
-//         { name: 'Quadrupel (Quad)' },
-//         { name: 'Quadrupel (Quad)' },
-//         { name: 'Quadrupel (Quad)' }
-//       ]
-//     },
-//     {
-//       name: 'lager styles',
-//       children: [
-//         { name: 'Quadrupel (Quad)' },
-//         { name: 'Quadrupel (Quad)' },
-//         { name: 'Quadrupel (Quad)' }
-//       ]
-//     },
-//     {
-//       name: 'hybrid styles',
-//       children: [
-//         { name: 'Quadrupel (Quad)' },
-//         { name: 'Quadrupel (Quad)' },
-//         { name: 'Quadrupel (Quad)' }
-//       ]
-//     }
-//   ]
-// }
+// d3 FETCH (not XHR) object for chart4
+function d3fetch() {
+  var d3_request_object = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chart: 'c4' })
+  }
+  //  d3 svg canvas chart 4
+  d3.json(url, d3_request_object)
+  .then(function (response) {
+    // console.log('d3 resp: '+response);
+    treeData.children[0].children = response.ales
+    treeData.children[1].children = response.lagers
+    treeData.children[2].children = response.hybrid
+    // draw tree
+    d3draw();
+  })
+  .catch(function (err) { console.log('d3 fetch err MSG: '+err) });
+}
 
+// fetch tree
+d3fetch();
 
+function d3draw() {
+  // canvas width and height
+  var w = 600;
+  var h = 1800;
+
+  // setup d3 "Tree layout"
+  var treeLayout = d3.tree();
+  // load treeData
+  var root = d3.hierarchy(treeData);
+  // config tree size
+  treeLayout.size([ h, w - 160 ]);
+  treeLayout(root);
+
+  // draw canvas
+  var svg = d3.select('#chart4')
+            .append("svg:svg")
+              .attr("width", w)
+              .attr("height", h),
+              g = svg.append("svg:g").attr("transform", "translate(40, 0)");
+
+  // Links
+  var link = g.selectAll(".link")
+        .data(root.descendants().slice(1))
+      .enter().append("path")
+        .attr("class", "link")
+        .attr("d", function(d) {
+          return "M" + d.y + "," + d.x
+              + "C" + (d.parent.y + 100) + "," + d.x
+              + " " + (d.parent.y + 100) + "," + d.parent.x
+              + " " + d.parent.y + "," + d.parent.x;
+        });
+
+  // nodes
+  var node = g.selectAll(".node")
+        .data(root.descendants())
+      .enter().append("g")
+        .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
+        .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+
+    node.append("circle")
+        .attr("r", 2.5);
+
+    node.append("text")
+        .attr("dy", 3)
+        .attr("x", function(d) { return d.children ? -8 : 8; })
+        .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+        // .text(function(d) { return d.id.substring(d.id.lastIndexOf(".") + 1); });
+        .text(function(d) { return d.data._id });
+}
+
+/*
+var svg = d3.select('.chart-container').append("svg")
+    .attr("width", '100%')
+    .attr("height", '100%')
+    .attr('viewBox','0 0 '+Math.min(width,height)+' '+Math.min(width,height))
+    .attr('preserveAspectRatio','xMinYMin')
+    .append("g")
+    .attr("transform", "translate(" + Math.min(width,height) / 2 + "," + Math.min(width,height) / 2 + ")");
+*/
 
 })

@@ -3,7 +3,10 @@ block append head
 	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js")
 	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js")
 	script(src="https://d3js.org/d3.v5.min.js")
+	script(src="https://d3js.org/d3-dsv.v1.min.js")
+	script(src="https://d3js.org/d3-fetch.v1.min.js")
 	script(src='../js/graphics.js')
+	link(rel='stylesheet', href='../css/d3.css', type='text/css')
 append body
 	.container
 		h3= title
@@ -23,4 +26,6 @@ append body
 						|<canvas id="chart3" width="100%" height="100%"></canvas>
 		.row
 			.col-sm-12
-				|<canvas id="chart4" width="100%" height="100%"></canvas>
+				+accordion("c4")
+					+accordion-item-default("Все стили пива","c4","true")
+						.d3(id='chart4')
