@@ -8,7 +8,8 @@ var express = require('express'),
     sessions = require('express-session'),
     bodyParser = require('body-parser'),
     cluster = require('cluster'), // access to cluster.worker.id
-    flash = require('connect-flash');
+    flash = require('connect-flash'),
+    Rest = require('connect-rest');
 
 // init express object
 var app = express();
@@ -41,6 +42,19 @@ var index = require('./routes/index'),
 // attach routes
 app.use('/', index);
 app.use('/beers', beers);
+
+// API rest-connect
+var rest = Rest.create(config.restOptions);
+// add connect-rest middleware to connect
+app.use(rest.processRequest());
+// add REST services
+// rest.publish(services);
+rest.get({path: '/test/:id', unprotected: false}, async function (request, content) {
+  console.log( 'Received parameters:' + JSON.stringify( request.parameters ) )
+	console.log( 'Received JSON object:' + JSON.stringify( content ) )
+  return { name: 'test name', id: request.parameters.id }
+} )
+
 
 // Last ROUTE catch 404 and forward to error handler
 app.use(function(req, res, next) {

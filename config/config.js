@@ -24,6 +24,14 @@ config.sessions = {
   store: new MongoStore({ mongooseConnection: require('mongoose').connection }) // use mongo session store
 }
 
+// REST API options
+config.restOptions = {
+  context: '/api',
+  // logger:{ file: 'restapi.log', level: 'debug' },
+	apiKeys: [ '11111-1111-222-3333' ],
+  domain: require('domain').create()
+}
+
 // redis config
 config.store = {
   redis: {
