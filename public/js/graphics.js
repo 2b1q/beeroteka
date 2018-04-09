@@ -234,7 +234,7 @@ function d3draw() {
   // load treeData
   var root = d3.hierarchy(treeData);
   // config tree size
-  treeLayout.size([ h, w - 160 ]);
+  treeLayout.size([ h, w - 250 ]);
   treeLayout(root);
 
   // draw canvas
@@ -270,8 +270,7 @@ function d3draw() {
         .attr("dy", 3)
         .attr("x", function(d) { return d.children ? -8 : 8; })
         .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-        // .text(function(d) { return d.id.substring(d.id.lastIndexOf(".") + 1); });
-        .text(function(d) { return d.data._id });
+        .text(function(d) { return d.children ? d.data._id : d.data._id + ' ['+d.data.beers+']'; });
 }
 
 /*
