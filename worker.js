@@ -47,8 +47,10 @@ app.use(rest.processRequest()); // add connect-rest middleware to connect
 var service = require('./routes/rest_services'); // add REST services
 // bind the service funciont to only the given http request types
 rest.assign([ 'get','post' ], // assign incoming HTTP REST methods
-            [ { path: '/test/:id', unprotected: false } ], // config API route
+            [ { path: '/test', unprotected: true } ], // config API route
             service.test_service ) // setup assync callback service to API route
+
+rest.get({ path: '/dataload/:id', unprotected: false }, service.dataload ); // hashload service /api/dataload/<id>?api_key=<api_key>
 
 
 // Last ROUTE catch 404 and forward to error handler
