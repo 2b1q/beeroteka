@@ -3,7 +3,7 @@
 var search_controller = require('../controllers/search'),
     style_controller = require('../controllers/styles'),
     graphics_controller = require('../controllers/graphics'),
-		hashload = require('../models/hashloader');
+		catalog_controller = require('../controllers/catalog');
 
 // test API
 async function test_api(request, content) {
@@ -16,27 +16,19 @@ async function test_api(request, content) {
 // new hashload service
 async function dataload(request, content) {
 	console.log( 'Received parameters:' + JSON.stringify( request.parameters ) )
-	let str = 'call REST service hashload';
-	switch (request.parameters.id) {
-		case '1':
-			str += 1;
-			console.log(str);
-			hashload.LoadHashes();
-			return { msg: str }
-			break;
-		case '2':
-			str += 2;
-			console.log(str);
-			hashload.LoadHashes2();
-			return { msg: str }
-			break;
-		default:
-			return { msg: 'bad ID' }
-	}
+	if(request.parameters.id) return catalog_controller.dataload(request.parameters.id);
+	else return { msg: 'unable to set ID parameter' }
 }
 
 
-// router.post('/api/graphics', graphics_controller.charts); // AJAX graphics API
+// TODO to Refactoring
+// router.get('/api/search', search_controller.ApiGetSearch); // ajax GET ES API
+// router.post('/api/search', search_controller.ApiPostSearchMongo); // ajax POST API advanced beer search Mongoose
+/* infographics */
+// router.get('/graphics', graphics_controller.show); // show graphics data
+// router.post('/api/graphics', graphics_controller.charts); // AJAX graphics old API
+
+
 // REST API beer
 // router.get('/api/', beer.list); // GET all beerMongoose API
 // router.post('/api/', beer.create); // create one record

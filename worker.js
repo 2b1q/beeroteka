@@ -33,25 +33,26 @@ app.use(flash()); // flash is a special area of the session used for storing mes
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
-* Setup common routes
+* Setup common routes using router middleware
 */
 var index = require('./routes/index'),
     beers = require('./routes/beers');
 app.use('/', index); // root '/' router
 app.use('/beers', beers); // '/beers' router
+
 /**
 * Setup REST API services using 'rest-connect' middleware
 */
-var rest = Rest.create(config.restOptions); // create rest-connect object
-app.use(rest.processRequest()); // add connect-rest middleware to connect
-var service = require('./routes/rest_services'); // add REST services
+var rest = Rest.create(config.restOptions), // create rest-connect object
+    service = require('./routes/rest_services'); // add REST services
+app.use(rest.processRequest()); // add connect-rest middleware
+
+/** REST service endpoints */
 // bind the service funciont to only the given http request types
 rest.assign([ 'get','post' ], // assign incoming HTTP REST methods
             [ { path: '/test', unprotected: true } ], // config API route
             service.test_service ) // setup assync callback service to API route
-
 rest.get({ path: '/dataload/:id', unprotected: false }, service.dataload ); // hashload service /api/dataload/<id>?api_key=<api_key>
-
 
 // Last ROUTE catch 404 and forward to error handler
 app.use(function(req, res, next) {
