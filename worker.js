@@ -22,38 +22,33 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 // favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-// bodyParser
+// add bodyParser middleware
 app.use(bodyParser.json({ limit: '10kb'} ));
 app.use(bodyParser.urlencoded({ extended: false }));
-// cookie and sessions
+// add cookie parser, sessions and flash MSGS (http client state)
 app.use(cookieParser(config.cookieToken));
 app.use(sessions(config.sessions));
-app.use(flash());
-
+app.use(flash()); // flash is a special area of the session used for storing messages
 // setup static path
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
-* Setup routes
+* Setup common routes
 */
-// import routes
 var index = require('./routes/index'),
     beers = require('./routes/beers');
-// attach routes
-app.use('/', index);
-app.use('/beers', beers);
-
-// API rest-connect
-var rest = Rest.create(config.restOptions);
-// add connect-rest middleware to connect
-app.use(rest.processRequest());
-// add REST services
-// rest.publish(services);
-rest.get({path: '/test/:id', unprotected: false}, async function (request, content) {
-  console.log( 'Received parameters:' + JSON.stringify( request.parameters ) )
-	console.log( 'Received JSON object:' + JSON.stringify( content ) )
-  return { name: 'test name', id: request.parameters.id }
-} )
+app.use('/', index); // root '/' router
+app.use('/beers', beers); // '/beers' router
+/**
+* Setup REST API services using 'rest-connect' middleware
+*/
+var rest = Rest.create(config.restOptions); // create rest-connect object
+app.use(rest.processRequest()); // add connect-rest middleware to connect
+var service = require('./routes/rest_services'); // add REST services
+// bind the service funciont to only the given http request types
+rest.assign([ 'get','post' ], // assign incoming HTTP REST methods
+            [ { path: '/test/:id', unprotected: false } ], // config API route
+            service.test_service ) // setup assync callback service to API route
 
 
 // Last ROUTE catch 404 and forward to error handler
