@@ -5,6 +5,15 @@ var search_controller = require('../controllers/search'),
     graphics_controller = require('../controllers/graphics'),
 		catalog_controller = require('../controllers/catalog');
 
+// export REST services
+exports.attach = function(rest) {
+  // bind the service funciont to only the given http request types
+  rest.assign([ 'get','post' ], // assign incoming HTTP REST methods
+              [ { path: '/test', unprotected: true } ], // config API route
+              test_api ) // setup assync callback service to API route
+  rest.get({ path: '/dataload/:id', unprotected: false }, dataload ); // hashload service /api/dataload/<id>?api_key=<api_key>
+}
+
 // test API
 async function test_api(request, content) {
 	console.log( 'Received headers:' + JSON.stringify( request.headers ) )
@@ -21,6 +30,8 @@ async function dataload(request, content) {
 }
 
 
+
+
 // TODO to Refactoring
 // router.get('/api/search', search_controller.ApiGetSearch); // ajax GET ES API
 // router.post('/api/search', search_controller.ApiPostSearchMongo); // ajax POST API advanced beer search Mongoose
@@ -35,8 +46,3 @@ async function dataload(request, content) {
 // router.get('/api/:beerId', beer.read); // get one record
 // router.put('/api/:beerId', beer.update); // update one record
 // router.delete('/api/:beerId', beer.delete); // delete one record
-
-module.exports = {
-	test_service:	test_api, // test API
-	dataload: dataload // new hashload API service
-}
