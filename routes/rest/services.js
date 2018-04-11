@@ -1,9 +1,9 @@
 // REST services
 // Require controllers
-var search_controller = require('../controllers/search'),
-    style_controller = require('../controllers/styles'),
-    graphics_controller = require('../controllers/graphics'),
-		catalog_controller = require('../controllers/catalog');
+var search_controller = require('../../controllers/search'),
+    style_controller = require('../../controllers/styles'),
+    graphics_controller = require('../../controllers/graphics'),
+		catalog_controller = require('../../controllers/catalog');
 
 // export REST services
 exports.attach = function(rest) {

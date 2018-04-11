@@ -11,7 +11,7 @@ var express = require('express'),
     flash = require('connect-flash'),
     Rest = require('connect-rest');
 
-// init express object
+// init express framework
 var app = express();
 
 /**
@@ -43,7 +43,7 @@ app.use('/beers', beers); // '/beers' router
 * Setup REST API services using 'rest-connect' middleware
 */
 var rest = Rest.create(config.restOptions), // create rest-connect object
-    services = require('./routes/rest_services'); // add REST services
+    services = require('./routes/rest/services'); // add REST services
 app.use(rest.processRequest()); // add connect-rest middleware
 services.attach(rest); // Attach REST service endpoints
 
