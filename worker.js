@@ -18,17 +18,16 @@ var app = express();
 * Common express env setup
 */
 // Setup views
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'))
+   .set('view engine', 'pug');
 // favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 // add bodyParser middleware
-app.use(bodyParser.json({ limit: '10kb'} ));
-app.use(bodyParser.urlencoded({ extended: false }));
-// add cookie parser, sessions and flash MSGS (http client state)
-app.use(cookieParser(config.cookieToken));
-app.use(sessions(config.sessions));
-app.use(flash()); // flash is a special area of the session used for storing messages
+app.use(bodyParser.json({ limit: '10kb' }))         // create application/json parser
+   .use(bodyParser.urlencoded({ extended: true }))  // create application/x-www-form-urlencoded parser
+   .use(cookieParser(config.cookieToken))           // add cookie parser
+   .use(sessions(config.sessions))                  // add sessions storing
+   .use(flash());                                   // add flash for storing messages
 // setup static path
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -37,8 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 */
 var index = require('./routes/index'),
     beers = require('./routes/beers');
-app.use('/', index); // root '/' router
-app.use('/beers', beers); // '/beers' router
+app.use('/', index) // root '/' router
+   .use('/beers', beers); // '/beers' router
 /**
 * Setup REST API services using 'rest-connect' middleware
 */
