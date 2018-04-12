@@ -238,3 +238,18 @@ exports.ApiPostSearchMongo = function (req, res) {
 
   }
 }
+
+/**
+* REST API controllers
+*/
+// ES search controller for REST services API
+exports.ApiEsSearch = (searchTerm) => {
+  elastic.search(searchTerm, function(data) {
+    data.forEach(function(item){
+      let score = item._source.score || item._source.BA_score;
+      let score_percent = Math.round(score/0.05)
+      item._source.score_percent = score_percent
+    })
+  return data;
+})
+}
