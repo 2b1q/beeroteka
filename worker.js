@@ -9,7 +9,9 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     cluster = require('cluster'), // access to cluster.worker.id
     flash = require('connect-flash'),
-    Rest = require('connect-rest');
+    Rest = require('connect-rest'),
+    compression = require("compression"), // Compacting requests using GZIP middleware
+    helmet = require("helmet"); // security middleware for XHR API that handles several kinds of attacks in the HTTP/HTTPS protocols
 
 // init express framework
 var app = express();
@@ -17,19 +19,21 @@ var app = express();
 /**
 * Common express env setup
 */
+app.use(helmet())      // add security middleware
+   .use(compression()); // add GZIP (compacting the JSON responses and also the static files)
 // Setup views
-app.set('views', path.join(__dirname, 'views'))
-   .set('view engine', 'pug');
-// favicon in /public
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.set('views', path.join(__dirname, 'views')) // set view path
+   .set('view engine', 'pug');                  // set view engine
+// Setup static content
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico'))) // favicon in /public
+   .use(express.static(path.join(__dirname, 'public')));        // setup static path
+
 // add bodyParser middleware
 app.use(bodyParser.json({ limit: '10kb' }))         // create application/json parser
    .use(bodyParser.urlencoded({ extended: true }))  // create application/x-www-form-urlencoded parser
    .use(cookieParser(config.cookieToken))           // add cookie parser
    .use(sessions(config.sessions))                  // add sessions storing
    .use(flash());                                   // add flash for storing messages
-// setup static path
-app.use(express.static(path.join(__dirname, 'public')));
 
 /**
 * Setup common routes using router middleware
