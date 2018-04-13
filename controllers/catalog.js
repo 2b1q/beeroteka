@@ -6,23 +6,9 @@ var hashload = require('../models/hashloader'),
 exports.default = function(req, res){
   // get ALL styles AP + BA
   elastic.getAllStyles((styles) => {
-    // console.log(`styles ${JSON.stringify(styles, null, 2)}`);
     res.render('catalog', { title: 'beer catalog', styles: styles});
   });
 }
-
-/*
-// loadhashes OLD controller
-exports.loadhashes = function(req, res) {
-  hashload.LoadHashes();
-  res.redirect('/beers');
-}
-
-// loadhashes2 OLD controller
-exports.LoadHashes2 = function(req, res) {
-  hashload.LoadHashes2();
-  res.redirect('/beers');
-} */
 
 // loadhashes REST controller
 exports.dataload = id => {

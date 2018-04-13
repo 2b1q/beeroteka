@@ -73,23 +73,17 @@ app.use(function(err, req, res, next) {
 */
 
 //var debug = require('debug')('es:server');
-var http = require('http');
-var debug = require('debug')('pugbootstrap-seed:server');
+var http = require('http'),
+    debug = require('debug')('pugbootstrap-seed:server');
 
-// Get port from environment and store in Express.
 // Normalize a port into a number, string, or false
-// var value = function(args) { /* ... */ }(args); // IIFE
-var port = function (val) {
+var port = (val => {
   var port = parseInt(val, 10);
-  // named pipe
-  if (isNaN(port)) { return val; }
-  // port number
-  if (port >= 0) { return port; }
+  if (isNaN(port))  return val; // named pipe
+  if (port >= 0)    return port; // port number
   return false;
-}(process.env.PORT || config.server.port);
-
-// console.log('port %s', port);
-
+})(process.env.PORT || config.server.port); // Get port from environment
+// set server port
 app.set('port', config.server.ip+':'+port);
 // create HTTP server
 var server = http.createServer(app);
@@ -107,11 +101,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      log.error(bind + ' requires elevated privileges');
+      log.error(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      log.error(bind + ' is already in use');
+      log.error(`${bind} is already in use`);
       process.exit(1);
       break;
     default:

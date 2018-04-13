@@ -47,7 +47,7 @@ function build_query(beer, brew, style, query_type, abv, country, ba_beer_score,
     style.replace(/[^a-zA-Z-/ '|`öèä]/g, '');
     // create regexp
     var beer_rxp = new RegExp(beer,'i'),
-        brew_rxp = new RegExp(brew,'i');
+        brew_rxp = new RegExp(brew,'i'),
         style_rxp = new RegExp(style,'i'),
         country_rxp = new RegExp(country,'i');
     // switch query_type
@@ -110,17 +110,13 @@ function beerCountPromise(query, pattern) {
         apivoModel.count(pattern)
         .exec(function (err, count) {
           if(err) reject(err);
-          resolve({
-            query: query,
-            docs: count,
-            collection: 'apivo_ba' // return apivoModel data
-          })
+          resolve({ query: query,
+                    docs: count,
+                    collection: 'apivo_ba'})  // return apivoModel data
         });
-      } else resolve({
-        query: query,
-        docs: count,
-        collection: 'ba_apivo'
-      })
+      } else resolve({ query: query,
+                       docs: count,
+                       collection: 'ba_apivo'})
     })
   });
 }
