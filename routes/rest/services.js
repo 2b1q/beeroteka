@@ -3,7 +3,8 @@
 */
 
 // Require controllers
-var catalog_controller = require('../../controllers/catalog');
+var catalog_controller = require('../../controllers/catalog'),
+    search_controller = require('../../controllers/search');
 
 // export REST services
 exports.attach = function(rest) {
@@ -15,6 +16,8 @@ exports.attach = function(rest) {
                 test_api )   // setup assync callback service to API route
   /** dataloader endpoint */
   rest.get({ path: '/dataload/:id', unprotected: false }, dataload ); // hashload service /api/dataload/<id>?api_key=<api_key>
+  /** ES search endpoint */
+  rest.post({ path: '/es', unprotected: true }, es_search );
 }
 
 // test API
@@ -41,6 +44,13 @@ async function dataload(request, content) {
 	else return { msg: 'unable to set ID parameter' }
 }
 
+// new ES search async await endpoint
+async function es_search(request, content) {
+  console.log( 'Received JSON:' + JSON.stringify( content ) )
+  let term = content.term;
+  if(term) return await search_controller.ApiEsSearchRest(term);
+  else return { msg: 'unable to set search "term"' }
+}
 
 // REST API beer
 // router.get('/api/', beer.list); // GET all beerMongoose API

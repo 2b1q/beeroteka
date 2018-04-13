@@ -237,3 +237,17 @@ exports.ApiPostSearchMongo = function (req, res) {
     }
   }
 }
+
+// new ES search REST async await service controller
+exports.ApiEsSearchRest = term => {
+  return new Promise(function(resolve, reject) {
+    elastic.search(term, data => {
+      data.forEach(function(item){
+        let score = item._source.score || item._source.BA_score;
+        let score_percent = Math.round(score/0.05)
+        item._source.score_percent = score_percent
+      })
+      resolve(data)
+    })
+  });
+}
