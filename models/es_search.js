@@ -14,8 +14,7 @@ var isFloat = n => n === +n && n !== (n|0),
 function resolveAfterDelay(data) {
   return new Promise(resolve => {
     setTimeout(() => {
-      console.log(`${config.color.yellow}
-      >>> RETURN RESULT 1 <<<\n`);
+      console.log(`${config.color.green}>>> RETURN RESULT 1 <<<${config.color.white}`);
       resolve(data);
     }, config.es.promiseDelay);
   });
@@ -41,8 +40,7 @@ function query2(result1data){
           // IF Query2 clauses have HITS then render this OBJ
           if( resp.hits.hits.length > 0 ) {
             log.info(`${config.color.yellow} QUERY 2 Hits count: ${config.color.white+resp.hits.total}`)
-            console.log(`${config.color.yellow}
-              >>> RETURN RESULT 2 <<<\n`);
+            console.log(`${config.color.green}>>> RETURN RESULT 2 <<<${config.color.white}`);
             resp.hits.hits[i]._source.BA_score = item._source.score;
             resp.hits.hits[i]._source.BA_beer = item._source.beer;
             resp.hits.hits[i]._source.BA_brewary = item._source.brewary;
@@ -54,7 +52,7 @@ function query2(result1data){
             resp.hits.hits[i]._source.BA_category = item._source.category;
             resp.hits.hits[i]._source.BA_Reviews = item._source.Reviews;
             resp.hits.hits[i]._source.BA_abv = item._source.abv;
-            console.log(`${config.color.white} Result 2 AP: ${JSON.stringify(resp.hits.hits[i]._source, null, 2)}`);
+            // console.log(`${config.color.white} Result 2 AP: ${JSON.stringify(resp.hits.hits[i]._source, null, 2)}`);
             // console.log(config.color.yellow+'Result 2 BA: '+JSON.stringify(item._source, null, 2));
             resolve(resp.hits.hits); // resolve Event OCCURED Only ONCE (means other ForEach resolve`s will be ignored )
           }

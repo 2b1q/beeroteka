@@ -93,7 +93,7 @@ $(function() {
   })
 
   // URL API
-  var url = '/beers/api/search';
+  var url = '/api/mongo';
   // '#form-submit' click EVENT handler
 	$('#form-submit').click(function(e){
     $('[id*="clone"]').remove(); // remove cloned elems if exists

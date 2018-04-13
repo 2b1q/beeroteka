@@ -106,7 +106,7 @@ $(function() {
     }
   }
   // URL API
-  var url = '/beers/api/search';
+  var url = '/api/es';
   // '#form-submit' click EVENT handler
 	$('#form-submit').click(function(e){
     $('[id*="clone"]').remove(); // remove cloned elems if exists
@@ -118,7 +118,7 @@ $(function() {
 	 	var l = Ladda.create(this);
 	 	l.start();
     // ajax GET XHR
-    $.get(url, { query : query },
+    $.post(url, { term : query },
 	 	  function(response){
         console.log('HTTP response OK');
         var dataset = $('#dataset').removeClass('hidden').addClass('container');

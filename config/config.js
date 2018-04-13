@@ -27,7 +27,7 @@ config.sessions = {
 // REST API options
 config.restOptions = {
   context: '/api',
-  logger:{ file: 'restapi.log', level: 'debug' },
+  logger:{ file: 'restapi.log', level: 'error' },
 	apiKeys: [ '11111-1111-222-3333' ],
   domain: require('domain').create()
 }

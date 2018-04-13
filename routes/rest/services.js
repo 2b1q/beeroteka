@@ -18,6 +18,8 @@ exports.attach = function(rest) {
   rest.get({ path: '/dataload/:id', unprotected: false }, dataload ); // hashload service /api/dataload/<id>?api_key=<api_key>
   /** ES search endpoint */
   rest.post({ path: '/es', unprotected: true }, es_search );
+  /** Mongoose search endpoint */
+  rest.post({ path: '/mongo', unprotected: true }, mongo_search );
 }
 
 // test API
@@ -51,6 +53,15 @@ async function es_search(request, content) {
   if(term) return await search_controller.ApiEsSearchRest(term);
   else return { msg: 'unable to set search "term"' }
 }
+
+// new MongoDB(mongoose) search async await endpoint
+async function mongo_search(request, content) {
+  console.log( 'Received JSON:' + JSON.stringify( content ) )
+  if(content.query) return await search_controller.ApiMongoSearchRest(content);
+  else return { msg: 'unable to set "query" object' }
+}
+
+
 
 // REST API beer
 // router.get('/api/', beer.list); // GET all beerMongoose API
