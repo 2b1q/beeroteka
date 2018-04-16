@@ -8,7 +8,6 @@ module.exports = function (grunt) {
     // Project configuration
     grunt.initConfig({
           concat: {
-            js: {
                 options: {
                   separator: '\n'  //add a new line after each file
                 },
@@ -22,7 +21,6 @@ module.exports = function (grunt) {
                   // the location of the resulting JS file
             			dest: 'public/js/bundle/spinner.js'
             	}
-          }
         },
         uglify: {
             options: {
@@ -43,9 +41,7 @@ module.exports = function (grunt) {
 
     // Loading Grunt plugins and tasks
     grunt.registerTask('default', function (concat) {
-        // var dest = grunt.config('concat.js.dist.dest');
-        // grunt.config('concat.js.dist.src', dest);
-        // grunt.task.run('concat');
+        grunt.task.run('concat');
         grunt.task.run('uglify');
     });
 };
