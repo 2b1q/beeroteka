@@ -9,17 +9,19 @@ module.exports = function (grunt) {
     grunt.initConfig({
           concat: {
                 options: {
-                  separator: '\n'  //add a new line after each file
+                  separator: '\n', //add a new line after each file
+                  stripBanners: true
                 },
                 dist: {
             			// the files to concatenate
             			src: [
-            				//include spinner libs
-            				'public/ladda-bootstrap/dist/spin.min.js',
-            				'public/ladda-bootstrap/dist/ladda.min.js'
+            				'public/ladda-bootstrap/dist/spin.min.js',  // include spinner libs
+            				'public/ladda-bootstrap/dist/ladda.min.js', // include spinner libs
+                    'public/js/bundle/render.min.js'           // add minified JS FE
+                    // 'public/js/bootstrap-slider.min.js'         // add slider ABV min max
             			],
                   // the location of the resulting JS file
-            			dest: 'public/js/bundle/spinner.js'
+            			dest: 'public/js/bundle/render.bundle.min.js'
             	}
         },
         uglify: {
@@ -41,7 +43,7 @@ module.exports = function (grunt) {
 
     // Loading Grunt plugins and tasks
     grunt.registerTask('default', function (concat) {
-        grunt.task.run('concat');
         grunt.task.run('uglify');
+        grunt.task.run('concat');
     });
 };
