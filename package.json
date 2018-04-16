@@ -39,5 +39,12 @@
     "redis": "^2.8.0",
     "serve-favicon": "^2.4.4",
     "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.2",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-uglify": "^3.3.0",
+    "load-grunt-tasks": "^3.5.2",
+    "time-grunt": "^1.4.0"
   }
 }
