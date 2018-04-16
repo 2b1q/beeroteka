@@ -171,3 +171,20 @@ docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}"
 ```
 docker build -t crawler .
 ```
+## Grunt 
+#### Installing
+```
+1. npm install -g grunt-cli        # Installing the CLI globally
+2. npm install grunt --save-dev    # add GRUNT to devDependencies
+```
+#### Add gruntplugins
+```
+npm install grunt-contrib-uglify --save-dev     # Minify/uglify JS
+npm install grunt-contrib-concat --save-dev     # Concat JS
+npm install load-grunt-tasks --save-dev         # Load all grunt-* packages from package.json
+npm install time-grunt --save-dev               # Display the elapsed execution time of grunt tasks
+```
+#### Run grunt tasks
+```
+grunt
+```
