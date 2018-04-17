@@ -15,13 +15,11 @@ module.exports = function (grunt) {
                 dist: {
             			// the files to concatenate
             			src: [
-            				'public/ladda-bootstrap/dist/spin.min.js',  // include spinner libs
-            				'public/ladda-bootstrap/dist/ladda.min.js', // include spinner libs
-                    'public/js/bundle/render.min.js'           // add minified JS FE
-                    // 'public/js/bootstrap-slider.min.js'         // add slider ABV min max
+            				'<%= spin_libs %>spin.min.js',    // include spinner libs
+            				'<%= spin_libs %>ladda.min.js',   // include spinner libs
+                    '<%= js_min_dest %>'              // add minified JS FE
             			],
-                  // the location of the resulting JS file
-            			dest: 'public/js/bundle/render.bundle.min.js'
+            			dest: '<%= js_bundle %>' // the location of the resulting JS file
             	}
         },
         uglify: {
@@ -32,13 +30,19 @@ module.exports = function (grunt) {
             },
             target: {
                 src: [
-                  'public/js/es_render.js',       // es_render.js 'http://beeroteka/beers/search'
-                  'public/js/mongo_render.js',    // mongo_render.js http://beeroteka/beers/search2
-                  'public/js/graphics.js'         // graphics.js http://beeroteka/beers/graphics
+                  '<%= js_src %>es_render.js',       // es_render.js 'http://beeroteka/beers/search'
+                  '<%= js_src %>mongo_render.js',    // mongo_render.js http://beeroteka/beers/search2
+                  '<%= js_src %>graphics.js'         // graphics.js http://beeroteka/beers/graphics
                 ],
-                dest: 'public/js/bundle/render.min.js'
+                dest: '<%= js_min_dest %>'
             }
-        }
+        },
+        // Task template properties.
+        js_src:      'public/js/',
+        dest:        '<%= js_src %>bundle/render.',
+        js_min_dest: '<%= dest %>min.js',             // 'public/js/bundle/render.min.js'
+        js_bundle:   '<%= dest %>bundle.min.js',      // 'public/js/bundle/render.bundle.min.js'
+        spin_libs:   'public/ladda-bootstrap/dist/'
     });
 
     // Loading Grunt plugins and tasks
