@@ -17,7 +17,7 @@ exports.attach = function(rest) {
   /** dataloader endpoint */
   rest.get({ path: '/dataload/:id', unprotected: false }, dataload ); // hashload service /api/dataload/<id>?api_key=<api_key>
   /** ES search endpoint */
-  rest.post({ path: '/es', unprotected: true }, es_search );
+  rest.get({ path: '/es/:query', unprotected: true }, es_search );
   /** Mongoose search endpoint */
   rest.post({ path: '/mongo', unprotected: true }, mongo_search );
 }
@@ -48,10 +48,11 @@ async function dataload(request, content) {
 
 // new ES search async await endpoint
 async function es_search(request, content) {
-  console.log( 'Received JSON:' + JSON.stringify( content ) )
-  let term = content.term;
+  // console.log( 'Received parameters:' + JSON.stringify( request.parameters.query ) )
+  let term = decodeURI(request.parameters.query);
+  console.log(`decoded Term: "${term}"`)
   if(term) return await search_controller.ApiEsSearchRest(term);
-  else return { msg: 'unable to set search "term"' }
+  else return { msg: 'unable to set search parametr "query"' }
 }
 
 // new MongoDB(mongoose) search async await endpoint
