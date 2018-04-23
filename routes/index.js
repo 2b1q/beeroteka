@@ -12,22 +12,25 @@ router.get('/', function(req, res, next) {
 
 // test REST route with api_key using OOTB middleware
 router.get('/test',(req, res, next) => {
-  if(!req.query.api_key) {
-    res.status(401)
-    res.json('unable to set "api_key" param')
+  if(!req.query.api_key) unauth(res, { err: 'unable to set "api_key" param' })
+  else {
+    if(auth(req)) res.json({ auth: "OK" })
+    else unauth(res, { err: 'bad "api_key"' })
   }
-  // check auth key
-  const auth = config.restOptions.apiKeys
+})
+
+// AUTH required
+const unauth = (res, msg) => {
+  res.status(401)
+  res.json(msg)
+}
+
+// check AUTH api_key
+const auth = req => {
+  return config.restOptions.apiKeys
   .some(key => {
     if(req.query.api_key === key) return true
   })
-
-  console.log(`AUTH is ${auth}`);
-  if(auth) res.json({ auth: "OK" })
-  else {
-    res.status(401)
-    res.json({ err: 'bad "api_key" '})
-  }
-})
+}
 
 module.exports = router;
