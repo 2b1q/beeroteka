@@ -28,7 +28,7 @@ config.sessions = {
 config.restOptions = {
   context: '/api',
   logger:{ file: 'restapi.log', level: 'error' },
-	apiKeys: [ '11111-1111-222-3333' ],
+	apiKeys: [ '11111-1111-222-3333', 'q1w2e3r4' ],
   domain: require('domain').create()
 }
 

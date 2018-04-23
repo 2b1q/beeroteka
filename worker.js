@@ -79,8 +79,8 @@ var http = require('http'),
 // Normalize a port into a number, string, or false
 var port = (val => {
   var port = parseInt(val, 10);
-  if (isNaN(port))  return val; // named pipe
-  if (port >= 0)    return port; // port number
+  if (port >= 0)   return port; // port number
+  if (isNaN(port)) return val; // named pipe
   return false;
 })(process.env.PORT || config.server.port); // Get port from environment
 // set server port
