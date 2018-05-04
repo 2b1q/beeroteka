@@ -5,14 +5,15 @@
   - async await Promise for waiting long Ops. from model
   - user data check_module => module pattern
 */
-var config = require('../config/config'),
-    log = require('../libs/log')(module);
+const config  = require('../config/config'),
+      log     = require('../libs/log')(module),
+      bm      = require('../models/beer');
 
 // AddBeer controller
 async function AddBeer(req, res) {
   write.log(req); // write request to log
   if(check_module.auth(req.query.api_key, res))
-    // exec await Promise AddBeer here => return ID
+    // TODO exec await Promise AddBeer here => return ID
     res.json({ auth: "OK", api: 'AddBeer' })
 }
 
@@ -20,8 +21,7 @@ async function AddBeer(req, res) {
 async function GetBeer(req, res) {
   write.log(req);
   if(check_module.chekid(req.query.id, res))
-    // exec await Promise GetBeer here => return beer data
-    res.json({ msg: `get beer by ID '${check_module.getid()}'`})
+    res.json(await bm.get(check_module.getid())) 
 }
 
 
@@ -30,7 +30,7 @@ async function DeleteBeer(req, res) {
   write.log(req);
   if(check_module.auth(req.query.api_key, res))
     if(check_module.chekid(req.query.id, res))
-      // exec await Promise DeleteBeer here => return status
+      // TODO exec await Promise DeleteBeer here => return status
       res.json({ auth: 'OK', msg: `Delete beer by ID '${check_module.getid()}'`})
 }
 
@@ -39,12 +39,12 @@ async function UpdateBeer(req, res) {
   write.log(req);
   if(check_module.auth(req.query.api_key, res))
     if(check_module.chekid(req.query.id, res))
-      // exec await Promise UpdateBeer here => return updated beer data
+      // TODO exec await Promise UpdateBeer here => return updated beer data
       res.json({ auth: 'OK', msg: `Update beer by ID '${check_module.getid()}'`})
 }
 
 // check module with closures
-var check_module = (function() {
+const check_module = (function() {
   // private data
   let private_id;
   // private functions
@@ -52,8 +52,10 @@ var check_module = (function() {
     res.status(status);
     res.json(msg)
   };
-  // check ID is number
-  let checkid = id => isNaN(parseInt(id))? false : true;
+  // check ID by MongoDB ObjectID
+  checkForHexRegExp = /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
+
+  let checkid = id => checkForHexRegExp.test(id)
   // check IF token exist
   let chek_token = token => config.restOptions.apiKeys.includes(token);
   // public interface
@@ -62,7 +64,7 @@ var check_module = (function() {
       if(!id) send_response(res, { err: 'unable to pass ID'}, 200)
       else if(!checkid(id)) send_response(res, { err: 'bad ID'}, 500)
       else {
-        private_id = parseInt(id);
+        private_id = id;
         return true
       }
     },
@@ -76,8 +78,8 @@ var check_module = (function() {
 })();
 
 // logger singleton
-var logger = (function(){
-  var instance; // keep reference to singleton
+const logger = (function(){
+  let instance; // keep reference to singleton
   function initInstance(){
     // private method
     function logit(req) {
@@ -105,7 +107,7 @@ var logger = (function(){
 })();
 
 // init singleton instance (always refer to same one instance)
-var write = logger.getInstance();
+let write = logger.getInstance();
 
 module.exports = {
   add:      AddBeer,      // POST   => add beer
